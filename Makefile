@@ -13,22 +13,22 @@
 .SILENT:
 .ONE_SHELL:
 
-NAME = minishell
+NAME		= minishell
 
-CC = cc
-RM = /bin/rm -rf
-FLAGS = -g # -Wall -Wextra -Werror -fsanitize=address
+CC			= cc
+RM			= /bin/rm -rf
+FLAGS		= -g # -Wall -Wextra -Werror -fsanitize=address
 
 SRCS_DIR	= srcs/
 OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
 
-SRCS_LIST = main.c
+SRCS_LIST	= main.c
 
-SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
-OBJS = $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
+SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
+OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
+LIBFT		= $(addprefix $(LIBFT_DIR), libft.a)
 
-LIBFT = $(addprefix $(LIBFT_DIR), libft.a)
 
 all: $(NAME)
 
@@ -42,15 +42,15 @@ $(OBJS_DIR):
 	mkdir $(OBJS_DIR)
 
 $(LIBFT):
-	@make -C $(LIBFT_DIR)
+	@make -s -C $(LIBFT_DIR)
 
 clean:
 	$(RM) $(OBJS_DIR)
-	make clean -C $(LIBFT_DIR)
+	@make -s clean -C $(LIBFT_DIR)
 
 fclean: clean
 	$(RM) $(NAME)
-	make fclean -C $(LIBFT_DIR)
+	@make -s fclean -C $(LIBFT_DIR)
 
 git: fclean
 	$(RM) $(NAME)
