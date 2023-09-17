@@ -1,43 +1,39 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/17 04:29:40 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/09/17 16:18:35 by jhogonca         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
+
+void sigint_handler(int signum) {
+	printf("Ctrl+C pressed\n");
+}
+
+void sigquit_handler(int signum) {
+	printf("Ctrl+\\ pressed\n");
+}
+
+void ft_handle_signals(void)
+{
+	struct sigaction sa_int;
+	struct sigaction sa_quit;
+
+	// Set up the SIGINT handler
+	sa_int.sa_handler = sigint_handler;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = 0;
+	sigaction(SIGINT, &sa_int, NULL);
+
+	// Set up the SIGQUIT handler
+	sa_quit.sa_handler = sigquit_handler;
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
+}
 
 int main(int ac, char **av, char **env)
 {
-	struct sigaction sa;
-	char *input;
-    
-	if (ac < 1)
-		return 1;
-
-    // Set up the SIGINT handler
-    sa.sa_handler = sigint_handler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sigaction(SIGINT, &sa, NULL);
-	while (true)
+	char	*input;
+	
+	while (1)
 	{
-		rl_initialize();
-		char *input = readline(M I N I S H E L L Z);
-		
-		// Handle EOF or error.
-		if (input == NULL) {
-			break;
-		}
-		
-		ft_printf_fd(1, "Your input: %s\n", input);
-		free(input);
-		add_history(input);
+		ft_handle_signals();
+		input = readline(M I N I S H E L L Z);
 	}
 	return 0;
 }
