@@ -17,7 +17,7 @@ NAME = minishell
 
 CC = cc
 RM = /bin/rm -rf
-FLAGS = -g -Wall -Wextra -Werror -fsanitize=address
+FLAGS = -g # -Wall -Wextra -Werror -fsanitize=address
 
 SRCS_DIR	= srcs/
 OBJS_DIR	= srcs/objs/
@@ -55,7 +55,7 @@ fclean: clean
 git: fclean
 	$(RM) $(NAME)
 	git add .
-	git commit -m "auto commit"
+	git commit -m "Makefile commit"
 	git push
 
 re: fclean all
