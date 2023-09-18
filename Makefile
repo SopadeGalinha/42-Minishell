@@ -22,6 +22,7 @@ FLAGS		= -g # -Wall -Wextra -Werror -fsanitize=address
 SRCS_DIR	= srcs/
 OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
+commit_msg	= "auto commit"
 
 SRCS_LIST	= main.c
 
@@ -52,10 +53,14 @@ fclean: clean
 	$(RM) $(NAME)
 	@make -s fclean -C $(LIBFT_DIR)
 
+
 git: fclean
+ifdef M 
+	$(eval commit_msg = $(M))
+endif
 	$(RM) $(NAME)
 	git add .
-	git commit -m "Makefile commit"
+	git commit -m "$(commit_msg)"
 	git push
 
 re: fclean all
