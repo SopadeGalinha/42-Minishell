@@ -51,11 +51,11 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
-	@make -s fclean -C $(LIBFT_DIR)
+#@make -s fclean -C $(LIBFT_DIR)
 
 
 git: fclean
-ifdef M 
+ifdef M
 	$(eval commit_msg = $(M))
 endif
 	$(RM) $(NAME)
