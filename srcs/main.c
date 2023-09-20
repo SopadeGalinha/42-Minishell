@@ -25,20 +25,20 @@ int main(int ac, char **av, char **env)
 
 	input = NULL;
 	if (ac != 1 || !av)
-		return (ft_printf_fd(2, ERROR_INVALID_ARGS TRY_AGAIN));
+		return (ft_printf_fd(2, ERROR_ARGS));
 	rl_initialize();
 	using_history();
 	ft_handle_signals();
 	while (1)
 	{
 		free(input);
-		input = readline(M I N I S H E L L Z);
+		input = readline(MINISHELL);
 		if (input == NULL)
 			break;
 		if (input[0] == '\0')
-			continue;
+			continue ;
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
-			break;
+			break ;
 		add_history(input);
 	}
 	if (input)

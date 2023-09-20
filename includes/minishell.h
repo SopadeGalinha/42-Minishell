@@ -41,34 +41,28 @@ typedef struct s_env
 /*__________________________________MACROS____________________________________*/
 
 // COLORS
-# define ESC_RESET			"\001\033[0m\002"
-# define ESC_BOLD_RED		"\001\033[1;31m\002"
-# define ESC_BOLD_GREEN		"\001\033[1;32m\002"
-# define ESC_BOLD_ORANGE	"\001\033[1;33m\002"
-# define ESC_BOLD_PURPLE	"\001\033[1;35m\002"
-# define ESC_BOLD_WHITE		"\001\033[1;37m\002"
-# define ESC_BOLD_GREY		"\001\033[1;39m\002" 
-# define ESC_BOLD_YELLOW	"\001\033[1;93m\002"
-# define ESC_BOLD_BLUE		"\001\033[1;94m\002"
-# define ESC_BOLD_MAGENTA	"\001\033[1;95m\002"
-# define ESC_BOLD_CYAN		"\001\033[1;96m\002"
-# define ESC_BOLD_BLACK		"\001\033[1;98m\002"
-
-// BEAUTIFUL PROMPT
-# define M "\001\033[1;92m\002m\001\033[0m\002"
-# define I "\001\033[1;93m\002i\001\033[0m\002"
-# define N "\001\033[1;31m\002n\001\033[0m\002"
-# define I "\001\033[1;93m\002i\001\033[0m\002"
-# define S "\001\033[1;94m\002s\001\033[0m\002"
-# define H "\001\033[1;96m\002h\001\033[0m\002"
-# define E "\001\033[1;31m\002e\001\033[0m\002"
-# define L "\001\033[1;35m\002l\001\033[0m\002"
-# define Z "\001\033[1;98m\002$ \001\033[0m\002"
+# define RESET				"\001\033[0m\002"
+# define BOLD_RED		"\001\033[1;31m\002"
+# define BOLD_ORANGE	"\001\033[1;33m\002"
+# define BOLD_PURPLE	"\001\033[1;35m\002"
+# define BOLD_GREY		"\001\033[1;39m\002" 
+# define BOLD_GREEN		"\001\033[1;92m\002"
+# define BOLD_BLUE		"\001\033[1;94m\002"
+# define BOLD_CYAN		"\001\033[1;96m\002"
+# define BOLD_WHITE		"\001\033[1;97m\002"
 
 // ERRORS
+# define TRY		BOLD_CYAN	" Try: ./minishell\n"RESET
+# define ERROR_ARGS	BOLD_RED	"Invalid arguments\n" TRY RESET
 
-# define ERROR_INVALID_ARGS	"\001\033[1;31m\002 Invalid arguments\n"
-# define TRY_AGAIN	"\001\033[1;93m\002 Try: ./minishell\n\001\033[0m\002"
+// BEAUTIFUL PROMPT
+# define P	BOLD_BLUE	"mi\001\033[0m\002"
+# define R	BOLD_GREY	"ni\001\033[0m\002"
+# define O	BOLD_GREEN	"s\001\033[0m\002"
+# define M	BOLD_ORANGE	"h\001\033[0m\002"
+# define PP	BOLD_RED	"el\001\033[0m\002"
+# define T	BOLD_WHITE	"l\001\033[0m\002"
+# define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
 //---------------------------------END MACROS---------------------------------//
 
 #endif
