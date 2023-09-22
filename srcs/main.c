@@ -19,9 +19,22 @@ void ft_handle_signals(void)
 	sigaction(SIGINT, &sig_actions, NULL);
 }
 
-int main(int ac, char **av, char **env)
+t_env	init_env(char **envp)
+{
+	int	i = 0;
+	int	j = 0;
+	while (envp[i])
+	{
+		while ()
+	}
+}
+
+int main(int ac, char **av, char **envp)
 {
 	char *input;
+	int		i = 0;
+	int		j = 0;
+	t_env	*env;
 
 	input = NULL;
 	if (ac != 1 || !av)
@@ -29,6 +42,8 @@ int main(int ac, char **av, char **env)
 	rl_initialize();
 	using_history();
 	ft_handle_signals();
+
+	env = init_env(envp);
 	while (1)
 	{
 		free(input);
@@ -39,6 +54,12 @@ int main(int ac, char **av, char **env)
 			continue ;
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
+		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
+		{
+			while (envp[i])
+				ft_printf_fd(1, "%s\n", envp[i++]);
+			i = 0;
+		}
 		add_history(input);
 	}
 	if (input)
