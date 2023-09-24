@@ -24,11 +24,11 @@ OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
 commit_msg	= "auto commit"
 
-SRCS_LIST	= main.c
+SRCS_LIST	= main.c set_tokens.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
-LIBFT		= $(addprefix $(LIBFT_DIR), libft.a)
+LIBFT		= $(addprefix $(LIBFT_DIR), libft.a)	
 
 
 all: $(NAME)

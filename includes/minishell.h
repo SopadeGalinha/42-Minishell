@@ -38,10 +38,28 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
+enum TokenType {
+	WORD,
+	ENV,
+	PIPELINE,
+	REDIR_OUT,
+	D_REDIR_OUT,
+	REDIR_IN,
+	HEREDOC,
+	WHITESPACE
+};
+
+typedef struct s_token
+{
+	char			*data;
+	int				type;
+	struct s_token	*next;
+}					t_token;
+
 /*__________________________________MACROS____________________________________*/
 
 // COLORS
-# define RESET				"\001\033[0m\002"
+# define RESET			"\001\033[0m\002"
 # define BOLD_RED		"\001\033[1;31m\002"
 # define BOLD_ORANGE	"\001\033[1;33m\002"
 # define BOLD_PURPLE	"\001\033[1;35m\002"
@@ -64,5 +82,10 @@ typedef struct s_env
 # define T	BOLD_WHITE	"l\001\033[0m\002"
 # define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
 //---------------------------------END MACROS---------------------------------//
+
+
+/*_________________________________FUNCTIONS__________________________________*/
+
+t_token	*set_tokens(char *input);
 
 #endif

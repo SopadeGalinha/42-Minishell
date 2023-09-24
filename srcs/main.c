@@ -22,6 +22,7 @@ void ft_handle_signals(void)
 int main(int ac, char **av, char **env)
 {
 	char *input;
+	t_token *tokens;
 
 	input = NULL;
 	if (ac != 1 || !av)
@@ -39,6 +40,7 @@ int main(int ac, char **av, char **env)
 			continue ;
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
+		tokens = set_tokens(input);
 		add_history(input);
 	}
 	if (input)
