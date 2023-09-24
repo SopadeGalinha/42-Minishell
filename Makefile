@@ -17,7 +17,7 @@ NAME		= minishell
 
 CC			= cc
 RM			= /bin/rm -rf
-FLAGS		= -g # -Wall -Wextra -Werror -fsanitize=address
+FLAGS		= -g #-Wall -Wextra -Werror -fsanitize=address
 
 SRCS_DIR	= srcs/
 OBJS_DIR	= srcs/objs/
@@ -51,7 +51,11 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
+	$(RM) *.txt
 #@make -s fclean -C $(LIBFT_DIR)
+
+log: all
+	@valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression --log-file=log%p.txt ./$(NAME) 
 
 
 git: fclean
