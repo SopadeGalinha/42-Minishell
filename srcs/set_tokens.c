@@ -1,38 +1,22 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   set_tokens.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/24 23:48:05 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/09/24 23:48:05 by jhogonca         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "../includes/minishell.h"
 
 int define_token(const char *token)
 {
-	if (strcmp(token, "|") == 0) {
+	if (ft_strncmp(token, "|", ft_strlen(token)) == 0)
 		return PIPELINE;
-	} else if (strcmp(token, ">") == 0) {
+	if (ft_strncmp(token, ">", ft_strlen(token)) == 0)
 		return REDIR_OUT;
-	} else if (strcmp(token, ">>") == 0) {
+	if (ft_strncmp(token, ">>", ft_strlen(token)) == 0)
 		return D_REDIR_OUT;
-	} else if (strcmp(token, "<") == 0) {
+	if (ft_strncmp(token, "<", ft_strlen(token)) == 0)
 		return REDIR_IN;
-	} else if (strcmp(token, "<<") == 0) {
+	if (ft_strncmp(token, "<<", ft_strlen(token)) == 0)
 		return HEREDOC;
-	} else if (token[0] == '$') {
+	if (token[0] == '$')
 		return ENV;
-	} 
-	else if (ft_isspace(token)) {
-		return WHITESPACE;
-	}
-	else {
-		return WORD;
-	}
+	return WORD;
 }
 
 void	addtoken(t_token **tokens, char *data, int type)
@@ -92,7 +76,6 @@ void print_tokens(t_token *head)
 			default:
 				typeStr = "unknown";
 		}
-
 		printf("data: %-8s - type: %s\n", current->data, typeStr);
 		current = current->next;
 	}
@@ -102,17 +85,60 @@ void print_tokens(t_token *head)
 t_token	*set_tokens(char *input)
 {
 	t_token		*tokens;
-	char		**split;
+	char		*data;
 	int			i;
+	int		start;
+	bool 	error;
 
-	tokens = NULL;
-	split = ft_split(input, ' ');
 	i = -1;
-	while (split[++i])
-		addtoken(&tokens, split[i], define_token(split[i]));
-
+	tokens = NULL;
+	while (input[++i])
+	{
+		if (input[i] == '"')
+		{
+			start = i;
+			while (input[++i] != '"')
+				;
+			if (input[i] != '"')
+			{
+				error = true;
+				break ;
+			}
+		}
+		else if (input[i] == '\'')
+		{
+			start = i;
+			while (input[++i] != '\'')
+				;
+			if (input[i] != '\'')
+			{
+				error = true;
+				break ;
+			}
+		}
+		if (input[i] == '>')
+		{
+			if (input[i + 1] == '>')
+				data = ft_substr(input, start + 1, i - start - 1);
+			else
+				data = ft_substr(input, start + 1, i - start - 1);
+		}
+		else if (input[i] == '<')
+		{
+			if (input[i + 1] == '<')
+				data = ft_substr(input, start + 1, i - start - 1);
+			else
+				data = ft_substr(input, start + 1, i - start - 1);
+		}
+		else if (input[i] == '|')
+			data = ft_substr(input, start + 1, i - start - 1);
+		else if (input[i] == ' ')
+			data = ft_substr(input, start + 1, i - start - 1);
+		else if (input[i] == '$')
+			data = ft_substr(input, start + 1, i - start - 1);
+		else
+			data = ft_substr(input, start, i - start);
+	}	
 	print_tokens(tokens);
-	ft_free_array(split);
-	exit(0);
 	return (tokens);
 }

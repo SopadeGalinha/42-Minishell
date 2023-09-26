@@ -49,10 +49,17 @@ enum TokenType {
 	WHITESPACE
 };
 
+enum QuoteType {
+	NONE,
+	SINGLE,
+	DOUBLE
+};
+
 typedef struct s_token
 {
 	char			*data;
 	int				type;
+	int				quoted;
 	struct s_token	*next;
 }					t_token;
 
