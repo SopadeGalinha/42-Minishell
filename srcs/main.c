@@ -19,18 +19,47 @@ void ft_handle_signals(void)
 	sigaction(SIGINT, &sig_actions, NULL);
 }
 
-t_list	*ft_new_envlst(void *content)
+t_env *create_env_node(char *line)
 {
-	t_env	*new;
-
-	new = (t_env *)malloc(sizeof(t_env));
-	if (!new)
-		return (NULL);
-	new->key = get_key;
-	new->value = NULL;
-	new->full = NULL;
+	t_env *new = (t_env *)malloc(sizeof(t_env));
+	if (!new) {
+		ft_printf_fd(1, "Failed to allocate memory for t_env");
+		return(NULL);
+	}
+	new->key = ft_strdup_equal_key(line);
+	new->value = ft_strdup_equal_value(line);
+	new->line = line;
 	new->next = NULL;
 	return (new);
+}
+
+void add_env_node_to_list(t_env **head, char *line) {
+	t_env *new_env_node = create_env_node(line);
+	new_env_node->next = *head;
+	*head = new_env_node;
+}
+
+t_env	*init_env(char **envp)
+{
+	int i = 0;
+	t_env *env_list = NULL;
+
+	while(envp[i])
+		i++;
+	while (--i  >=  0)
+		add_env_node_to_list(&env_list, envp[i]);
+
+	return (env_list);
+}
+
+void print_env_list(t_env *head)
+{
+	t_env *current = head;
+	while (current != NULL)
+	{
+		ft_printf_fd(1, "%s\n", current->line);
+		current = current->next;
+	}
 }
 
 int main(int ac, char **av, char **envp)
@@ -38,7 +67,7 @@ int main(int ac, char **av, char **envp)
 	char *input;
 	int		i = 0;
 	int		j = 0;
-	t_env_arr	*env_arr;
+	t_env	*env;
 
 	input = NULL;
 	if (ac != 1 || !av)
@@ -46,7 +75,7 @@ int main(int ac, char **av, char **envp)
 	rl_initialize();
 	using_history();
 	ft_handle_signals();
-	env_arr = init_env(envp);
+	env = init_env(envp);
 	while (1)
 	{
 		free(input);
@@ -58,11 +87,7 @@ int main(int ac, char **av, char **envp)
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
 		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
-		{
-			while (envp[i])
-				ft_printf_fd(1, "%s\n", env_arr->full_array[i++]);
-			i = 0;
-		}
+			print_env_list(env);
 		add_history(input);
 	}
 	if (input)

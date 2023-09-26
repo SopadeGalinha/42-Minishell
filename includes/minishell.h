@@ -42,7 +42,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
-	char			*full;
+	char			*line;
 	struct s_env	*next;
 }					t_env;
 
@@ -77,8 +77,8 @@ typedef struct s_env
 
 char		*ft_strdup_equal_value(const char *src);
 char		*ft_strdup_equal_key(const char *src);
-char		**get_key(char **envp);
-char		**get_value(char **envp);
-t_env_arr	*init_env(char **envp);
+//char		**get_key(char **envp);
+//char		**get_value(char **envp);
+t_env		*init_env(char **envp);
 //---------------------------------END FUNCTIONS---------------------------------//
 #endif
