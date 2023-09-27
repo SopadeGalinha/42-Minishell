@@ -82,63 +82,94 @@ void print_tokens(t_token *head)
 }
 
 
-t_token	*set_tokens(char *input)
+t_token *set_tokens(char *input)
 {
-	t_token		*tokens;
-	char		*data;
-	int			i;
-	int		start;
-	bool 	error;
-
-	i = -1;
-	tokens = NULL;
-	while (input[++i])
+	t_token *tokens = NULL;
+	int i = -1;
+	int start;
+	
+	while (input[++i] != '\0')
 	{
+		start = i;
+		char *data = NULL;
+
 		if (input[i] == '"')
 		{
-			start = i;
-			while (input[++i] != '"')
-				;
-			if (input[i] != '"')
+			i++;
+			while (input[i] != '\0' && input[i] != '"')
+				i++;
+			if (input[i] == '"')
 			{
-				error = true;
-				break ;
+				data = ft_substr(input, start + 1, i - start - 1);
+				i++; // Skip the closing quote
 			}
 		}
 		else if (input[i] == '\'')
 		{
-			start = i;
-			while (input[++i] != '\'')
-				;
-			if (input[i] != '\'')
+			i++;
+			while (input[i] != '\0' && input[i] != '\'')
+				i++;
+			if (input[i] == '\'')
 			{
-				error = true;
-				break ;
+				data = ft_substr(input, start + 1, i - start - 1);
+				i++; // Skip the closing quote
 			}
 		}
-		if (input[i] == '>')
+		else if (input[i] == '>')
 		{
 			if (input[i + 1] == '>')
-				data = ft_substr(input, start + 1, i - start - 1);
+			{
+				data = ft_substr(input, start, 2);
+				i += 2;
+			}
 			else
-				data = ft_substr(input, start + 1, i - start - 1);
+			{
+				data = ft_substr(input, start, 1);
+				i+= 1;
+			}
 		}
 		else if (input[i] == '<')
 		{
 			if (input[i + 1] == '<')
-				data = ft_substr(input, start + 1, i - start - 1);
+			{
+				data = ft_substr(input, start, 2);
+				i += 2;
+			}
 			else
-				data = ft_substr(input, start + 1, i - start - 1);
+			{
+				data = ft_substr(input, start, 1);
+				i+= 1;
+			}
 		}
 		else if (input[i] == '|')
-			data = ft_substr(input, start + 1, i - start - 1);
-		else if (input[i] == ' ')
-			data = ft_substr(input, start + 1, i - start - 1);
+		{
+			data = ft_substr(input, start, 1);
+			i+= 1;
+		}
 		else if (input[i] == '$')
-			data = ft_substr(input, start + 1, i - start - 1);
-		else
+		{
+			i++;
+			while (input[i] != '\0' && input[i] != ' ' && input[i] != '>' && input[i] != '<' && input[i] != '|' && input[i] != '$')
+				i++;
 			data = ft_substr(input, start, i - start);
-	}	
+		}
+		
+		else
+		{
+			while (input[i] != '\0' && input[i] != ' ' && input[i] != '>' && input[i] != '<' && input[i] != '|' && input[i] != '$')
+				i++;
+			data = ft_substr(input, start, i - start);
+		}
+		
+		if (data)
+		{
+			int type = define_token(data);
+			// addtoken(&tokens, data, type, NONE); // Assuming no quotes for now
+			printf("data: %s\n", data);
+			free(data);
+		}
+	}
+
 	print_tokens(tokens);
-	return (tokens);
+	return tokens;
 }
