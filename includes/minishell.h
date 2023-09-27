@@ -59,7 +59,7 @@ typedef struct s_token
 {
 	char			*data;
 	int				type;
-	int				quoted;
+	int				quote;
 	struct s_token	*next;
 }					t_token;
 
