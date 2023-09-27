@@ -93,7 +93,7 @@ t_token *set_tokens(char *input)
 	
 	i = -1;
 	data = NULL;
-	while (input[++i] != '\0')
+	while (input[++i])
 	{
 		start = i;
 		if (input[i] == '"')
@@ -104,6 +104,7 @@ t_token *set_tokens(char *input)
 				i++;
 			data = ft_substr(input, start, i - start + 1);
 				// addtoken(&tokens, ft_substr(input, start + 1, i - start - 1), define_token(data), quote);
+			if (input[i] == '"')
 				i++; // Skip the closing quote
 		}
 		else if (input[i] == '\'')
@@ -113,6 +114,7 @@ t_token *set_tokens(char *input)
 			while (input[i] != '\0' && input[i] != '\'')
 				i++;
 			data = ft_substr(input, start, i - start + 1);
+			if (input[i] == '\'')
 				i++; // Skip the closing quote
 		}
 		else if (input[i] == '>')
@@ -157,18 +159,17 @@ t_token *set_tokens(char *input)
 				i++;
 			data = ft_substr(input, start, i - start);
 		}
-		else if (input[i] == ' '){
-			i++;
-		}
 		else
 		{
 			quote = NONE;
 			while (input[i] != '\0' && input[i] != ' ' && input[i] != '>' && input[i] != '<' && input[i] != '|' && input[i] != '$')
 				i++;
-			data = ft_substr(input, start, i - start);
+			// data = ft_substr(input, start, i - start);
 		}
 		if (data != NULL)
 			printf("data: %s\n", data);
 	}
+	printf("i: %d\n", i);
+	printf("input len: %d\n", ft_strlen(input));
 	return tokens;
 }
