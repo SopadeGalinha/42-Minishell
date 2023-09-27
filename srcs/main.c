@@ -33,35 +33,6 @@ t_env *create_env_node(char *line)
 	return (new);
 }
 
-void add_env_node_to_list(t_env **head, char *line) {
-	t_env *new_env_node = create_env_node(line);
-	new_env_node->next = *head;
-	*head = new_env_node;
-}
-
-t_env	*init_env(char **envp)
-{
-	int i = 0;
-	t_env *env_list = NULL;
-
-	while(envp[i])
-		i++;
-	while (--i  >=  0)
-		add_env_node_to_list(&env_list, envp[i]);
-
-	return (env_list);
-}
-
-void print_env_list(t_env *head)
-{
-	t_env *current = head;
-	while (current != NULL)
-	{
-		ft_printf_fd(1, "%s\n", current->line);
-		current = current->next;
-	}
-}
-
 int main(int ac, char **av, char **envp)
 {
 	char *input;
@@ -86,7 +57,7 @@ int main(int ac, char **av, char **envp)
 			continue ;
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
-		if (ft_strncmp(input, "env", ft_strlen(input)) == 0)
+		if ((ft_strncmp(input, "env", ft_strlen(input)) == 0) && env)
 			print_env_list(env);
 		add_history(input);
 	}
