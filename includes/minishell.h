@@ -42,11 +42,11 @@ enum TokenType {
 	WORD,
 	ENV,
 	PIPELINE,
+	D_PIPES,
 	REDIR_OUT,
 	D_REDIR_OUT,
 	REDIR_IN,
 	HEREDOC,
-	WHITESPACE
 };
 
 enum QuoteType {
