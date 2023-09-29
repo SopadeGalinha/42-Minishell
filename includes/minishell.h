@@ -93,6 +93,14 @@ typedef struct s_token
 
 /*_________________________________FUNCTIONS__________________________________*/
 
-t_token	*set_tokens(char *input);
+//MAIN
+void ft_handle_signals(void);
+
+//PARSER
+t_token *lexical(char *input);
+
+//UTILS
+int	define_token(const char *token);
+void	print_tokens(t_token *head);
 
 #endif
