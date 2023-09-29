@@ -73,12 +73,15 @@ t_env	*init_env(char **envp)
 	return (env_list);
 }
 
-void print_env_list(t_env *head)
+void print_env_list(t_env *head, int flag)
 {
 	t_env *current = head;
 	while (current != NULL)
 	{
-		ft_printf_fd(1, "%s\n", current->line);
+		if (flag)
+			ft_printf_fd(1, "%s\n", current->line);
+		else
+			ft_printf_fd(1, "declare -x %s\n", current->line);
 		current = current->next;
 	}
 }

@@ -19,26 +19,13 @@ void ft_handle_signals(void)
 	sigaction(SIGINT, &sig_actions, NULL);
 }
 
-t_env *create_env_node(char *line)
-{
-	t_env *new = (t_env *)malloc(sizeof(t_env));
-	if (!new) {
-		ft_printf_fd(1, "Failed to allocate memory for t_env");
-		return(NULL);
-	}
-	new->key = ft_strdup_equal_key(line);
-	new->value = ft_strdup_equal_value(line);
-	new->line = line;
-	new->next = NULL;
-	return (new);
-}
-
 int main(int ac, char **av, char **envp)
 {
 	char *input;
 	int		i = 0;
 	int		j = 0;
 	t_env	*env;
+	t_env	*exp;
 
 	input = NULL;
 	if (ac != 1 || !av)
@@ -47,6 +34,7 @@ int main(int ac, char **av, char **envp)
 	using_history();
 	ft_handle_signals();
 	env = init_env(envp);
+	exp = init_export(env);
 	while (1)
 	{
 		free(input);
@@ -58,7 +46,33 @@ int main(int ac, char **av, char **envp)
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
 		if ((ft_strncmp(input, "env", ft_strlen(input)) == 0) && env)
-			print_env_list(env);
+			print_env_list(env, 1);
+		if ((ft_strncmp(input, "export", ft_strlen(input)) == 0))
+			print_env_list(exp, 0);
+		if ((ft_strncmp(input, "export A=", ft_strlen(input)) == 0))
+		{
+			int length = ft_strlen(input);
+    		char *output = (char *)malloc(length);
+			if (output == NULL) {
+				perror("Failed to allocate memory");
+				exit(EXIT_FAILURE);
+			}
+			int output_index = 0;
+			for (int i = length - 1; i >= 0 && input[i] != ' '; i--) {
+				output[output_index++] = input[i];
+			}
+			int start = 0;
+			int end = output_index - 1;
+			while (start < end) {
+				char temp = output[start];
+				output[start] = output[end];
+				output[end] = temp;
+				start++;
+				end--;
+			}
+			printf("%s", output);
+			//update_lists(output);
+		}
 		add_history(input);
 	}
 	if (input)
