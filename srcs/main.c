@@ -13,6 +13,43 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
+void	get_cmd(t_token *tokens, char **env)
+{
+	t_token *current;
+	int i;
+	char *path;
+	char **split_path;
+	current = tokens;
+
+	i = -1;
+	while (env[++i] != NULL)
+		if (ft_strncmp(env[i], "PATH", 4) == 0)
+		{
+			path = ft_substr(env[i], 5, ft_strlen(env[i]));
+			split_path = ft_split(path, ':');
+			free(path);
+			break ;
+		}
+	while (current != NULL)
+	{
+		i = -1;
+		while (split_path[++i])
+		{
+			path = ft_strjoin(split_path[i], "/");
+			path = ft_strjoin(path, current->data);
+			if (access(path, F_OK) == 0)
+				if (access(path, X_OK) == 0)
+				{
+					current->type = CMD;
+					free(path);
+					break ;
+				}
+			free(path);
+		}
+		current = current->next;
+	}
+}
+
 int main(int ac, char **av, char **env)
 {
 	char *input;
@@ -35,9 +72,9 @@ int main(int ac, char **av, char **env)
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
 		tokens = lexical(input);
+		get_cmd(tokens, env);
 		print_tokens(tokens);
 		add_history(input);
-		// execute(tokens, env);
 		free_tokens(tokens);
 	}
 	if (input)

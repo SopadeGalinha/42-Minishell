@@ -47,6 +47,8 @@ enum TokenType {
 	D_REDIR_OUT,
 	REDIR_IN,
 	HEREDOC,
+	CMD,
+	REDIR_ERR,
 };
 
 enum QuoteType {

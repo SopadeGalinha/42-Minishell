@@ -103,6 +103,11 @@ t_token	*lexical(char *input)
 		else if (input[i] == '>' || input[i] == '<' || input[i] == '|'
 			|| input[i] == '$')
 			i = cmds_data(input, i, start, &tokens);
+		else if (input[i] == '2' && input[i + 1] == '>')
+		{
+			i ++;
+			addtoken(&tokens, ft_substr(input, start, 2), REDIR_ERR, NONE);
+		}
 		else if (input[i] == ' ' || input[i] == '\t' || input[i] == '\n')
 			continue ;
 		else

@@ -64,7 +64,11 @@ void	print_tokens(t_token *head)
 			break ;
 			case HEREDOC:
 				typeStr = "heredoc";
+			case CMD:
+				typeStr = "cmd";
 			break ;
+			case REDIR_ERR:
+				typeStr = "redir_err";
 			default:
 				typeStr = "unknown";
 		}
