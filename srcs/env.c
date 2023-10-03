@@ -53,9 +53,10 @@ int	create_add_node_to_list(t_env **head, char *line)
 	new->key = ft_strdup_equal_key(line);
 	new->value = ft_strdup_equal_value(line);
 	new->line = line;
-	new->next = NULL;
-
-	new->next = *head;
+	if (!head)
+		new->next = NULL;
+	else
+		new->next = *head;
 	*head = new;
 	return (0);
 }

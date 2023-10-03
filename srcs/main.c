@@ -49,8 +49,9 @@ int main(int ac, char **av, char **envp)
 			print_env_list(env, 1);
 		if ((ft_strncmp(input, "export", ft_strlen(input)) == 0))
 			print_env_list(exp, 0);
-		if ((ft_strncmp(input, "export A=", ft_strlen(input)) == 0))
+		if ((ft_strncmp(input, "export A=asb", ft_strlen(input)) == 0))
 		{
+			// Essa parte faz incremento na lista do export caso a variavel seja passada sem '='
 			int length = ft_strlen(input);
     		char *output = (char *)malloc(length);
 			if (output == NULL) {
