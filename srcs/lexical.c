@@ -105,8 +105,8 @@ t_token	*lexical(char *input)
 			i = cmds_data(input, i, start, &tokens);
 		else if (input[i] == '2' && input[i + 1] == '>')
 		{
-			i ++;
-			addtoken(&tokens, ft_substr(input, start, 2), REDIR_ERR, NONE);
+			i++;
+			addtoken(&tokens, ft_substr(input, start, 2), define_token("2>"), NONE);
 		}
 		else if (input[i] == ' ' || input[i] == '\t' || input[i] == '\n')
 			continue ;
