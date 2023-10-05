@@ -68,7 +68,7 @@ endif
 	$(RM) $(NAME)
 	git add .
 	git commit -m "$(commit_msg)"
-	git push
+	git push origin hellom
 
 re: fclean all
 
