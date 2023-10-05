@@ -26,6 +26,14 @@ void	init_shell(t_shell *shell, char **env)
 		exit(ft_printf_fd(2, "PATH not found\n"));
 }
 
+bool	get_input(t_shell *shell)
+{
+	free(shell->input);
+	shell->input = readline(MINISHELL);
+	if (shell->input == NULL)
+		return (false);
+	return (true);
+}
 int main(int ac, char **av, char **env)
 {
 	t_shell	shell;
@@ -37,9 +45,7 @@ int main(int ac, char **av, char **env)
 	init_shell(&shell, env);
 	while (true)
 	{
-		free(shell.input);
-		shell.input = readline(MINISHELL);
-		if (shell.input == NULL)
+		if (!get_input(&shell))
 			break;
 		if (shell.input[0] == '\0')
 			continue ;
