@@ -26,6 +26,7 @@ void	init_shell(t_shell *shell, char **env)
 		exit(ft_printf_fd(2, "PATH not found\n"));
 }
 
+
 bool	get_input(t_shell *shell)
 {
 	free(shell->input);
@@ -34,16 +35,24 @@ bool	get_input(t_shell *shell)
 		return (false);
 	return (true);
 }
-int main(int ac, char **av, char **env)
+
+int main(int ac, char **av, char **envp)
 {
+	char *input;
+	//int		i = 0;
+	//int		j = 0;
+	t_env	*env;
+	t_env	*exp;
 	t_shell	shell;
 	char	*path_env;
 
 	if (ac != 1 || !av)
 		return (ft_printf_fd(2, ERROR_ARGS));
-	shell = (t_shell){0};
+	env = init_env(envp);
+	exp = init_export(env);
+  shell = (t_shell){0};
 	init_shell(&shell, env);
-	while (true)
+  while (true)
 	{
 		if (!get_input(&shell))
 			break;
@@ -51,6 +60,10 @@ int main(int ac, char **av, char **env)
 			continue ;
 		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
+		if ((ft_strncmp(shell.input, "env", ft_strlen(shell.input)) == 0) && env)
+			print_list(env, 1);
+		if ((ft_strncmp(shell.input, "export", ft_strlen(shell.input)) == 0))
+			print_list(exp, 0);
 		add_history(shell.input);
 		parse_input(shell.input, shell.path_env, &shell.tokens);
 		free_tokens(&shell.tokens);

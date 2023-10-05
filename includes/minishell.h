@@ -35,6 +35,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	char			*line;
 	struct s_env	*next;
 }					t_env;
 
@@ -93,7 +94,7 @@ typedef struct s_shell
 # define BOLD_RED		"\001\033[1;31m\002"
 # define BOLD_ORANGE	"\001\033[1;33m\002"
 # define BOLD_PURPLE	"\001\033[1;35m\002"
-# define BOLD_GREY		"\001\033[1;39m\002" 
+# define BOLD_GREY		"\001\033[1;39m\002"
 # define BOLD_GREEN		"\001\033[1;92m\002"
 # define BOLD_BLUE		"\001\033[1;94m\002"
 # define BOLD_CYAN		"\001\033[1;96m\002"
@@ -115,8 +116,18 @@ typedef struct s_shell
 # define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
 //---------------------------------END MACROS---------------------------------//
 
+/*__________________________________FUNCTIONS____________________________________*/
 
-/*_________________________________FUNCTIONS__________________________________*/
+char		*ft_strdup_equal_value(const char *src);
+char		*ft_strdup_equal_key(const char *src);
+int			create_add_node_to_list(t_env **head, char *line);
+void 		print_list(t_env *head, int flag);
+t_env		*init_env(char **envp);
+
+void		insert_sorted(t_env **export_list, t_env *env);
+t_env		*create_node(char *key, char *value, char *line);
+t_env		*init_export(t_env *env);
+
 
 //MAIN
 void ft_handle_signals(void);
@@ -130,7 +141,7 @@ bool	parse_input(char *input, char *path_env, t_token **tokens);
 //UTILS
 int		define_token(const char *token);
 void	print_tokens(t_token *head);
-
+//---------------------------------END FUNCTIONS---------------------------------//
 
 
 #endif
