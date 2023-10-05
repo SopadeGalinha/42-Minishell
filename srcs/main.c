@@ -21,12 +21,13 @@ void	init_shell(t_shell *shell, char **env)
 	rl_initialize();
 	using_history();
 	ft_handle_signals();
+	shell->env = init_env(env);
+	shell->exp = init_export(shell->env);
 	shell->path_env = ft_getenv(env, "PATH");
 	//Correr a lista e quando encontrar a key = PATH voce vai salvar o env->value
 	if (shell->path_env == NULL)
 		exit(ft_printf_fd(2, "PATH not found\n"));
 }
-
 
 bool	get_input(t_shell *shell)
 {
@@ -39,20 +40,28 @@ bool	get_input(t_shell *shell)
 
 int main(int ac, char **av, char **envp)
 {
+<<<<<<< HEAD
 	//int		i = 0;
 	//int		j = 0;
 	t_env	*env;
 	t_env	*exp;
+=======
+>>>>>>> d682428a3ff825e3965bf85c76e9308e86f087c1
 	t_shell	shell;
-	char	*path_env;
 
 	if (ac != 1 || !av)
 		return (ft_printf_fd(2, ERROR_ARGS));
+<<<<<<< HEAD
 	env = init_env(envp);
 	exp = init_export(env);
   shell = (t_shell){0};
 	init_shell(&shell, envp); // trocar envp para env
   while (true)
+=======
+  	shell = (t_shell){0};
+	init_shell(&shell, envp);
+  	while (true)
+>>>>>>> d682428a3ff825e3965bf85c76e9308e86f087c1
 	{
 		if (!get_input(&shell))
 			break;
@@ -60,10 +69,10 @@ int main(int ac, char **av, char **envp)
 			continue ;
 		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
-		if ((ft_strncmp(shell.input, "env", ft_strlen(shell.input)) == 0) && env)
-			print_list(env, 1);
+		if ((ft_strncmp(shell.input, "env", ft_strlen(shell.input)) == 0) && shell.env)
+			print_list(shell.env, 1);
 		if ((ft_strncmp(shell.input, "export", ft_strlen(shell.input)) == 0))
-			print_list(exp, 0);
+			print_list(shell.exp, 0);
 		add_history(shell.input);
 		parse_input(shell.input, shell.path_env, &shell.tokens);
 		free_tokens(&shell.tokens);
