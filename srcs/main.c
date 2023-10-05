@@ -40,41 +40,28 @@ bool	get_input(t_shell *shell)
 
 int main(int ac, char **av, char **envp)
 {
-<<<<<<< HEAD
-	//int		i = 0;
-	//int		j = 0;
-	t_env	*env;
-	t_env	*exp;
-=======
->>>>>>> d682428a3ff825e3965bf85c76e9308e86f087c1
 	t_shell	shell;
 
 	if (ac != 1 || !av)
 		return (ft_printf_fd(2, ERROR_ARGS));
-<<<<<<< HEAD
-	env = init_env(envp);
-	exp = init_export(env);
-  shell = (t_shell){0};
-	init_shell(&shell, envp); // trocar envp para env
-  while (true)
-=======
   	shell = (t_shell){0};
 	init_shell(&shell, envp);
   	while (true)
->>>>>>> d682428a3ff825e3965bf85c76e9308e86f087c1
 	{
 		if (!get_input(&shell))
 			break;
 		if (shell.input[0] == '\0')
 			continue ;
+		parse_input(shell.input, shell.path_env, &shell.tokens);
 		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
 		if ((ft_strncmp(shell.input, "env", ft_strlen(shell.input)) == 0) && shell.env)
 			print_list(shell.env, 1);
 		if ((ft_strncmp(shell.input, "export", ft_strlen(shell.input)) == 0))
 			print_list(shell.exp, 0);
+		/*if (shell.tokens->data == "export")
+			printf("%s\n", shell.tokens->next->data);*/
 		add_history(shell.input);
-		parse_input(shell.input, shell.path_env, &shell.tokens);
 		free_tokens(&shell.tokens);
 	}
 	if (shell.input)
