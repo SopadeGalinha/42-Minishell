@@ -24,7 +24,7 @@ OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
 commit_msg	= "auto commit"
 
-SRCS_LIST	= main.c lexical.c utils.c ft_handle_signals.c
+SRCS_LIST	= main.c parse_input.c utils.c ft_handle_signals.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
