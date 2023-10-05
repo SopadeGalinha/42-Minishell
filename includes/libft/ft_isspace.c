@@ -12,13 +12,10 @@
 
 #include "libft.h"
 
-bool	ft_isspace(const char *str)
+bool	ft_isspace(const char str)
 {
-	int	i;
-
-	i = -1;
-	while (str[++i])
-		if (!(str[i] == 32 || (str[i] >= 9 && str[i] <= 13)))
-			return (false);
-	return (true);
+	if (str == ' ' || str == '\t' || str == '\n' || \
+	str == '\v' || str == '\f' || str == '\r')
+		return (true);
+	return (false);
 }

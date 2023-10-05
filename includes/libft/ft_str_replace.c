@@ -1,19 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   testes.c                                           :+:      :+:    :+:   */
+/*   ft_str_replace.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/05 20:15:21 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/05 20:15:21 by jhogonca         ###   ########.fr       */
+/*   Created: 2023/10/05 20:17:05 by jhogonca          #+#    #+#             */
+/*   Updated: 2023/10/05 20:17:05 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "includes/libft/libft.h"
+#include "libft.h"
 
 char	*ft_str_replace(char *str, char *old, char *new)
 {

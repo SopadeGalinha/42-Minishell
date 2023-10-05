@@ -63,9 +63,11 @@ bool	parse_input(char *path_env, t_shell *shell)
 	while (current)
 	{
 		current->type = define_token(current->data);
+		if (current->prev != NULL && current->prev->type != HEREDOC)
+			; // check later
 		current = current->next;
 	}
-	get_cmd(&shell->tokens, path_env);
+	get_cmd(&shell->tokens, path_env);	
 	print_tokens(shell->tokens);
 	return (true);
 }
@@ -135,19 +137,39 @@ static int	quote_data(char *input, int i, int start, t_token **tokens)
 		quo_err[QUOTE] = DOUBLE;
 	if (input[i] == '\0')
 		quo_err[ERROR] = UNCLOSED_QUOTE;
-	if (ft_strlen(data) > 0)
-		addtoken(tokens, data, quo_err);
+	addtoken(tokens, data, quo_err);
 	return (i);
 }
 
 static int	general_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
+	int		ref;
 
-	while (input[i] && input[i] != ' ' && input[i] \
-		!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$')
-		i++;
+	while (input[i] && input[i] != ' '
+		&& input[i] != '>' && input[i] != '<'
+		&& input[i] != '|' && input[i] != '$')
+	{
+		if (input[i] == '"' || input[i] == '\'')
+		{
+			data = ft_substr(input, start, i - start);
+			start = i + 1;
+			i++;
+			while (input[i] != '\0' && input[i] != input[start - 1])
+				i++;
+			data = ft_strjoin(data, ft_substr(input, start, i - start));
+			if (input[i] == '\0')
+				addtoken(tokens, data, (int []){NONE, UNCLOSED_QUOTE});
+			else
+				addtoken(tokens, data, (int []){NONE, NO_ERROR});
+			return (i);
+		}
+		else
+			i++;
+	}
 	data = ft_substr(input, start, i - start);
+	if (!(input[i] != '"' && input[i] != '\''))
+		i--;
 	addtoken(tokens, data, (int []){NONE, NO_ERROR});
 	return (i);
 }
