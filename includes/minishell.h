@@ -31,13 +31,6 @@
 
 /*__________________________________STRUCTS___________________________________*/
 
-typedef struct s_env_arr
-{
-	char			**key_array;
-	char			**value_array;
-	char			**full_array;
-}					t_env_arr;
-
 typedef struct s_env
 {
 	char			*key;
@@ -46,10 +39,58 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
+enum TokenType {
+	WORD,
+	ENV,
+	PIPELINE,
+	D_PIPES,
+	REDIR_OUT,
+	D_REDIR_OUT,
+	REDIR_IN,
+	HEREDOC,
+	CMD,
+	REDIR_ERR,
+	EXIT_STATUS,
+};
+
+enum QuoteType {
+	NONE,
+	SINGLE,
+	DOUBLE
+};
+
+enum errorType {
+	NO_ERROR,
+	UNCLOSED_QUOTE,
+};
+
+enum indexesType {
+	QUOTE,
+	ERROR,
+};
+
+typedef struct s_token
+{
+	char			*data;
+	int				type;
+	int				quote;
+	int				error;
+	struct s_token	*next;
+	struct s_token	*prev;
+}					t_token;
+
+typedef struct s_shell
+{
+	t_token	*tokens;
+	t_env	*env;
+	char	*path_env;
+	char	*input;
+}				t_shell;
+
 /*__________________________________MACROS____________________________________*/
 
 // COLORS
-# define RESET				"\001\033[0m\002"
+# define RESET			"\001\033[0m\002"
 # define BOLD_RED		"\001\033[1;31m\002"
 # define BOLD_ORANGE	"\001\033[1;33m\002"
 # define BOLD_PURPLE	"\001\033[1;35m\002"
@@ -58,6 +99,8 @@ typedef struct s_env
 # define BOLD_BLUE		"\001\033[1;94m\002"
 # define BOLD_CYAN		"\001\033[1;96m\002"
 # define BOLD_WHITE		"\001\033[1;97m\002"
+# define EASTER			"luiza"
+# define EGG			"code destroyer found"
 
 // ERRORS
 # define TRY		BOLD_CYAN	" Try: ./minishell\n"RESET
@@ -84,5 +127,21 @@ t_env		*init_env(char **envp);
 void		insert_sorted(t_env **export_list, t_env *env);
 t_env		*create_node(char *key, char *value, char *line);
 t_env		*init_export(t_env *env);
+
+
+//MAIN
+void ft_handle_signals(void);
+
+//PARSER
+void	lexical(char *input, t_token **tokens);
+char	*ft_getenv(char **env, char *var_name);
+bool	parse_input(char *input, char *path_env, t_token **tokens);
+
+
+//UTILS
+int		define_token(const char *token);
+void	print_tokens(t_token *head);
 //---------------------------------END FUNCTIONS---------------------------------//
+
+
 #endif

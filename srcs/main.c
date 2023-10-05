@@ -1,22 +1,39 @@
 #include "../includes/minishell.h"
 
-void sig_handler(int signum)
+void	free_tokens(t_token **tokens)
 {
-	rl_replace_line("", 0);
-	ft_printf_fd(0, "\n");
-	rl_on_new_line();
-	rl_redisplay();
+	t_token	*current;
+	t_token	*tmp;
+
+	current = *tokens;
+	while (current != NULL)
+	{
+		tmp = current->next;
+		free(current->data);
+		free(current);
+		current = tmp;
+	}
+	*tokens = NULL;
 }
 
-void ft_handle_signals(void)
+void	init_shell(t_shell *shell, char **env)
 {
-	struct sigaction sig_actions;
+	rl_initialize();
+	using_history();
+	ft_handle_signals();
+	shell->path_env = ft_getenv(env, "PATH");
+	if (shell->path_env == NULL)
+		exit(ft_printf_fd(2, "PATH not found\n"));
+}
 
-	signal(SIGQUIT, SIG_IGN);
-	sig_actions.sa_handler = sig_handler;
-	sigemptyset(&sig_actions.sa_mask);
-	sig_actions.sa_flags = 0;
-	sigaction(SIGINT, &sig_actions, NULL);
+
+bool	get_input(t_shell *shell)
+{
+	free(shell->input);
+	shell->input = readline(MINISHELL);
+	if (shell->input == NULL)
+		return (false);
+	return (true);
 }
 
 int main(int ac, char **av, char **envp)
@@ -26,34 +43,36 @@ int main(int ac, char **av, char **envp)
 	//int		j = 0;
 	t_env	*env;
 	t_env	*exp;
+	t_shell	shell;
+	char	*path_env;
 
-	input = NULL;
 	if (ac != 1 || !av)
 		return (ft_printf_fd(2, ERROR_ARGS));
-	rl_initialize();
-	using_history();
-	ft_handle_signals();
 	env = init_env(envp);
 	exp = init_export(env);
-	while (1)
+  shell = (t_shell){0};
+	init_shell(&shell, env);
+  while (true)
 	{
-		free(input);
-		input = readline(MINISHELL);
-		if (input == NULL)
+		if (!get_input(&shell))
 			break;
-		if (input[0] == '\0')
+		if (shell.input[0] == '\0')
 			continue ;
-		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
+		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
-		if ((ft_strncmp(input, "env", ft_strlen(input)) == 0) && env)
+		if ((ft_strncmp(shell.input, "env", ft_strlen(shell.input)) == 0) && env)
 			print_list(env, 1);
-		if ((ft_strncmp(input, "export", ft_strlen(input)) == 0))
+		if ((ft_strncmp(shell.input, "export", ft_strlen(shell.input)) == 0))
 			print_list(exp, 0);
-		add_history(input);
+		add_history(shell.input);
+		parse_input(shell.input, shell.path_env, &shell.tokens);
+		free_tokens(&shell.tokens);
 	}
-	if (input)
-		free(input);
+	if (shell.input)
+		free(shell.input);
+	if (shell.path_env)
+		free(shell.path_env);
 	rl_clear_history();
 	ft_printf_fd(1, "Bye!\n");
-	return 0;
+	return (0);
 }

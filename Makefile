@@ -24,11 +24,12 @@ OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
 commit_msg	= "auto commit"
 
-SRCS_LIST	= main.c env.c export.c
+
+SRCS_LIST	= main.c parse_input.c utils.c ft_handle_signals.c env.c export.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
-LIBFT		= $(addprefix $(LIBFT_DIR), libft.a)
+LIBFT		= $(addprefix $(LIBFT_DIR), libft.a)	
 
 
 all: $(NAME)
@@ -61,6 +62,8 @@ log: all
 git: fclean
 ifdef M
 	$(eval commit_msg = $(M))
+else
+	$(eval commit_msg = "auto commit")
 endif
 	$(RM) $(NAME)
 	git add .
