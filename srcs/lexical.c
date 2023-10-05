@@ -68,10 +68,11 @@ static int	quote_data(char *input, int i, int start, t_token **tokens)
 	quote = SINGLE;
 	while (input[i] != '\0' && input[i] != input[ref])
 		i++;
-	data = ft_substr(input, start, i - start + 1);
+	data = ft_substr(input, start + 1, i - start - 1);
 	if (input[ref] == '"')
 		quote = DOUBLE;
-	addtoken(tokens, data, define_token(data), quote);
+	if (ft_strlen(data) > 0)
+		addtoken(tokens, data, define_token(data), quote);
 	return (i);
 }
 
@@ -87,31 +88,28 @@ static int	general_data(char *input, int i, int start, t_token **tokens)
 	return (i);
 }
 
-t_token	*lexical(char *input)
+void	lexical(char *input, t_token **tokens)
 {
-	t_token	*tokens;
 	int		i;
 	int		start;
 
 	i = -1;
-	tokens = NULL;
 	while (++i <= (int)strlen(input) - 1)
 	{
 		start = i;
 		if ((input[i] == '"' || input[i] == '\''))
-			i = quote_data(input, ++i, start, &tokens);
+			i = quote_data(input, ++i, start, tokens);
 		else if (input[i] == '>' || input[i] == '<' || input[i] == '|'
 			|| input[i] == '$')
-			i = cmds_data(input, i, start, &tokens);
+			i = cmds_data(input, i, start, tokens);
 		else if (input[i] == '2' && input[i + 1] == '>')
 		{
 			i++;
-			addtoken(&tokens, ft_substr(input, start, 2), define_token("2>"), NONE);
+			addtoken(tokens, ft_substr(input, start, 2), define_token("2>"), NONE);
 		}
 		else if (input[i] == ' ' || input[i] == '\t' || input[i] == '\n')
 			continue ;
 		else
-			i = general_data(input, i, start, &tokens);
+			i = general_data(input, i, start, tokens);
 	}
-	return (tokens);
 }

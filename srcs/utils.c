@@ -28,6 +28,8 @@ int	define_token(const char *token)
 		return (REDIR_ERR);
 	if (ft_strncmp(token, "<<", ft_strlen(token)) == 0)
 		return (HEREDOC);
+	if (ft_strncmp(token, "$?", ft_strlen(token)) == 0)
+		return (EXIT_STATUS);
 	if (token[0] == '$')
 		return (ENV);
 	return (WORD);
@@ -36,6 +38,7 @@ int	define_token(const char *token)
 void	print_tokens(t_token *head)
 {
 	char	*typeStr;
+	char	*quoteStr;
 	t_token	*current;
 	
 
@@ -43,40 +46,57 @@ void	print_tokens(t_token *head)
 	while (current != NULL)
 	{
 		switch (current->type) {
-			case WORD:
-				typeStr = "word";
-			break ;
-			case ENV:
-				typeStr = "env";
-			break ;
-			case D_PIPES:
-				typeStr = "d_pipeline";
-			break ;
-			case PIPELINE:
-				typeStr = "pipeline";
-			break ;
-			case REDIR_OUT:
-				typeStr = "redir_out";
-			break ;
-			case D_REDIR_OUT:
-				typeStr = "d_redir_out";
-			break ;
-			case REDIR_IN:
-				typeStr = "redir_in";
-			break ;
-			case HEREDOC:
-				typeStr = "heredoc";
+        case WORD:
+            typeStr = "word";
+            break;
+        case ENV:
+            typeStr = "env";
+            break;
+        case D_PIPES:
+            typeStr = "d_pipeline";
+            break;
+        case PIPELINE:
+            typeStr = "pipeline";
+            break;
+        case REDIR_OUT:
+            typeStr = "redir_out";
+            break;
+        case D_REDIR_OUT:
+            typeStr = "d_redir_out";
+            break;
+        case REDIR_IN:
+            typeStr = "redir_in";
+            break;
+        case HEREDOC:
+            typeStr = "heredoc";
+            break;
+        case CMD:
+            typeStr = "cmd";
+            break;
+        case REDIR_ERR:
+            typeStr = "redir_err";
+            break;
+		case EXIT_STATUS:
+			typeStr = "exit_status";
 			break;
-			case CMD:
-				typeStr = "cmd";
-			break ;
-			case REDIR_ERR:
-				typeStr = "redir_err";
-			break ;
+        default:
+            typeStr = "unknown";
+   		}
+		switch (current->quote) {
+			case SINGLE:
+				quoteStr = "S_QUOTE";
+				break;
+			case DOUBLE:
+				quoteStr = "D_QUOTE";
+				break;
 			default:
-				typeStr = "unknown";
+				quoteStr = "none";
 		}
-		printf("data: %-8s - type: %s\n", current->data, typeStr);
+		printf(BOLD_ORANGE"data: "RESET"%-8s"BOLD_BLUE" type:"RESET" %-2s", current->data, typeStr);
+		if (current->quote != NONE)
+			printf(BOLD_RED" %-8s\n"RESET, quoteStr);
+		else
+			printf(BOLD_CYAN" NONE\n"RESET);
 		current = current->next;
 	}
 }

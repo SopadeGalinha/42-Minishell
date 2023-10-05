@@ -49,6 +49,7 @@ enum TokenType {
 	HEREDOC,
 	CMD,
 	REDIR_ERR,
+	EXIT_STATUS,
 };
 
 enum QuoteType {
@@ -65,6 +66,13 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
+typedef struct s_shell
+{
+	t_token	*tokens;
+	char	*path_env;
+	char	*input;
+}				t_shell;
+
 /*__________________________________MACROS____________________________________*/
 
 // COLORS
@@ -77,6 +85,8 @@ typedef struct s_token
 # define BOLD_BLUE		"\001\033[1;94m\002"
 # define BOLD_CYAN		"\001\033[1;96m\002"
 # define BOLD_WHITE		"\001\033[1;97m\002"
+# define EASTER			"luiza"
+# define EGG			"code destroyer found"
 
 // ERRORS
 # define TRY		BOLD_CYAN	" Try: ./minishell\n"RESET
@@ -99,7 +109,8 @@ typedef struct s_token
 void ft_handle_signals(void);
 
 //PARSER
-t_token *lexical(char *input);
+void	lexical(char *input, t_token **tokens);
+
 
 //UTILS
 int	define_token(const char *token);
