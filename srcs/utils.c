@@ -64,6 +64,7 @@ void	print_tokens(t_token *head)
 			break ;
 			case HEREDOC:
 				typeStr = "heredoc";
+			break;
 			case CMD:
 				typeStr = "cmd";
 			break ;
