@@ -53,6 +53,32 @@ char	*ft_getenv(char **env, char *var_name)
 	return (NULL);
 }
 
+void	expand_env(t_env *env, t_token *node)
+{
+	int		i;
+	int		start;
+
+	i = -1;
+	if (node->quote == SINGLE)
+		return ; 
+	printf("A: node->data: %s\n", node->data);
+	while (node->data[++i])
+	{
+		if (node->data[i] == '$')
+		{
+			start = i;
+			while (node->data[++i] && node->data[i] != ' ' && node->data[i] != '$'
+				&& node->data[i] != '>' && node->data[i] != '<' && node->data[i] != '|'
+				&& node->data[i] != '"')
+				;
+			node->data = ft_str_replace(node->data, ft_substr(node->data, start, i - start), "testes");
+			exit(printf("%s\n", node->data));
+
+		}
+	}
+
+}
+
 bool	parse_input(char *path_env, t_shell *shell)
 {
 	bool	error;
@@ -63,8 +89,8 @@ bool	parse_input(char *path_env, t_shell *shell)
 	while (current)
 	{
 		current->type = define_token(current->data);
-		if (current->prev != NULL && current->prev->type != HEREDOC)
-			; // check later
+		if (current->type != HEREDOC)
+			expand_env(shell->env, current);
 		current = current->next;
 	}
 	get_cmd(&shell->tokens, path_env);	
