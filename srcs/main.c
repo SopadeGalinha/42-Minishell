@@ -58,7 +58,7 @@ int main(int ac, char **av, char **envp)
 		if ((ft_strncmp(shell.input, "export", ft_strlen(shell.input)) == 0))
 			print_list(shell.exp, 0);
 		add_history(shell.input);
-		parse_input(shell.input, shell.path_env, &shell.tokens);
+		parse_input(shell.path_env, &shell);
 		free_tokens(&shell.tokens);
 	}
 	if (shell.input)

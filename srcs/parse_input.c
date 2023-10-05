@@ -53,20 +53,20 @@ char	*ft_getenv(char **env, char *var_name)
 	return (NULL);
 }
 
-bool	parse_input(char *input, char *path_env, t_token **tokens)
+bool	parse_input(char *path_env, t_shell *shell)
 {
-	bool error;
+	bool	error;
 	t_token	*current;
 
-	lexical(input, tokens);
-	current = *tokens;
+	lexical(shell->input, &shell->tokens);
+	current = shell->tokens;
 	while (current)
 	{
 		current->type = define_token(current->data);
 		current = current->next;
 	}
-	get_cmd(tokens, path_env);
-	print_tokens(*tokens);
+	get_cmd(&shell->tokens, path_env);
+	print_tokens(shell->tokens);
 	return (true);
 }
 
