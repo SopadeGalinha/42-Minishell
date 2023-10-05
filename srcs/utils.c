@@ -92,11 +92,16 @@ void	print_tokens(t_token *head)
 			default:
 				quoteStr = "none";
 		}
+		
 		printf(BOLD_ORANGE"data: "RESET"%-8s"BOLD_BLUE" type:"RESET" %-2s", current->data, typeStr);
 		if (current->quote != NONE)
-			printf(BOLD_RED" %-8s\n"RESET, quoteStr);
+			printf(BOLD_RED" %-8s"RESET, quoteStr);
 		else
-			printf(BOLD_CYAN" NONE\n"RESET);
+			printf(BOLD_CYAN" NONE"RESET);
+		if (current->error != NO_ERROR)
+			printf(BOLD_PURPLE" - Error: %s\n"RESET, "UNCLOSED_QUOTE");
+		else
+			printf("\n");
 		current = current->next;
 	}
 }

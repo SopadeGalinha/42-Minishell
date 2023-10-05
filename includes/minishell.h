@@ -58,17 +58,30 @@ enum QuoteType {
 	DOUBLE
 };
 
+enum errorType {
+	NO_ERROR,
+	UNCLOSED_QUOTE,
+};
+
+enum indexesType {
+	QUOTE,
+	ERROR,
+};
+
 typedef struct s_token
 {
 	char			*data;
 	int				type;
 	int				quote;
+	int				error;
 	struct s_token	*next;
+	struct s_token	*prev;
 }					t_token;
 
 typedef struct s_shell
 {
 	t_token	*tokens;
+	t_env	*env;
 	char	*path_env;
 	char	*input;
 }				t_shell;
@@ -110,10 +123,14 @@ void ft_handle_signals(void);
 
 //PARSER
 void	lexical(char *input, t_token **tokens);
+char	*ft_getenv(char **env, char *var_name);
+bool	parse_input(char *input, char *path_env, t_token **tokens);
 
 
 //UTILS
-int	define_token(const char *token);
+int		define_token(const char *token);
 void	print_tokens(t_token *head);
+
+
 
 #endif
