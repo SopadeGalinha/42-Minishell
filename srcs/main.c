@@ -22,8 +22,8 @@ void ft_handle_signals(void)
 int main(int ac, char **av, char **envp)
 {
 	char *input;
-	int		i = 0;
-	int		j = 0;
+	//int		i = 0;
+	//int		j = 0;
 	t_env	*env;
 	t_env	*exp;
 
@@ -46,34 +46,9 @@ int main(int ac, char **av, char **envp)
 		if (ft_strncmp(input, "exit", ft_strlen(input)) == 0)
 			break ;
 		if ((ft_strncmp(input, "env", ft_strlen(input)) == 0) && env)
-			print_env_list(env, 1);
+			print_list(env, 1);
 		if ((ft_strncmp(input, "export", ft_strlen(input)) == 0))
-			print_env_list(exp, 0);
-		if ((ft_strncmp(input, "export A=asb", ft_strlen(input)) == 0))
-		{
-			// Essa parte faz incremento na lista do export caso a variavel seja passada sem '='
-			int length = ft_strlen(input);
-    		char *output = (char *)malloc(length);
-			if (output == NULL) {
-				perror("Failed to allocate memory");
-				exit(EXIT_FAILURE);
-			}
-			int output_index = 0;
-			for (int i = length - 1; i >= 0 && input[i] != ' '; i--) {
-				output[output_index++] = input[i];
-			}
-			int start = 0;
-			int end = output_index - 1;
-			while (start < end) {
-				char temp = output[start];
-				output[start] = output[end];
-				output[end] = temp;
-				start++;
-				end--;
-			}
-			printf("%s", output);
-			//update_lists(output);
-		}
+			print_list(exp, 0);
 		add_history(input);
 	}
 	if (input)

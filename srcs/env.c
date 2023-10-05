@@ -74,7 +74,7 @@ t_env	*init_env(char **envp)
 	return (env_list);
 }
 
-void print_env_list(t_env *head, int flag)
+void print_list(t_env *head, int flag)
 {
 	t_env *current = head;
 	while (current != NULL)

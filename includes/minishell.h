@@ -78,7 +78,7 @@ typedef struct s_env
 char		*ft_strdup_equal_value(const char *src);
 char		*ft_strdup_equal_key(const char *src);
 int			create_add_node_to_list(t_env **head, char *line);
-void 		print_env_list(t_env *head, int flag);
+void 		print_list(t_env *head, int flag);
 t_env		*init_env(char **envp);
 
 void		insert_sorted(t_env **export_list, t_env *env);
