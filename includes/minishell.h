@@ -31,13 +31,6 @@
 
 /*__________________________________STRUCTS___________________________________*/
 
-typedef struct s_env
-{
-	char			*key;
-	char			*value;
-	char			*line;
-	struct s_env	*next;
-}					t_env;
 
 enum TokenType {
 	WORD,
@@ -69,6 +62,14 @@ enum indexesType {
 	ERROR,
 };
 
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	char			*line;
+	struct s_env	*next;
+}					t_env;
+
 typedef struct s_token
 {
 	char			*data;
@@ -83,6 +84,7 @@ typedef struct s_shell
 {
 	t_token	*tokens;
 	t_env	*env;
+	t_env	*exp;
 	char	*path_env;
 	char	*input;
 }				t_shell;
