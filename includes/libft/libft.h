@@ -106,12 +106,13 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
 // EXTRA FUNCTIONS
 
-int		ft_isspace(char c);
+bool	ft_isspace(const char *str);
 char	*get_next_line(int fd);
 int		ft_printf(const char *fmt, ...);
 int		ft_printf_fd(int fd, const char *fmt, ...);
 int		ft_atoi_base(const char *nptr, const char *base);
 bool	ft_contains(const char *haystack, const char *needle);
+size_t	ft_count_char(char *str, char c);
 void	ft_free_array(char **split_ptr);
 
 //BONUS FUCNTIONS

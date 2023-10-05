@@ -38,10 +38,45 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
+enum TokenType {
+	WORD,
+	ENV,
+	PIPELINE,
+	D_PIPES,
+	REDIR_OUT,
+	D_REDIR_OUT,
+	REDIR_IN,
+	HEREDOC,
+	CMD,
+	REDIR_ERR,
+	EXIT_STATUS,
+};
+
+enum QuoteType {
+	NONE,
+	SINGLE,
+	DOUBLE
+};
+
+typedef struct s_token
+{
+	char			*data;
+	int				type;
+	int				quote;
+	struct s_token	*next;
+}					t_token;
+
+typedef struct s_shell
+{
+	t_token	*tokens;
+	char	*path_env;
+	char	*input;
+}				t_shell;
+
 /*__________________________________MACROS____________________________________*/
 
 // COLORS
-# define RESET				"\001\033[0m\002"
+# define RESET			"\001\033[0m\002"
 # define BOLD_RED		"\001\033[1;31m\002"
 # define BOLD_ORANGE	"\001\033[1;33m\002"
 # define BOLD_PURPLE	"\001\033[1;35m\002"
@@ -50,6 +85,8 @@ typedef struct s_env
 # define BOLD_BLUE		"\001\033[1;94m\002"
 # define BOLD_CYAN		"\001\033[1;96m\002"
 # define BOLD_WHITE		"\001\033[1;97m\002"
+# define EASTER			"luiza"
+# define EGG			"code destroyer found"
 
 // ERRORS
 # define TRY		BOLD_CYAN	" Try: ./minishell\n"RESET
@@ -64,5 +101,19 @@ typedef struct s_env
 # define T	BOLD_WHITE	"l\001\033[0m\002"
 # define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
 //---------------------------------END MACROS---------------------------------//
+
+
+/*_________________________________FUNCTIONS__________________________________*/
+
+//MAIN
+void ft_handle_signals(void);
+
+//PARSER
+void	lexical(char *input, t_token **tokens);
+
+
+//UTILS
+int	define_token(const char *token);
+void	print_tokens(t_token *head);
 
 #endif
