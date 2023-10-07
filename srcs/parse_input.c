@@ -53,27 +53,49 @@ char	*ft_getenv(char **env, char *var_name)
 	return (NULL);
 }
 
+char	*get_env_value(t_env *env, char *key)
+{
+	t_env	*current;
+
+	current = env;
+	while (current)
+	{
+		if (ft_strncmp(current->key, key, ft_strlen(key)) == 0 && ft_strlen(current->key) == ft_strlen(key))
+			return (current->value);
+		current = current->next;
+	}
+	return (ft_strdup(""));
+}
+
 void	expand_env(t_env *env, t_token *node)
 {
 	int		i;
 	int		start;
+	char	*key;
+	char	*value;
+	char	*tmp;
 
 	i = -1;
-	if (node->quote == SINGLE)
-		return ; 
-	printf("A: node->data: %s\n", node->data);
+	if (node->quote == SINGLE || (node->prev != NULL && node->prev->type == HEREDOC))
+		return ;
 	while (node->data[++i])
 	{
-		if (node->data[i] == '$')
+		if (node->data[i] == '$' && node->data[i - 1] != '\'')
 		{
 			start = i;
 			while (node->data[++i] && node->data[i] != ' ' && node->data[i] != '$'
 				&& node->data[i] != '>' && node->data[i] != '<' && node->data[i] != '|'
 				&& node->data[i] != '"')
 				;
-			node->data = ft_str_replace(node->data, ft_substr(node->data, start, i - start), "testes");
-			exit(printf("%s\n", node->data));
-
+			key = ft_substr(node->data, start + 1, i - start - 1);
+			printf("key: %s\n", key);
+			value = get_env_value(env, key);
+			printf("value: %s\n", value);
+			tmp = ft_substr(node->data, 0, start);
+			node->data = ft_str_replace(node->data + start, key, value);
+			printf("data: %s\n", node->data);
+			node->data = ft_strjoin(tmp, node->data);
+			i = start + ft_strlen(value);
 		}
 	}
 
@@ -138,7 +160,8 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 	else
 	{
 		while (input[++i] != '\0' && input[i] != ' ' && input[i] \
-			!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$')
+			!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$'
+			&& input[i] != '"' && input[i] != '\'')
 			;
 		data = ft_substr(input, start, i - start);
 	}

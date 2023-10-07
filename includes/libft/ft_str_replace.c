@@ -33,6 +33,7 @@ char	*ft_str_replace(char *str, char *old, char *new)
 			free(result);
 			result = temp;
 			start += ft_strlen(new);
+			return (result);
 		}
 		else
 			start++;

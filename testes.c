@@ -15,30 +15,18 @@
 #include <unistd.h>
 #include "includes/libft/libft.h"
 
-char	*ft_str_replace(char *str, char *old, char *new)
+char custom_callback(unsigned int index, char c)
 {
-	int		n;
-	int		start;
-	char	*result;
-	char	*temp;
+    return ft_toupper(c);
+}
 
-	start = 0;
-	result = ft_strdup(str);
-	while (result[start])
-	{
-		n = 0;
-		while (result[start + n] && result[start + n] == old[n])
-			n++;
-		if (!old[n])
-		{
-			temp = ft_strjoin(ft_strjoin(ft_substr(result, 0, start), new), \
-			result + start + ft_strlen(old));
-			free(result);
-			result = temp;
-			start += ft_strlen(new);
-		}
-		else
-			start++;
-	}
-	return (result);
+int main(void)
+{
+    char *str = "ola";
+
+    printf("%s\n", str);
+    char *result = ft_strmapi(str, custom_callback);
+    printf("%s\n", result);
+    free(result); // Don't forget to free the memory allocated by ft_strmapi
+    return (0);
 }
