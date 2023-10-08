@@ -14,25 +14,53 @@
 
 int	define_token(const char *token)
 {
-	if (ft_strncmp(token, "|", ft_strlen(token)) == 0)
+	if (ft_strncmp(token, "|", ft_strlen("|")) == 0)
 		return (PIPELINE);
-	if (ft_strncmp(token, "||", ft_strlen(token)) == 0)
-		return (D_PIPES);
-	if (ft_strncmp(token, ">", ft_strlen(token)) == 0)
+	if (ft_strncmp(token, ">", ft_strlen(">")) == 0)
 		return (REDIR_OUT);
-	if (ft_strncmp(token, "<", ft_strlen(token)) == 0)
+	if (ft_strncmp(token, "<", ft_strlen("<")) == 0)
 		return (REDIR_IN);
-	if (ft_strncmp(token, ">>", ft_strlen(token)) == 0)
+	if (ft_strncmp(token, "||", ft_strlen("||")) == 0)
+		return (OR);
+	if (ft_strncmp(token, ">>", ft_strlen(">>")) == 0)
 		return (D_REDIR_OUT);
-	if (ft_strncmp(token, "2>", ft_strlen(token)) == 0)
-		return (REDIR_ERR);
-	if (ft_strncmp(token, "<<", ft_strlen(token)) == 0)
+	if (ft_strncmp(token, "<<", ft_strlen("<<")) == 0)
 		return (HEREDOC);
-	if (ft_strncmp(token, "$?", ft_strlen(token)) == 0)
-		return (EXIT_STATUS);
+	if (ft_strncmp(token, "2>", ft_strlen("2>")) == 0)
+		return (REDIR_ERR);
+	if (ft_strncmp(token, "$?", ft_strlen("$?")) == 0)
+		return (EXIT_STATUS);	
+	if (ft_strncmp(token, "export", ft_strlen("export")) == 0)
+		return (CMD);
+	if (ft_strncmp(token, "&&", ft_strlen("&&")) == 0)
+		return (AND);
+	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
+		return (SEMICOLON);
 	if (token[0] == '$')
 		return (ENV);
 	return (WORD);
+}
+
+void	init_shell(t_shell *shell, char **env)
+{
+	rl_initialize();
+	using_history();
+	ft_handle_signals();
+	shell->error = NO_ERROR;
+	shell->env = init_env(env);
+	shell->exp = init_export(shell->env);
+	shell->path_env = ft_getenv(env, "PATH");
+	if (shell->path_env == NULL)
+		exit(ft_printf_fd(2, "PATH not found\n"));
+}
+
+bool	get_input(t_shell *shell)
+{
+	free(shell->input);
+	shell->input = readline(MINISHELL);
+	if (shell->input == NULL)
+		return (false);
+	return (true);
 }
 
 void	print_tokens(t_token *head)
@@ -52,12 +80,12 @@ void	print_tokens(t_token *head)
         case ENV:
             typeStr = "env";
             break;
-        case D_PIPES:
+        case OR:
             typeStr = "d_pipeline";
             break;
         case PIPELINE:
             typeStr = "pipeline";
-            break;
+			break;
         case REDIR_OUT:
             typeStr = "redir_out";
             break;
@@ -78,6 +106,12 @@ void	print_tokens(t_token *head)
             break;
 		case EXIT_STATUS:
 			typeStr = "exit_status";
+			break;
+		case AND:
+			typeStr = "and";
+			break;
+		case SEMICOLON:
+			typeStr = "semicolon";
 			break;
         default:
             typeStr = "unknown";

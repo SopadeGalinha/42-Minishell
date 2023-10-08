@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-void	lexical(char *input, t_token **tokens);
 
 void	get_cmd(t_token **tokens, char *path_env)
 {
@@ -41,6 +40,7 @@ void	get_cmd(t_token **tokens, char *path_env)
 		current = current->next;
 	}
 }
+
 char	*ft_getenv(char **env, char *var_name)
 {
 	int		i;
@@ -72,10 +72,13 @@ void	expand_env(t_env *env, t_token *node)
 	int		i;
 	int		start;
 	char	*key;
-	char	*value;
 	char	*tmp;
+	char	*value;
 
 	i = -1;
+	tmp = NULL;
+	key = NULL;
+	value = NULL;
 	if (node->quote == SINGLE || (node->prev != NULL && node->prev->type == HEREDOC))
 		return ;
 	while (node->data[++i])
@@ -83,40 +86,36 @@ void	expand_env(t_env *env, t_token *node)
 		if (node->data[i] == '$' && node->data[i - 1] != '\'')
 		{
 			start = i;
-			while (node->data[++i] && node->data[i] != ' ' && node->data[i] != '$'
-				&& node->data[i] != '>' && node->data[i] != '<' && node->data[i] != '|'
-				&& node->data[i] != '"')
+			while (ft_isalnum(node->data[++i]) || node->data[i] == '_')
 				;
 			key = ft_substr(node->data, start + 1, i - start - 1);
-			printf("key: %s\n", key);
 			value = get_env_value(env, key);
-			printf("value: %s\n", value);
-			tmp = ft_substr(node->data, 0, start);
-			node->data = ft_str_replace(node->data + start, key, value);
-			printf("data: %s\n", node->data);
-			node->data = ft_strjoin(tmp, node->data);
+			free(key);
+			tmp = ft_strjoin(ft_substr(node->data, 0, start), value);
+			tmp = ft_strjoin(tmp, ft_substr(node->data, i, ft_strlen(node->data) - i));
 			i = start + ft_strlen(value);
+			free(node->data);
+			node->data = tmp;
 		}
 	}
-
 }
 
 bool	parse_input(char *path_env, t_shell *shell)
 {
-	bool	error;
 	t_token	*current;
 
-	lexical(shell->input, &shell->tokens);
+	shell->error = lexical(shell->input, &shell->tokens);
+	/* if (shell->error)
+		printf("ERROR\n"); */
 	current = shell->tokens;
 	while (current)
 	{
 		current->type = define_token(current->data);
-		if (current->type != HEREDOC)
+		if (current->type == WORD || current->type == CMD || current->type == ENV)
 			expand_env(shell->env, current);
 		current = current->next;
 	}
-	get_cmd(&shell->tokens, path_env);	
-	print_tokens(shell->tokens);
+	get_cmd(&shell->tokens, path_env);
 	return (true);
 }
 
@@ -125,6 +124,8 @@ static void addtoken(t_token **tokens, char *data, int *quo_err)
     t_token *new;
     t_token *last;
 
+	if (data == NULL)
+		return ;
     new = malloc(sizeof(t_token));
     new->data = data;
     new->quote = quo_err[QUOTE];
@@ -147,7 +148,7 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
 
-	if (input[i] == '>' || input[i] == '<' || input[i] == '|')
+	if ((input[i] == '>' || input[i] == '<') || (input[i] == '|' || input[i] == '&'))
 	{
 		if (input[i] == input[i + 1])
 		{
@@ -163,9 +164,12 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 			!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$'
 			&& input[i] != '"' && input[i] != '\'')
 			;
-		data = ft_substr(input, start, i - start);
+		data = ft_substr(input, start, (i-- - start));
 	}
-	addtoken(tokens, data, (int []){NONE, NO_ERROR});
+	if ((ft_strncmp(data, "&", 1)) == 0 && ft_strlen(data) == 1)
+		addtoken(tokens, data, (int []){NONE, BACKGROUND_NOT_SUPPORTED});
+	else
+		addtoken(tokens, data, (int []){NONE, NO_ERROR});
 	return (i);
 }
 
@@ -223,19 +227,21 @@ static int	general_data(char *input, int i, int start, t_token **tokens)
 	return (i);
 }
 
-void	lexical(char *input, t_token **tokens)
+bool	lexical(char *input, t_token **tokens)
 {
 	int		i;
 	int		start;
+	bool	error;
 
 	i = -1;
+	error = false;
 	while (++i <= (int)strlen(input) - 1)
 	{
 		start = i;
 		if ((input[i] == '"' || input[i] == '\''))
 			i = quote_data(input, ++i, start, tokens);
 		else if (input[i] == '>' || input[i] == '<' || input[i] == '|'
-			|| input[i] == '$')
+			|| input[i] == '$' || input[i] == '&')
 			i = cmds_data(input, i, start, tokens);
 		else if (input[i] == '2' && input[i + 1] == '>')
 		{
@@ -246,5 +252,8 @@ void	lexical(char *input, t_token **tokens)
 			continue ;
 		else
 			i = general_data(input, i, start, tokens);
+		if ((*tokens)->error != NO_ERROR)
+			error = true;
 	}
+	return (error);
 }

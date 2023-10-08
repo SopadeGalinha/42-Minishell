@@ -33,16 +33,18 @@
 
 
 enum TokenType {
-	WORD,
 	ENV,
+	WORD,
 	PIPELINE,
-	D_PIPES,
 	REDIR_OUT,
 	D_REDIR_OUT,
+	REDIR_ERR,
 	REDIR_IN,
 	HEREDOC,
 	CMD,
-	REDIR_ERR,
+	AND,
+	OR,
+	SEMICOLON,
 	EXIT_STATUS,
 };
 
@@ -55,6 +57,7 @@ enum QuoteType {
 enum errorType {
 	NO_ERROR,
 	UNCLOSED_QUOTE,
+	BACKGROUND_NOT_SUPPORTED,
 };
 
 enum indexesType {
@@ -87,6 +90,7 @@ typedef struct s_shell
 	t_env	*exp;
 	char	*path_env;
 	char	*input;
+	int		error;
 }				t_shell;
 
 /*__________________________________MACROS____________________________________*/
@@ -135,13 +139,18 @@ t_env		*init_export(t_env *env);
 void ft_handle_signals(void);
 
 //PARSER
-void	lexical(char *input, t_token **tokens);
+bool	lexical(char *input, t_token **tokens);
 char	*ft_getenv(char **env, char *var_name);
 bool	parse_input(char *path_env, t_shell *shell);
+char	*get_env_value(t_env *env, char *key);
 
 //UTILS
 int		define_token(const char *token);
 void	print_tokens(t_token *head);
+void	free_struct(t_shell *shell, int	running);
+bool	get_input(t_shell *shell);
+void	init_shell(t_shell *shell, char **env);
+
 //---------------------------------END FUNCTIONS---------------------------------//
 
 
