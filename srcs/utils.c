@@ -12,9 +12,20 @@
 
 #include "../includes/minishell.h"
 
+bool	ft_isspace_str(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+		if (str[i] != 32 && (str[i] < 9 || str[i] > 13))
+			return (false);
+	return (true);
+}
+
 int	define_token(const char *token)
 {
-	if (ft_strncmp(token, "|", ft_strlen("|")) == 0)
+	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
 		return (PIPELINE);
 	if (ft_strncmp(token, ">", ft_strlen(">")) == 0)
 		return (REDIR_OUT);
@@ -36,6 +47,10 @@ int	define_token(const char *token)
 		return (AND);
 	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
 		return (SEMICOLON);
+	if (ft_isspace_str((char *)token))
+		return (WHITESPACE);
+	if (token[0] == '-' && ft_isalpha(token[1]))
+		return (OPTION);
 	if (token[0] == '$')
 		return (ENV);
 	return (WORD);
@@ -81,7 +96,7 @@ void	print_tokens(t_token *head)
             typeStr = "env";
             break;
         case OR:
-            typeStr = "d_pipeline";
+            typeStr = "OR";
             break;
         case PIPELINE:
             typeStr = "pipeline";
@@ -90,13 +105,13 @@ void	print_tokens(t_token *head)
             typeStr = "redir_out";
             break;
         case D_REDIR_OUT:
-            typeStr = "d_redir_out";
+            typeStr = "D_REDIREC_OUT";
             break;
         case REDIR_IN:
-            typeStr = "redir_in";
+            typeStr = "REDIR_IN";
             break;
         case HEREDOC:
-            typeStr = "heredoc";
+            typeStr = "HEREDOC";
             break;
         case CMD:
             typeStr = "cmd";
@@ -108,10 +123,16 @@ void	print_tokens(t_token *head)
 			typeStr = "exit_status";
 			break;
 		case AND:
-			typeStr = "and";
+			typeStr = "AND";
 			break;
 		case SEMICOLON:
-			typeStr = "semicolon";
+			typeStr = "SEMICOLON";
+			break;
+		case OPTION:
+			typeStr = "OPTION";
+			break;
+		case WHITESPACE:
+			typeStr = "WHITESPACE";
 			break;
         default:
             typeStr = "unknown";
@@ -129,13 +150,29 @@ void	print_tokens(t_token *head)
 		
 		printf(BOLD_ORANGE"data: "RESET"%-8s"BOLD_BLUE" type:"RESET" %-2s", current->data, typeStr);
 		if (current->quote != NONE)
-			printf(BOLD_RED" %-8s"RESET, quoteStr);
+			printf(BOLD_RED" %-8s\n\n"RESET, quoteStr);
 		else
-			printf(BOLD_CYAN" NONE"RESET);
+			printf(BOLD_CYAN" NONE\n"RESET);
 		if (current->error != NO_ERROR)
-			printf(BOLD_PURPLE" - Error: %s\n"RESET, "UNCLOSED_QUOTE");
-		else
-			printf("\n");
+		{
+			switch (current->error)
+			{
+				case UNCLOSED_QUOTE:
+					printf(BOLD_PURPLE" - Error: %s\n"RESET, "UNCLOSED_QUOTE");
+					break;
+				case BACKGROUND_NOT_SUPPORTED:
+					printf(BOLD_PURPLE" - Error: %s\n"RESET, "BACKGROUND_NOT_SUPPORTED");
+					break;
+				case D_PIPELINE_NOT_SUPPORTED:
+					printf(BOLD_PURPLE" - Error: %s\n"RESET, "D_PIPELINE_NOT_SUPPORTED");
+					break;
+				case SEMICOLON_NOT_SUPPORTED:
+					printf(BOLD_PURPLE" - Error: %s\n"RESET, "SEMICOLON_NOT_SUPPORTED");
+					break;
+				default:
+					printf("\n");
+			}
+		}
 		current = current->next;
 	}
 }

@@ -25,6 +25,11 @@ void	get_cmd(t_token **tokens, char *path_env)
 	while (current != NULL)
 	{
 		i = -1;
+		if (current->type == WHITESPACE)
+		{
+			current = current->next;
+			continue ;
+		}
 		while (split_path[++i])
 		{
 			path = ft_strjoin(ft_strjoin(split_path[i], "/"), current->data);
@@ -93,11 +98,20 @@ void	expand_env(t_env *env, t_token *node)
 			free(key);
 			tmp = ft_strjoin(ft_substr(node->data, 0, start), value);
 			tmp = ft_strjoin(tmp, ft_substr(node->data, i, ft_strlen(node->data) - i));
-			i = start + ft_strlen(value);
+			i = start + ft_strlen(value) - 1;
 			free(node->data);
 			node->data = tmp;
 		}
 	}
+}
+
+void	build_cmd(t_token **tokens)
+{
+	t_token	*current;
+	char	*cmd;
+
+	if ((*tokens)->type != WORD)
+		return ;
 }
 
 bool	parse_input(char *path_env, t_shell *shell)
@@ -105,17 +119,19 @@ bool	parse_input(char *path_env, t_shell *shell)
 	t_token	*current;
 
 	shell->error = lexical(shell->input, &shell->tokens);
-	/* if (shell->error)
-		printf("ERROR\n"); */
 	current = shell->tokens;
 	while (current)
 	{
+		if (current->quote != NONE)
+			ft_strtrim(current->data, "\"\'");
 		current->type = define_token(current->data);
 		if (current->type == WORD || current->type == CMD || current->type == ENV)
 			expand_env(shell->env, current);
 		current = current->next;
 	}
+	build_cmd(&shell->tokens);
 	get_cmd(&shell->tokens, path_env);
+	print_tokens(shell->tokens);
 	return (true);
 }
 
@@ -168,6 +184,8 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 	}
 	if ((ft_strncmp(data, "&", 1)) == 0 && ft_strlen(data) == 1)
 		addtoken(tokens, data, (int []){NONE, BACKGROUND_NOT_SUPPORTED});
+	else if (ft_strncmp(data, "||", 2) == 0 && ft_strlen(data) == 2)
+		addtoken(tokens, data, (int []){NONE, D_PIPELINE_NOT_SUPPORTED});
 	else
 		addtoken(tokens, data, (int []){NONE, NO_ERROR});
 	return (i);
@@ -221,8 +239,6 @@ static int	general_data(char *input, int i, int start, t_token **tokens)
 			i++;
 	}
 	data = ft_substr(input, start, i - start);
-	if (!(input[i] != '"' && input[i] != '\''))
-		i--;
 	addtoken(tokens, data, (int []){NONE, NO_ERROR});
 	return (i);
 }
@@ -243,11 +259,19 @@ bool	lexical(char *input, t_token **tokens)
 		else if (input[i] == '>' || input[i] == '<' || input[i] == '|'
 			|| input[i] == '$' || input[i] == '&')
 			i = cmds_data(input, i, start, tokens);
+		else if (input[i] == 32 || input[i] == '\t' || input[i] == '\n')	
+		{
+			while (ft_isspace(input[i]))
+				i++;
+			addtoken(tokens, ft_substr(input, start, i-- - start), (int []){NONE, NO_ERROR});
+		}
 		else if (input[i] == '2' && input[i + 1] == '>')
 		{
 			i++;
 			addtoken(tokens, ft_substr(input, start, 2), (int []){NONE, NO_ERROR});
 		}
+		else if (input[i] == ';')
+			addtoken(tokens, ft_substr(input, start, 1), (int []){NONE, SEMICOLON_NOT_SUPPORTED});
 		else if (input[i] == ' ' || input[i] == '\t' || input[i] == '\n')
 			continue ;
 		else

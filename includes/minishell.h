@@ -46,6 +46,8 @@ enum TokenType {
 	OR,
 	SEMICOLON,
 	EXIT_STATUS,
+	OPTION,
+	WHITESPACE,
 };
 
 enum QuoteType {
@@ -58,6 +60,8 @@ enum errorType {
 	NO_ERROR,
 	UNCLOSED_QUOTE,
 	BACKGROUND_NOT_SUPPORTED,
+	D_PIPELINE_NOT_SUPPORTED,
+	SEMICOLON_NOT_SUPPORTED,
 };
 
 enum indexesType {
@@ -86,6 +90,7 @@ typedef struct s_token
 typedef struct s_shell
 {
 	t_token	*tokens;
+	t_token	*cmds;
 	t_env	*env;
 	t_env	*exp;
 	char	*path_env;
@@ -152,6 +157,5 @@ bool	get_input(t_shell *shell);
 void	init_shell(t_shell *shell, char **env);
 
 //---------------------------------END FUNCTIONS---------------------------------//
-
 
 #endif
