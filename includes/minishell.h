@@ -142,6 +142,7 @@ t_env		*init_export(t_env *env);
 
 //MAIN
 void ft_handle_signals(void);
+void	execute(t_shell *shell);
 
 //PARSER
 bool	lexical(char *input, t_token **tokens);
