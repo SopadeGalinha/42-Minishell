@@ -27,7 +27,7 @@ SRCS := ft_strtrim.c ft_atoi.c ft_isprint.c ft_strlen.c\
 		ft_lstsize.c ft_lstclear.c ft_lstdelone.c\
 		ft_lstadd_back.c ft_lstadd_front.c ft_atoi_base.c\
 		get_next_line.c ft_printf.c ft_printf_fd.c ft_isspace.c\
-		ft_free_array.c ft_contains.c
+		ft_free_array.c ft_contains.c ft_str_replace.c
 
 OBJS := ${SRCS:.c=.o}
 

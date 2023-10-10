@@ -1,0 +1,9 @@
+total 60
+-rwxrwxrwx 1 pw pw     0 Oct  8 05:21 heredoc
+drwxrwxrwx 1 pw pw   512 Oct  5 18:13 includes
+-rwxrwxrwx 1 pw pw  2488 Oct  8 04:55 Makefile
+-rwxrwxrwx 1 pw pw 50008 Oct  8 11:08 minishell
+-rwxrwxrwx 1 pw pw     0 Oct  8 11:30 out
+-rwxrwxrwx 1 pw pw     0 Oct  8 11:13 pw
+drwxrwxrwx 1 pw pw   512 Oct  8 08:49 srcs
+-rwxrwxrwx 1 pw pw  1338 Oct  7 11:07 testes.c
