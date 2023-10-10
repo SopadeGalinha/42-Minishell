@@ -140,6 +140,13 @@ t_env		*create_node(char *key, char *value, char *line);
 t_env		*init_export(t_env *env);
 
 
+//UPDATE_LISTS
+int 	create_add_node_to_back(t_env **head, char *line);
+int		find_node(t_env *lst, char *key);
+void	update_node(t_env *lst, char *key, char *line);
+int 	create_find_add_insert_node(t_env **head, char *line);
+void	update_lists(t_shell *shell, char *line);
+
 //MAIN
 void ft_handle_signals(void);
 void	execute(t_shell *shell);

@@ -14,8 +14,17 @@ int main(int ac, char **av, char **envp)
 			break;
 		if (shell.input[0] == '\0')
 			continue ;
+		parse_input(shell.input, shell.path_env, &shell.tokens);
 		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
+		if ((ft_strncmp(shell.tokens->data, "export", ft_strlen(shell.tokens->data)) == 0) && shell.tokens->next)
+		{
+
+			if (ft_strchr(shell.tokens->next->data, '='))
+				update_lists(&shell, shell.tokens->next->data);
+			if (!ft_strchr(shell.tokens->next->data, '='))
+				create_find_add_insert_node(&shell.exp, shell.tokens->next->data);
+		}
 		add_history(shell.input);
 		parse_input(shell.path_env, &shell);
 		if (shell.error == NO_ERROR)

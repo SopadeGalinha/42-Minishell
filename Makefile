@@ -25,14 +25,12 @@ OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
 commit_msg	= "auto commit"
 
-
 SRCS_LIST	=	main.c parse_input.c utils.c ft_handle_signals.c env.c export.c \
-				ft_frees.c execute.c
+				ft_frees.c execute.c updates_lists.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
-LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))
-
+LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))	
 
 all: $(NAME)
 
@@ -50,7 +48,7 @@ $(LIBFT):
 
 clean:
 	$(RM) $(OBJS_DIR)
-#	@make -s clean -C $(LIBFT_DIR)
+	@make -s clean -C $(LIBFT_DIR)
 
 fclean: clean
 	$(RM) $(NAME)
@@ -70,7 +68,7 @@ endif
 	$(RM) $(NAME)
 	git add .
 	git commit -m "$(commit_msg)"
-	git push
+	git push origin hellom
 
 re: fclean all
 
