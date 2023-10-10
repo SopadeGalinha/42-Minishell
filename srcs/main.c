@@ -68,7 +68,8 @@ int main(int ac, char **av, char **envp)
 				create_find_add_insert_node(&shell.exp, shell.tokens->next->data);
 		}
 		add_history(shell.input);
-		free_tokens(&shell);
+		parse_input(shell.path_env, &shell);
+		free_tokens(&shell.tokens);
 	}
 
 	if (shell.input)

@@ -144,8 +144,7 @@ void ft_handle_signals(void);
 //PARSER
 void	lexical(char *input, t_token **tokens);
 char	*ft_getenv(char **env, char *var_name);
-bool	parse_input(char *input, char *path_env, t_token **tokens);
-
+bool	parse_input(char *path_env, t_shell *shell);
 
 //UTILS
 int		define_token(const char *token);
