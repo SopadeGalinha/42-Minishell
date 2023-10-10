@@ -58,8 +58,6 @@ int	define_token(const char *token)
 
 void	init_shell(t_shell *shell, char **env)
 {
-	rl_initialize();
-	using_history();
 	ft_handle_signals();
 	shell->error = NO_ERROR;
 	shell->env = init_env(env);
