@@ -32,7 +32,7 @@ int	find_node(t_env *lst, char *key)
 
     while (current != NULL) 
 	{
-        if (ft_strncmp(current->key, key, ft_strlen(current->key)) == 0) 
+        if (ft_strncmp(current->key, key, ft_strlen(current->key)) == 0)
             return (1);
         current = current->next;
     }
@@ -78,12 +78,18 @@ void	update_lists(t_shell *shell, char *line)
 {
 	char	*key = ft_strdup_equal_key(line);
 	if (find_node(shell->env, key))
+    {
+        printf("ACHEI O NOH");
 		update_node(shell->env, key, line);
+    }
 	else
 		create_add_node_to_back(&shell->env, line);
 	
 	if (find_node(shell->exp, key))
+    {
+        printf("ACHEI O NOH");
 		update_node(shell->exp, key, line);
+    }
 	else
 		create_find_add_insert_node(&shell->exp, line);
 }

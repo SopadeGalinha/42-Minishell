@@ -25,6 +25,7 @@ int main(int ac, char **av, char **envp)
 			if (!ft_strchr(shell.tokens->next->data, '='))
 				create_find_add_insert_node(&shell.exp, shell.tokens->next->data);
 		}
+		
 		add_history(shell.input);
 		if (shell.error == NO_ERROR)
 			execute(&shell);
