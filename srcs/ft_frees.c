@@ -25,7 +25,7 @@ static void	free_tokens(t_token **tokens)
 		free(current);
 		current = tmp;
 	}
-	*tokens = NULL;
+	free(*tokens);
 }
 
 static void	free_env(t_env *env)
@@ -39,6 +39,7 @@ static void	free_env(t_env *env)
 		tmp = current->next;
 		free(current->key);
 		free(current->value);
+		free(current->line);
 		free(current);
 		current = tmp;
 	}

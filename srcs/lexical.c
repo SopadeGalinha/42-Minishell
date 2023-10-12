@@ -15,29 +15,30 @@
 
 static void addtoken(t_token **tokens, char *data, int *quo_err)
 {
-    t_token *new;
-    t_token *last;
+	t_token *new;
+	t_token *last;
 
 	if (data == NULL)
 		return ;
-    new = malloc(sizeof(t_token));
-	if (new == NULL)
+	new = malloc(sizeof(t_token));
+	if (!new)
 		return ;
-    new->data = data;
-    new->quote = quo_err[QUOTE];
+	new->data = data;
+	new->quote = quo_err[QUOTE];
 	new->error = quo_err[ERROR];
-    new->next = NULL;
-    if (*tokens == NULL)
-    {
-        *tokens = new;
-        new->prev = NULL;
-        return;
-    }
-    last = *tokens;
-    while (last->next != NULL)
-        last = last->next;
-    last->next = new;
-    new->prev = last;
+	new->next = NULL;
+	if (*tokens == NULL)
+	{
+		*tokens = new;
+		new->prev = NULL;
+		return;
+	}
+	last = *tokens;
+	while (last->next != NULL)
+		last = last->next;
+	last->next = new;
+	new->prev = last;
+	
 }
 
 static int	cmds_data(char *input, int i, int start, t_token **tokens)
@@ -59,7 +60,7 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 		while (input[++i] != '\0' && input[i] != ' ' && input[i] \
 			!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$'
 			&& input[i] != '"' && input[i] != '\'')
-			;
+				;
 		data = ft_substr(input, start, (i-- - start));
 	}
 	if ((ft_strncmp(data, "&", 1)) == 0 && ft_strlen(data) == 1)
@@ -108,7 +109,8 @@ static int	general_data(char *input, int i, int start, t_token **tokens)
 			i++;
 			while (input[i] != '\0' && input[i] != input[start - 1])
 				i++;
-			data = ft_strjoin(data, ft_substr(input, start, i - start));
+			char *temp_data = ft_substr(input, start, i - start);
+			data = ft_strjoin(data, temp_data);
 			if (input[i] == '\0')
 				addtoken(tokens, data, (int []){NONE, UNCLOSED_QUOTE});
 			else

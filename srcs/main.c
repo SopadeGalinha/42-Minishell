@@ -1,7 +1,8 @@
 #include "../includes/minishell.h"
 
 
-void delete_node(t_env **lst, char *key) {
+void delete_node(t_env **lst, char *key)
+{
 	t_env *current = *lst;
 	t_env *prev = NULL;
 
@@ -26,8 +27,8 @@ void delete_node(t_env **lst, char *key) {
 	}
 }
 
-void ft_unset(t_shell *shell, char *key) {
-
+void ft_unset(t_shell *shell, char *key)
+{
 	delete_node(&shell->env, key);
 	delete_node(&shell->exp, key);
 }
@@ -49,13 +50,12 @@ int main(int ac, char **av, char **envp)
 		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
 		parse_input(shell.path_env, &shell);
-		
-		
 		add_history(shell.input);
 		if (shell.error == NO_ERROR)
 			execute(&shell);
 		free_struct(&shell, 0);
 	}
+	free_struct(&shell, 1);
 	rl_clear_history();
 	ft_printf_fd(1, "Bye!\n");
 	return (0);
