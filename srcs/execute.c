@@ -93,9 +93,23 @@ void	execute_builtin(t_shell *shell)
 	else if (ft_strncmp(shell->tokens->data, "pwd", ft_strlen("pwd")) == 0)
 		ft_pwd();
 	else if (ft_strncmp(shell->tokens->data, "export", ft_strlen("export")) == 0)
-		print_list(shell->exp, 0);
-	/* else if (ft_strncmp(shell->tokens->data, "unset", ft_strlen("unset")) == 0)
-		ft_unset(shell->tokens->next, shell->env, shell->exp); */
+	{
+		if (shell->tokens->next) //verificar cada variavel se forem passadas muitas variaveis
+		{						// Nao deixar passar token com numeros ou caracters especias antes do =
+			if (ft_strchr(shell->tokens->next->data, '='))
+				update_lists(shell, shell->tokens->next->data, 1);
+			if (!ft_strchr(shell->tokens->next->data, '='))
+				update_lists(shell, shell->tokens->next->data, 0);
+		}
+		else
+			print_list(shell->exp, 0);
+	}
+	
+	else if (ft_strncmp(shell->tokens->data, "unset", ft_strlen("unset")) == 0)
+	{
+		if (shell->tokens->next)
+			ft_unset(shell, shell->tokens->next->data);
+	}
 	else if (ft_strncmp(shell->tokens->data, "env", ft_strlen("env")) == 0)
 		print_list(shell->env, 1);
 	/* else if (ft_strncmp(shell->tokens->data, "exit", ft_strlen("exit")) == 0
