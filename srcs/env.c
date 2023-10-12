@@ -10,8 +10,10 @@ char	*ft_strdup_equal_value(const char *src)
 
 	i = 0;
 	j = 0;
-	while (src[i] != '=')
+	while (src[i] != '=' && src[i])
 		i++;
+	if (src[i] == '\0')
+		return (NULL);
 	k = ++i;
 	while (src[i++] != '\0')
 		j++;
@@ -29,16 +31,18 @@ char	*ft_strdup_equal_key(const char *src)
 {
 	char	*cpy;
 	size_t	i;
+	size_t	j;
 
 	i = 0;
-	while (src[i] != '=')
+	while ((src[i] != '=') && src[i]) 
 		i++;
-	cpy = (char *)malloc(sizeof(char) * i + 1);
+	cpy = (char *)malloc(sizeof(char) * (i + 1));
 	if (!cpy)
 		return (NULL);
 	i = 0;
-	while (*src != '=')
-		cpy[i++] = *src++;
+	j = 0;
+	while (src[j] != '=' && src[j])
+		cpy[i++] = src[j++];
 	cpy[i] = '\0';
 	return (cpy);
 }
@@ -52,7 +56,7 @@ int	create_add_node_to_list(t_env **head, char *line)
 	}
 	new->key = ft_strdup_equal_key(line);
 	new->value = ft_strdup_equal_value(line);
-	new->line = line;
+	new->line = ft_strdup(line);
 	if (!head)
 		new->next = NULL;
 	else
@@ -82,7 +86,16 @@ void print_list(t_env *head, int flag)
 		if (flag)
 			ft_printf_fd(1, "%s\n", current->line);
 		else
-			ft_printf_fd(1, "declare -x %s\n", current->line);
+		{
+			ft_printf_fd(1, "declare -x %s", current->key);
+			if(current->value)
+			{
+				ft_printf_fd(1, "=");
+				ft_printf_fd(1, "\"%s\"\n", current->value);
+			}
+			else
+				ft_printf_fd(1, "\n");
+		}
 		current = current->next;
 	}
 }

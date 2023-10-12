@@ -1,32 +1,6 @@
 
 #include "../includes/minishell.h"
 
-	/*if ((ft_strncmp(input, "export A=asb", ft_strlen(input)) == 0))
-		{
-			// Essa parte faz incremento na lista do export caso a variavel seja passada sem '='
-			int length = ft_strlen(input);
-    		char *output = (char *)malloc(length);
-			if (output == NULL) {
-				perror("Failed to allocate memory");
-				exit(EXIT_FAILURE);
-			}
-			int output_index = 0;
-			for (int i = length - 1; i >= 0 && input[i] != ' '; i--) {
-				output[output_index++] = input[i];
-			}
-			int start = 0;
-			int end = output_index - 1;
-			while (start < end) {
-				char temp = output[start];
-				output[start] = output[end];
-				output[end] = temp;
-				start++;
-				end--;
-			}
-			printf("%s", output);
-			//update_lists(output);
-		}*/
-
 void insert_sorted(t_env **export_list, t_env *env)
 {
 	t_env *current = *export_list;
