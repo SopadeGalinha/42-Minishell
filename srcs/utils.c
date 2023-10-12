@@ -43,6 +43,8 @@ int	define_token(const char *token)
 		return (EXIT_STATUS);	
 	if (ft_strncmp(token, "export", ft_strlen("export")) == 0)
 		return (CMD);
+	if (ft_strncmp(token, "unset", ft_strlen("unset")) == 0)
+		return (CMD);
 	if (ft_strncmp(token, "&&", ft_strlen("&&")) == 0)
 		return (AND);
 	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
