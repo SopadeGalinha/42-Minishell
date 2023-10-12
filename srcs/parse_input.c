@@ -32,7 +32,10 @@ void	get_cmd(t_token **tokens, char *path_env)
 		}
 		while (split_path[++i])
 		{
-			path = ft_strjoin(ft_strjoin(split_path[i], "/"), current->data);
+			char	*cur_path;
+			cur_path = ft_strjoin(split_path[i], "/");
+			path = ft_strjoin(cur_path, current->data);
+			free(cur_path);
 			if (access(path, F_OK) == 0)
 				if (access(path, X_OK) == 0)
 				{
@@ -44,6 +47,7 @@ void	get_cmd(t_token **tokens, char *path_env)
 		}
 		current = current->next;
 	}
+	ft_free_array(split_path);
 }
 
 char	*ft_getenv(char **env, char *var_name)
