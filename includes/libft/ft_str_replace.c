@@ -12,6 +12,20 @@
 
 #include "libft.h"
 
+static	char	*replace_aux(char *str, char *old, char *new, int start)
+{
+	char	*temp;
+	char	*aux;
+
+	temp = ft_substr(str, 0, start);
+	aux = ft_strjoin(temp, new);
+	free(temp);
+	temp = ft_strjoin(aux, str + start + ft_strlen(old));
+	free(aux);
+	free(str);
+	return (temp);
+}
+
 char	*ft_str_replace(char *str, char *old, char *new)
 {
 	int		n;
@@ -28,11 +42,10 @@ char	*ft_str_replace(char *str, char *old, char *new)
 			n++;
 		if (!old[n])
 		{
-			temp = ft_strjoin(ft_strjoin(ft_substr(result, 0, start), new), \
-			result + start + ft_strlen(old));
-			free(result);
+			temp = replace_aux(result, old, new, start);
 			result = temp;
 			start += ft_strlen(new);
+			free(temp);
 		}
 		else
 			start++;

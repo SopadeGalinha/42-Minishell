@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/09 18:18:51 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/10/12 21:23:49 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void	execute(t_shell *shell)
 	t_shell	*sh;
 
 	sh = shell;
+	return ;
 	while (sh->tokens)
 	{
 		if (sh->tokens->type == CMD)

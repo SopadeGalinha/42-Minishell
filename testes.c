@@ -10,15 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "includes/libft/libft.h"
+#include "libft.h"
 
-char custom_callback(unsigned int index, char c)
+char	*ft_str_replace(char *str, char *old, char *new)
 {
-    return ft_toupper(c);
+	int		n;
+	int		start;
+	char	*result;
+	char	*temp;
+
+	start = 0;
+	result = ft_strdup(str);
+	while (result[start])
+	{
+		n = 0;
+		while (result[start + n] && result[start + n] == old[n])
+			n++;
+		if (!old[n])
+		{
+			temp = ft_strjoin(ft_strjoin(ft_substr(result, 0, start), new), \
+			result + start + ft_strlen(old));
+			free(result);
+			result = temp;
+			start += ft_strlen(new);
+		}
+		else
+			start++;
+	}
+	return (result);
 }
+
 
 int main(void)
 {
