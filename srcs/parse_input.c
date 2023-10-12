@@ -88,7 +88,7 @@ void	expand_env(t_env *env, t_token *node)
 		return ;
 	while (node->data[++i])
 	{
-		if (node->data[i] == '$' && node->data[i - 1] != '\'')
+		if (node->data[i] && node->data[i] == '$')
 		{
 			start = i;
 			while (ft_isalnum(node->data[++i]) || node->data[i] == '_')
@@ -119,11 +119,11 @@ bool	parse_input(char *path_env, t_shell *shell)
 	t_token	*current;
 
 	shell->error = lexical(shell->input, &shell->tokens);
+	if (shell->error != NO_ERROR)
+		return (false);
 	current = shell->tokens;
 	while (current)
 	{
-		if (current->quote != NONE)
-			ft_strtrim(current->data, "\"\'");
 		current->type = define_token(current->data);
 		if (current->type == WORD || current->type == CMD || current->type == ENV)
 			expand_env(shell->env, current);
@@ -133,151 +133,4 @@ bool	parse_input(char *path_env, t_shell *shell)
 	get_cmd(&shell->tokens, path_env);
 	print_tokens(shell->tokens);
 	return (true);
-}
-
-static void addtoken(t_token **tokens, char *data, int *quo_err)
-{
-    t_token *new;
-    t_token *last;
-
-	if (data == NULL)
-		return ;
-    new = malloc(sizeof(t_token));
-    new->data = data;
-    new->quote = quo_err[QUOTE];
-	new->error = quo_err[ERROR];
-    new->next = NULL;
-    if (*tokens == NULL)
-    {
-        *tokens = new;
-        new->prev = NULL;
-        return;
-    }
-    last = *tokens;
-    while (last->next != NULL)
-        last = last->next;
-    last->next = new;
-    new->prev = last;
-}
-
-static int	cmds_data(char *input, int i, int start, t_token **tokens)
-{
-	char	*data;
-
-	if ((input[i] == '>' || input[i] == '<') || (input[i] == '|' || input[i] == '&'))
-	{
-		if (input[i] == input[i + 1])
-		{
-			data = ft_substr(input, start, 2);
-			i += 1;
-		}
-		else
-			data = ft_substr(input, start, 1);
-	}
-	else
-	{
-		while (input[++i] != '\0' && input[i] != ' ' && input[i] \
-			!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$'
-			&& input[i] != '"' && input[i] != '\'')
-			;
-		data = ft_substr(input, start, (i-- - start));
-	}
-	if ((ft_strncmp(data, "&", 1)) == 0 && ft_strlen(data) == 1)
-		addtoken(tokens, data, (int []){NONE, BACKGROUND_NOT_SUPPORTED});
-	else if (ft_strncmp(data, "||", 2) == 0 && ft_strlen(data) == 2)
-		addtoken(tokens, data, (int []){NONE, D_PIPELINE_NOT_SUPPORTED});
-	else
-		addtoken(tokens, data, (int []){NONE, NO_ERROR});
-	return (i);
-}
-
-static int	quote_data(char *input, int i, int start, t_token **tokens)
-{
-	char	*data;
-	int		quote;
-	int		ref;
-	int		quo_err[2];
-
-	ref = i - 1;
-	quo_err[QUOTE] = SINGLE;
-	quo_err[ERROR] = NO_ERROR;
-	while (input[i] != '\0' && input[i] != input[ref])
-		i++;
-	data = ft_substr(input, start + 1, i - start - 1);
-	if (input[ref] == '"')
-		quo_err[QUOTE] = DOUBLE;
-	if (input[i] == '\0')
-		quo_err[ERROR] = UNCLOSED_QUOTE;
-	addtoken(tokens, data, quo_err);
-	return (i);
-}
-
-static int	general_data(char *input, int i, int start, t_token **tokens)
-{
-	char	*data;
-	int		ref;
-
-	while (input[i] && input[i] != ' '
-		&& input[i] != '>' && input[i] != '<'
-		&& input[i] != '|' && input[i] != '$')
-	{
-		if (input[i] == '"' || input[i] == '\'')
-		{
-			data = ft_substr(input, start, i - start);
-			start = i + 1;
-			i++;
-			while (input[i] != '\0' && input[i] != input[start - 1])
-				i++;
-			data = ft_strjoin(data, ft_substr(input, start, i - start));
-			if (input[i] == '\0')
-				addtoken(tokens, data, (int []){NONE, UNCLOSED_QUOTE});
-			else
-				addtoken(tokens, data, (int []){NONE, NO_ERROR});
-			return (i);
-		}
-		else
-			i++;
-	}
-	data = ft_substr(input, start, i - start);
-	addtoken(tokens, data, (int []){NONE, NO_ERROR});
-	return (i);
-}
-
-bool	lexical(char *input, t_token **tokens)
-{
-	int		i;
-	int		start;
-	bool	error;
-
-	i = -1;
-	error = false;
-	while (++i <= (int)strlen(input) - 1)
-	{
-		start = i;
-		if ((input[i] == '"' || input[i] == '\''))
-			i = quote_data(input, ++i, start, tokens);
-		else if (input[i] == '>' || input[i] == '<' || input[i] == '|'
-			|| input[i] == '$' || input[i] == '&')
-			i = cmds_data(input, i, start, tokens);
-		else if (input[i] == 32 || input[i] == '\t' || input[i] == '\n')	
-		{
-			while (ft_isspace(input[i]))
-				i++;
-			addtoken(tokens, ft_substr(input, start, i-- - start), (int []){NONE, NO_ERROR});
-		}
-		else if (input[i] == '2' && input[i + 1] == '>')
-		{
-			i++;
-			addtoken(tokens, ft_substr(input, start, 2), (int []){NONE, NO_ERROR});
-		}
-		else if (input[i] == ';')
-			addtoken(tokens, ft_substr(input, start, 1), (int []){NONE, SEMICOLON_NOT_SUPPORTED});
-		else if (input[i] == ' ' || input[i] == '\t' || input[i] == '\n')
-			continue ;
-		else
-			i = general_data(input, i, start, tokens);
-		if ((*tokens)->error != NO_ERROR)
-			error = true;
-	}
-	return (error);
 }
