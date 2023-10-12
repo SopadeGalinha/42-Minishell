@@ -33,10 +33,6 @@ char	*ft_str_replace(char *str, char *old, char *new)
 			free(result);
 			result = temp;
 			start += ft_strlen(new);
-<<<<<<< HEAD
-=======
-			return (result);
->>>>>>> 8a95170de5f041b6642ac56eb947bc1e43db1886
 		}
 		else
 			start++;
