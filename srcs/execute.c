@@ -123,19 +123,20 @@ void	execute_builtin(t_shell *shell)
 void	execute(t_shell *shell)
 {
 	t_shell	*sh;
+	t_token	*tk;
 
 	sh = shell;
-	return ;
-	while (sh->tokens)
+	tk = sh->tokens;
+	while (tk)
 	{
-		if (sh->tokens->type == CMD)
+		if (tk->type == CMD)
 		{
-			if (is_builtin(sh->tokens->data))
+			if (is_builtin(tk->data))
 				execute_builtin(sh);
 			else
-				ft_printf_fd(2, "execute cmd\n");
+				ft_printf_fd(2, "execute execve\n");
 				// execute_cmd(sh);
 		}
-		sh->tokens = sh->tokens->next;
+		tk = tk->next;
 	}
 }
