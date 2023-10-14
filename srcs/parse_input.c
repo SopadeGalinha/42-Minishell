@@ -100,8 +100,13 @@ void	expand_env(t_env *env, t_token *node)
 			key = ft_substr(node->data, start + 1, i - start - 1);
 			value = get_env_value(env, key);
 			free(key);
-			tmp = ft_strjoin(ft_substr(node->data, 0, start), value);
-			tmp = ft_strjoin(tmp, ft_substr(node->data, i, ft_strlen(node->data) - i));
+			key = ft_substr(node->data, 0, start);
+			tmp = ft_strjoin(key, value);
+			free(key);
+			key = ft_substr(node->data, i, ft_strlen(node->data) - i);
+			free(node->data);
+			node->data = ft_strjoin(tmp, key);
+			free(key);
 			i = start + ft_strlen(value) - 1;
 			free(node->data);
 			node->data = tmp;
