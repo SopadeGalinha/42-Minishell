@@ -114,15 +114,6 @@ void	expand_env(t_env *env, t_token *node)
 	}
 }
 
-void	build_cmd(t_token **tokens)
-{
-	t_token	*current;
-	char	*cmd;
-
-	if ((*tokens)->type != WORD)
-		return ;
-}
-
 bool	parse_input(char *path_env, t_shell *shell)
 {
 	t_token	*current;
@@ -138,7 +129,7 @@ bool	parse_input(char *path_env, t_shell *shell)
 			expand_env(shell->env, current);
 		current = current->next;
 	}
-	build_cmd(&shell->tokens);
+	
 	get_cmd(&shell->tokens, path_env);
 	print_tokens(shell->tokens);
 	return (true);

@@ -99,34 +99,17 @@ static int	general_data(char *input, int i, int start, t_token **tokens)
 	int		ref;
 	char	*data;
 	char	*temp_data;
+	int		quote_count;
 
 	while (input[i] && input[i] != ' '
 		&& input[i] != '>' && input[i] != '<'
-		&& input[i] != '|' && input[i] != '$')
-	{
-		if (input[i] == '"' || input[i] == '\'')
-		{
-			start = i + 1;
+		&& input[i] != '|' && input[i] != '$'
+		&& input[i] != '&' && input[i] != '"'
+		&& input[i] != '\'')
 			i++;
-			while (input[i] != '\0' && input[i] != input[start - 1])
-				i++;
-			temp_data = ft_substr(input, start, i - start);
-			data = ft_strjoin(data, temp_data);
-			free(temp_data);
-			if (input[i] == '\0')
-				addtoken(tokens, data, (int []){NONE, UNCLOSED_QUOTE});
-			else
-				addtoken(tokens, data, (int []){NONE, NO_ERROR});
-			// free(data);
-			return (i);
-		}
-		else
-			i++;
-	}
 	data = ft_substr(input, start, i - start);
 	addtoken(tokens, data, (int []){NONE, NO_ERROR});
-	// free(data);
-	return (i);
+	return (i - 1);
 }
 
 bool	lexical(char *input, t_token **tokens)
@@ -165,6 +148,5 @@ bool	lexical(char *input, t_token **tokens)
 		if ((*tokens)->error != NO_ERROR)
 			error = true;
 	}
-	// resolver o problema (?>>)
 	return (error);
 }
