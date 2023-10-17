@@ -88,7 +88,7 @@ void	expand_env(t_env *env, t_token *node)
 	tmp = NULL;
 	key = NULL;
 	value = NULL;
-	if (node->quote == SINGLE || (node->prev != NULL && node->prev->type == HEREDOC))
+	if (node->prev != NULL && node->prev->type == HEREDOC)
 		return ;
 	while (node->data[++i])
 	{
@@ -129,8 +129,6 @@ bool	parse_input(char *path_env, t_shell *shell)
 			expand_env(shell->env, current);
 		current = current->next;
 	}
-	
 	get_cmd(&shell->tokens, path_env);
-	print_tokens(shell->tokens);
 	return (true);
 }

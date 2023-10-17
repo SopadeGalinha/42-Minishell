@@ -45,12 +45,6 @@ int	define_token(const char *token)
 		return (CMD);
 	if (ft_strncmp(token, "unset", ft_strlen("unset")) == 0)
 		return (CMD);
-	if (ft_strncmp(token, "&&", ft_strlen("&&")) == 0)
-		return (AND);
-	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
-		return (SEMICOLON);
-	if (ft_isspace_str((char *)token))
-		return (WHITESPACE);
 	if (token[0] == '-' && ft_isalpha(token[1]))
 		return (OPTION);
 	if (token[0] == '$')
@@ -75,6 +69,7 @@ bool	get_input(t_shell *shell)
 	shell->input = readline(MINISHELL);
 	if (shell->input == NULL)
 		return (false);
+	add_history(shell->input);
 	return (true);
 }
 

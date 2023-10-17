@@ -1,6 +1,5 @@
 #include "../includes/minishell.h"
 
-
 void delete_node(t_env **lst, char *key)
 {
 	t_env *current = *lst;
@@ -50,7 +49,6 @@ int main(int ac, char **av, char **envp)
 		if (ft_strncmp(shell.input, "exit", ft_strlen(shell.input)) == 0)
 			break ;
 		parse_input(shell.path_env, &shell);
-		add_history(shell.input);
 		if (shell.error == NO_ERROR)
 			execute(&shell);
 		free_struct(&shell, 0);

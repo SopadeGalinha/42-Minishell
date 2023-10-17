@@ -73,80 +73,89 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 	return (i);
 }
 
-static int	quote_data(char *input, int i, int start, t_token **tokens)
+char	*remove_quotes(char *data)
 {
-	char	*data;
-	int		quote;
-	int		ref;
-	int		quo_err[2];
+	int		i;
+	int		start;
+	int		quote_type;
+	char	*aux;
+	char	*tmp;
+	char	*result;
 
-	ref = i - 1;
-	quo_err[QUOTE] = SINGLE;
-	quo_err[ERROR] = NO_ERROR;
-	while (input[i] != '\0' && input[i] != input[ref])
-		i++;
-	data = ft_substr(input, start + 1, i - start - 1);
-	if (input[ref] == '"')
-		quo_err[QUOTE] = DOUBLE;
-	if (input[i] == '\0')
-		quo_err[ERROR] = UNCLOSED_QUOTE;
-	addtoken(tokens, data, quo_err);
-	return (i);
+	i = -1;
+	start = 0;
+	quote_type = 0;
+	result = ft_strdup("");
+	while (data[++i])
+	{
+		if (!quote_type && (data[i] == '"' || data[i] == '\'') || (quote_type == data[i]))
+		{
+			if (quote_type == data[i])
+				quote_type = 0;
+			else
+				quote_type = data[i];
+			aux = ft_substr(data, start, i - start);
+			tmp = ft_strjoin(result, aux);
+			free(result);
+			free(aux);
+			result = tmp;
+			start = i + 1;
+		}
+	}
+	aux = ft_substr(data, start, i - start);
+	tmp = ft_strjoin(result, aux);
+	free(result);
+	free(aux);
+	result = tmp;
+	free(data);
+	return (result);
 }
 
-static int	general_data(char *input, int i, int start, t_token **tokens)
+bool	is_special_char(char c)
 {
-	int		ref;
-	char	*data;
-	char	*temp_data;
-	int		quote_count;
-
-	while (input[i] && input[i] != ' '
-		&& input[i] != '>' && input[i] != '<'
-		&& input[i] != '|' && input[i] != '$'
-		&& input[i] != '&' && input[i] != '"'
-		&& input[i] != '\'')
-			i++;
-	data = ft_substr(input, start, i - start);
-	addtoken(tokens, data, (int []){NONE, NO_ERROR});
-	return (i - 1);
+	if (c == '>' || c == '<' || c == '|' || c == '&' || c == '$')
+		return (true);
+	return (false);
 }
 
 bool	lexical(char *input, t_token **tokens)
 {
 	int		i;
 	int		start;
-	bool	error;
+	int		error;
+	char	*data;
+	char	quote;
 
 	i = -1;
-	error = false;
-	while (++i <= (int)strlen(input) - 1)
+	error = NO_ERROR;
+	while (++i < (int)strlen(input))
 	{
 		start = i;
-		if ((input[i] == '"' || input[i] == '\''))
-			i = quote_data(input, ++i, start, tokens);
-		else if (input[i] == '>' || input[i] == '<' || input[i] == '|'
-			|| input[i] == '$' || input[i] == '&')
+		if (is_special_char(input[i]))
+		{
 			i = cmds_data(input, i, start, tokens);
-		else if (input[i] == 32 || input[i] == '\t' || input[i] == '\n')	
-		{
-			while (ft_isspace(input[i]))
-				i++;
-			addtoken(tokens, ft_substr(input, start, i-- - start), (int []){NONE, NO_ERROR});
-		}
-		else if (input[i] == '2' && input[i + 1] == '>')
-		{
-			i++;
-			addtoken(tokens, ft_substr(input, start, 2), (int []){NONE, NO_ERROR});
-		}
-		else if (input[i] == ';')
-			addtoken(tokens, ft_substr(input, start, 1), (int []){NONE, SEMICOLON_NOT_SUPPORTED});
-		else if (input[i] == ' ' || input[i] == '\t' || input[i] == '\n')
 			continue ;
-		else
-			i = general_data(input, i, start, tokens);
-		if ((*tokens)->error != NO_ERROR)
-			error = true;
+		}
+		else 
+		{
+			while (input[++i] != '\0' && input[i] != ' ' && !is_special_char(input[i]))
+			{
+				if ((input[i] == '"' || input[i] == '\''))
+				{
+					quote = input[i];
+					while (input[++i] != '\0' && input[i] != quote)
+						;
+					if (input[i] == '\0')
+						error = UNCLOSED_QUOTE;
+				}
+			}
+			data = ft_substr(input, start, (i-- - start));
+			if (ft_contains(data, "\'") || ft_contains(data, "\""))
+				data = remove_quotes(data);
+			if (error != NO_ERROR)
+				return (false);
+			addtoken(tokens, data, (int []){NONE, error});
+		}
 	}
 	return (error);
 }

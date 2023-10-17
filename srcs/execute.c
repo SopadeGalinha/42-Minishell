@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/12 21:23:49 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/10/17 22:44:08 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,16 +127,10 @@ void	execute(t_shell *shell)
 
 	sh = shell;
 	tk = sh->tokens;
-	while (tk)
+	if (is_builtin(tk->data))
+		execute_builtin(sh);
+	else
 	{
-		if (tk->type == CMD)
-		{
-			if (is_builtin(tk->data))
-				execute_builtin(sh);
-			else
-				ft_printf_fd(2, "execute execve\n");
-				// execute_cmd(sh);
-		}
-		tk = tk->next;
+		execve(tk->data, 
 	}
 }
