@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/17 22:44:08 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/10/18 18:19:10 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,5 @@ void	execute(t_shell *shell)
 	tk = sh->tokens;
 	if (is_builtin(tk->data))
 		execute_builtin(sh);
-	else
-	{
-		execve(tk->data, 
-	}
+	
 }

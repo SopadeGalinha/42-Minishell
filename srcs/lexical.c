@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   set_tokens.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/28 19:18:08 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/09/28 19:18:08 by jhogonca         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -90,6 +79,7 @@ char	*remove_quotes(char *data)
 	{
 		if (!quote_type && (data[i] == '"' || data[i] == '\'') || (quote_type == data[i]))
 		{
+
 			if (quote_type == data[i])
 				quote_type = 0;
 			else
@@ -113,7 +103,7 @@ char	*remove_quotes(char *data)
 
 bool	is_special_char(char c)
 {
-	if (c == '>' || c == '<' || c == '|' || c == '&' || c == '$')
+	if (c == '>' || c == '<' || c == '|' || c == '$')
 		return (true);
 	return (false);
 }
@@ -136,22 +126,26 @@ bool	lexical(char *input, t_token **tokens)
 			i = cmds_data(input, i, start, tokens);
 			continue ;
 		}
-		else 
+		else
 		{
-			while (input[++i] != '\0' && input[i] != ' ' && !is_special_char(input[i]))
+			while (input[i] && (input[i] != ' ' && !is_special_char(input[i])))
 			{
-				if ((input[i] == '"' || input[i] == '\''))
+				if ((input[i] == '\"' || input[i] == '\''))
 				{
 					quote = input[i];
 					while (input[++i] != '\0' && input[i] != quote)
 						;
-					if (input[i] == '\0')
+					if (!input[i])
 						error = UNCLOSED_QUOTE;
 				}
+				i++;
 			}
-			data = ft_substr(input, start, (i-- - start));
+			data = ft_substr(input, start, (i - start));
 			if (ft_contains(data, "\'") || ft_contains(data, "\""))
+			{
 				data = remove_quotes(data);
+
+			}
 			if (error != NO_ERROR)
 				return (false);
 			addtoken(tokens, data, (int []){NONE, error});
