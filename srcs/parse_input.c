@@ -116,19 +116,8 @@ void	expand_env(t_env *env, t_token *node)
 
 bool	parse_input(char *path_env, t_shell *shell)
 {
-	t_token	*current;
-
-	shell->error = lexical(shell->input, &shell->tokens);
-	if (shell->error != NO_ERROR)
-		return (false);
-	current = shell->tokens;
-	while (current)
-	{
-		current->type = define_token(current->data);
-		if (current->type == WORD || current->type == CMD || current->type == ENV)
-			expand_env(shell->env, current);
-		current = current->next;
-	}
+	lexical(shell->input, &shell->tokens);
+	expand_env(shell->env, shell->tokens);
 	get_cmd(&shell->tokens, path_env);
-	return (true);
+	print_tokens(shell->tokens);
 }
