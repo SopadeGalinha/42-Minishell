@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   set_tokens.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/28 19:18:08 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/09/28 19:18:08 by jhogonca         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -151,9 +140,12 @@ bool	lexical(char *input, t_token **tokens)
 				}
 				i++;
 			}
-			data = ft_substr(input, start, (i-- - start));
+			data = ft_substr(input, start, (i - start));
 			if (ft_contains(data, "\'") || ft_contains(data, "\""))
+			{
 				data = remove_quotes(data);
+
+			}
 			if (error != NO_ERROR)
 				return (false);
 			addtoken(tokens, data, (int []){NONE, error});
