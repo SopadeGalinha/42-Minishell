@@ -48,6 +48,7 @@ static void	free_env(t_env *env)
 
 void	free_struct(t_shell *shell, int	running)
 {
+	free(shell->input);
 	free_tokens(&shell->tokens);
 	shell->error = NO_ERROR;
 	if (running == 0)

@@ -26,6 +26,7 @@
 # include "./libft/libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
+extern int exit_status;
 
 //---------------------------------END HEADERS--------------------------------//
 
@@ -47,13 +48,12 @@ enum TokenType {
 	SEMICOLON,
 	EXIT_STATUS,
 	OPTION,
-	WHITESPACE,
 };
 
 enum QuoteType {
 	NONE,
-	SINGLE,
-	DOUBLE
+	SINGLE	= '\'',
+	DOUBLE	= '\"',
 };
 
 enum errorType {
@@ -69,6 +69,12 @@ enum indexesType {
 	QUOTE,
 	ERROR,
 };
+
+typedef struct s_pipes
+{
+	char				**cmds;
+	struct s_pipelines	*next;
+}					t_pipes;
 
 typedef struct s_env
 {
@@ -94,6 +100,7 @@ typedef struct s_shell
 	t_token	*cmds;
 	t_env	*env;
 	t_env	*exp;
+	t_pipes	*pipes;
 	char	*path_env;
 	char	*input;
 	int		error;
@@ -168,8 +175,10 @@ char	*get_env_value(t_env *env, char *key);
 int		define_token(const char *token);
 void	print_tokens(t_token *head);
 void	free_struct(t_shell *shell, int	running);
-bool	get_input(t_shell *shell);
+void	get_input(t_shell *shell);
 void	init_shell(t_shell *shell, char **env);
+bool	input_is_valid(char *input);
+bool	print_error(char *error, int exit_code);
 
 //---------------------------------END FUNCTIONS---------------------------------//
 
