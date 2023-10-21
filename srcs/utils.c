@@ -27,24 +27,24 @@ int	define_token(const char *token)
 {
 	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
 		return (PIPELINE);
-	if (ft_strncmp(token, ">", ft_strlen(">")) == 0)
+	if (ft_strncmp(token, ">", ft_strlen(">")) == 0 && ft_strlen(token) == 1)
 		return (REDIR_OUT);
-	if (ft_strncmp(token, "<", ft_strlen("<")) == 0)
+	if (ft_strncmp(token, "<", ft_strlen("<")) == 0 && ft_strlen(token) == 1)
 		return (REDIR_IN);
-	if (ft_strncmp(token, "||", ft_strlen("||")) == 0)
-		return (OR);
-	if (ft_strncmp(token, ">>", ft_strlen(">>")) == 0)
+	if (ft_strncmp(token, ">>", ft_strlen(">>")) == 0 && ft_strlen(token) == 2)
 		return (D_REDIR_OUT);
-	if (ft_strncmp(token, "<<", ft_strlen("<<")) == 0)
+	if (ft_strncmp(token, "<<", ft_strlen("<<")) == 0 && ft_strlen(token) == 2)
 		return (HEREDOC);
-	if (ft_strncmp(token, "2>", ft_strlen("2>")) == 0)
+	if (ft_strncmp(token, "2>", ft_strlen("2>")) == 0 && ft_strlen(token) == 2)
 		return (REDIR_ERR);
-	if (ft_strncmp(token, "$?", ft_strlen("$?")) == 0)
-		return (EXIT_STATUS);	
-	if (ft_strncmp(token, "export", ft_strlen("export")) == 0)
-		return (CMD);
-	if (ft_strncmp(token, "unset", ft_strlen("unset")) == 0)
-		return (CMD);
+	if (ft_strncmp(token, "$?", ft_strlen("$?")) == 0 && ft_strlen(token) == 2)
+		return (EXIT_STATUS);
+	if (ft_strncmp(token, "&&", ft_strlen("&&")) == 0 && ft_strlen(token) == 2)
+		return (AND);
+	if (ft_strncmp(token, "||", ft_strlen("||")) == 0 && ft_strlen(token) == 2)
+		return (OR);
+	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
+		return (SEMICOLON);	
 	if (token[0] == '-' && ft_isalpha(token[1]))
 		return (OPTION);
 	if (token[0] == '$')
@@ -58,19 +58,46 @@ void	init_shell(t_shell *shell, char **env)
 	shell->error = NO_ERROR;
 	shell->env = init_env(env);
 	shell->exp = init_export(shell->env);
-	shell->path_env = ft_getenv(env, "PATH");
-	if (shell->path_env == NULL)
-		exit(ft_printf_fd(2, "PATH not found\n"));
 }
 
-bool	get_input(t_shell *shell)
+bool	print_error(char *error, int exit_code)
 {
-	free(shell->input);
-	shell->input = readline(MINISHELL);
-	if (shell->input == NULL)
-		return (false);
-	add_history(shell->input);
+	ft_printf_fd(1, "%s\n", error);
+	exit_status = exit_code;
+	return (false);
+}
+
+bool	input_is_valid(char *input)
+{
+	int	end;
+
+	end = ft_strlen(input) - 1;
+	if (input[0] == ';')
+		return (print_error("minishell: syntax error near unexpected token `;'", 258));
+	if (input[0] == '|')
+		return (print_error("minishell: syntax error near unexpected token `|'", 258));
+	if (input[0] == '&')
+		return (print_error("minishell: syntax error near unexpected token `&'", 258));
+	if (input[end] == ';')
+		return (print_error("minishell: syntax error near unexpected token `;'", 258));
+	if (input[end] == '|')
+		return (print_error("minishell: syntax error near unexpected token `|'", 258));
+	if (input[end] == '&')
+		return (print_error("minishell: syntax error near unexpected token `&'", 258));
+	if (input[end] == '<')
+		return (print_error("minishell: syntax error near unexpected token `<'", 258));
+	if (input[end] == '>')
+		return (print_error("minishell: syntax error near unexpected token `>'", 258));
 	return (true);
+}
+
+void	get_input(t_shell *shell)
+{
+	shell->input = readline(MINISHELL);
+	if (shell->input && !ft_isspace_str(shell->input))
+		add_history(shell->input);
+	if (shell->input)
+		shell->input = ft_strtrim(shell->input, " \t");
 }
 
 void	print_tokens(t_token *head)
@@ -125,9 +152,6 @@ void	print_tokens(t_token *head)
 			break;
 		case OPTION:
 			typeStr = "OPTION";
-			break;
-		case WHITESPACE:
-			typeStr = "WHITESPACE";
 			break;
         default:
             typeStr = "unknown";

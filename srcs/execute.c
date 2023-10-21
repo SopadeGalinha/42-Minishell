@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/17 22:44:08 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/10/21 16:29:34 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,117 @@ void	execute_builtin(t_shell *shell)
 	/* else if (ft_strncmp(shell->tokens->data, "exit", ft_strlen("exit")) == 0
 		|| ft_strncmp(shell->tokens->data, "quit", ft_strlen("quit")) == 0)
 	{
-	 	if (shell->tokens->next != NULL && ft_isdigit_str(shell->tokens->next->data))
+		if (shell->tokens->next != NULL && ft_isdigit_str(shell->tokens->next->data))
 			exit(ft_atoi(shell->tokens->next->data));
 		exit(0); */
+}
+
+int pipes_counter(t_token *tokens)
+{
+	int i = 0;
+	t_token *current = tokens;
+
+	while (current != NULL)
+	{
+		if (current->type == PIPELINE)
+			i++;
+		current = current->next;
+	}
+	return i;
+}
+
+int lstsize(t_token *lst)
+{
+	int i = 0;
+	while (lst)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return i;
+}
+
+void print_pipes(t_pipes *pipes)
+{
+	t_pipes *current = pipes;
+	int i = 0;
+	while (current != NULL)
+	{
+		printf("PIPELINE %d:\n", i);
+		int j = 0;
+		while (current->cmds[j] != NULL)
+		{
+			printf("Command %d: %s\n", j, current->cmds[j]);
+			j++;
+		}
+		printf("\n");
+		current = current->next;
+		i++;
+	}
+}
+
+
+void handle_pipes(t_shell *shell)
+{
+	int		i;
+	int		c_pipes;
+	t_token *temp;
+	t_token	*current;
+	t_pipes *new_pipeline;
+	t_pipes *pipeline_head;
+	t_pipes *current_pipeline;
+	int		command_count;
+	
+	pipeline_head = NULL;
+	current_pipeline = NULL;
+	current = shell->tokens;
+	c_pipes = pipes_counter(shell->tokens) + 1;
+	while (c_pipes-- > 0)
+	{
+		new_pipeline = (t_pipes *)malloc(sizeof(t_pipes));
+
+		// Count the number of commands in the pipeline
+		command_count = 0;
+		temp = current;
+		while (temp != NULL && temp->type != PIPELINE)
+		{
+			command_count++;
+			temp = temp->next;
+		}
+
+		// Allocate memory for the command array
+		new_pipeline->cmds = (char **)malloc((command_count + 1) * sizeof(char *));
+		new_pipeline->next = NULL;
+
+		i = 0;
+
+		// Copy the commands into the pipeline
+		while (current != NULL && current->type != PIPELINE)
+		{
+			new_pipeline->cmds[i] = ft_strdup(current->data);
+			i++;
+			current = current->next;
+		}
+		new_pipeline->cmds[i] = NULL;
+
+		if (pipeline_head == NULL)
+		{
+			pipeline_head = new_pipeline;
+			current_pipeline = pipeline_head;
+		}
+		else
+		{
+			current_pipeline->next = new_pipeline;
+			current_pipeline = new_pipeline;
+		}
+
+		// Move past the PIPELINE token
+		if (current != NULL && current->type == PIPELINE)
+			current = current->next;
+	}
+	shell->pipes = pipeline_head;
+	print_pipes(shell->pipes);
+	exit(0);
 }
 
 void	execute(t_shell *shell)
@@ -125,12 +233,10 @@ void	execute(t_shell *shell)
 	t_shell	*sh;
 	t_token	*tk;
 
+	handle_pipes(shell);
 	sh = shell;
 	tk = sh->tokens;
 	if (is_builtin(tk->data))
 		execute_builtin(sh);
-	else
-	{
-		execve(tk->data, 
-	}
+	
 }

@@ -12,45 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	get_cmd(t_token **tokens, char *path_env)
-{
-	t_token	*current;
-	int		i;
-	char	*path;
-	char	**split_path;
-	current = *tokens;
-
-	i = -1;
-	split_path = ft_split(path_env, ':');
-	while (current != NULL)
-	{
-		i = -1;
-		if (current->type == WHITESPACE)
-		{
-			current = current->next;
-			continue ;
-		}
-		while (split_path[++i])
-		{
-			char	*cur_path;
-			cur_path = ft_strjoin(split_path[i], "/");
-			path = ft_strjoin(cur_path, current->data);
-			free(cur_path);
-			if (access(path, F_OK) == 0)
-				if (access(path, X_OK) == 0)
-				{
-					current->type = CMD;
-					free(path);
-					break ;
-				}
-			free(path);
-		}
-		current = current->next;
-	}
-	ft_free_array(split_path);
-}
-
-char	*ft_getenv(char **env, char *var_name)
+/* char	*ft_getenv(char **env, char *var_name)
 {
 	int		i;
 	char	*tmp;
@@ -61,6 +23,7 @@ char	*ft_getenv(char **env, char *var_name)
 			return (ft_substr(env[i], ft_strlen(var_name) + 1, ft_strlen(env[i])));
 	return (NULL);
 }
+ */
 
 char	*get_env_value(t_env *env, char *key)
 {
@@ -76,59 +39,75 @@ char	*get_env_value(t_env *env, char *key)
 	return (ft_strdup(""));
 }
 
-void	expand_env(t_env *env, t_token *node)
+char	*get_key(char *token, int i)
+{
+	int		start;
+	char	*key;
+
+	start = i;
+	while (ft_isalnum(token[++i]) || token[i] == '_')
+		;
+	key = ft_substr(token, start + 1, i - start - 1);
+	return (key);
+	printf("key: %s\n", key);
+	exit(0);
+}
+
+char *expand_env(t_env *env, char *token)
 {
 	int		i;
 	int		start;
+	char	*aux;
 	char	*key;
-	char	*tmp;
 	char	*value;
 
 	i = -1;
-	tmp = NULL;
-	key = NULL;
-	value = NULL;
-	if (node->prev != NULL && node->prev->type == HEREDOC)
-		return ;
-	while (node->data[++i])
+	while (token[++i])
 	{
-		if (node->data[i] && node->data[i] == '$')
+		if (token[i] == '$')
 		{
 			start = i;
-			while (ft_isalnum(node->data[++i]) || node->data[i] == '_')
+			while (ft_isalnum(token[++i]) || token[i] == '_' || token[i] == '?')
 				;
-			key = ft_substr(node->data, start + 1, i - start - 1);
+			key = ft_substr(token, start + 1, i - start - 1);
 			value = get_env_value(env, key);
 			free(key);
-			key = ft_substr(node->data, 0, start);
-			tmp = ft_strjoin(key, value);
+			key = ft_substr(token, 0, start);
+			aux = ft_strjoin(key, value);
 			free(key);
-			key = ft_substr(node->data, i, ft_strlen(node->data) - i);
-			free(node->data);
-			node->data = ft_strjoin(tmp, key);
-			free(key);
+			key = ft_substr(token, i, ft_strlen(token) - i);
+			free(token);
+			token = ft_strjoin(aux, key);
 			i = start + ft_strlen(value) - 1;
-			free(node->data);
-			node->data = tmp;
+			free(aux);
+			free(key);
+			free(value);
 		}
 	}
+	return (token);
 }
 
 bool	parse_input(char *path_env, t_shell *shell)
 {
 	t_token	*current;
 
-	shell->error = lexical(shell->input, &shell->tokens);
-	if (shell->error != NO_ERROR)
+	if (lexical(shell->input, &shell->tokens) != NO_ERROR)
 		return (false);
 	current = shell->tokens;
-	while (current)
+	while (current != NULL)
 	{
 		current->type = define_token(current->data);
-		if (current->type == WORD || current->type == CMD || current->type == ENV)
-			expand_env(shell->env, current);
+		if (current->quote != SINGLE)
+		{
+			if (current->prev != NULL && current->prev->type == HEREDOC)
+				;
+			else
+				current->data = expand_env(shell->env, current->data);
+		}
+		if (current->type == OR || current->type == AND || current->type == SEMICOLON)
+			if (current->quote == NONE)
+				return (print_error("This beautiful shell does not support multiple commands yet", 1));
 		current = current->next;
 	}
-	get_cmd(&shell->tokens, path_env);
 	return (true);
 }

@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   set_tokens.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/28 19:18:08 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/09/28 19:18:08 by jhogonca         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -23,6 +12,8 @@ static void addtoken(t_token **tokens, char *data, int *quo_err)
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return ;
+	if (quo_err[QUOTE] != SINGLE && quo_err[QUOTE] != DOUBLE)
+		quo_err[QUOTE] = NONE;
 	new->data = ft_strdup(data);
 	free(data);
 	new->quote = quo_err[QUOTE];
@@ -42,11 +33,19 @@ static void addtoken(t_token **tokens, char *data, int *quo_err)
 	
 }
 
+bool	is_special_char(char c)
+{
+	if (c == '>' || c == '<' || c == '|' || c == '$' || c == ';')
+		return (true);
+	return (false);
+}
+
 static int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
 
-	if ((input[i] == '>' || input[i] == '<') || (input[i] == '|' || input[i] == '&'))
+	if ((input[i] == '>' || input[i] == '<')
+		|| (input[i] == '|' || input[i] == '&') || input[i] == ';')
 	{
 		if (input[i] == input[i + 1])
 		{
@@ -58,9 +57,9 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 	}
 	else
 	{
-		while (input[++i] != '\0' && input[i] != ' ' && input[i] \
-			!= '>' && input[i] != '<' && input[i] != '|' && input[i] != '$'
-			&& input[i] != '"' && input[i] != '\'')
+		while (input[++i] != '\0' && !is_special_char(input[i])
+			&& input[i] != '"' && input[i] != '\''
+			&& input[i] != ' ' && input[i])
 				;
 		data = ft_substr(input, start, (i-- - start));
 	}
@@ -68,6 +67,8 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 		addtoken(tokens, data, (int []){NONE, BACKGROUND_NOT_SUPPORTED});
 	else if (ft_strncmp(data, "||", 2) == 0 && ft_strlen(data) == 2)
 		addtoken(tokens, data, (int []){NONE, D_PIPELINE_NOT_SUPPORTED});
+	else if (ft_strncmp(data, ";", 1) == 0 && ft_strlen(data) == 1)
+		addtoken(tokens, data, (int []){NONE, SEMICOLON_NOT_SUPPORTED});
 	else
 		addtoken(tokens, data, (int []){NONE, NO_ERROR});
 	return (i);
@@ -90,6 +91,7 @@ char	*remove_quotes(char *data)
 	{
 		if (!quote_type && (data[i] == '"' || data[i] == '\'') || (quote_type == data[i]))
 		{
+
 			if (quote_type == data[i])
 				quote_type = 0;
 			else
@@ -111,13 +113,6 @@ char	*remove_quotes(char *data)
 	return (result);
 }
 
-bool	is_special_char(char c)
-{
-	if (c == '>' || c == '<' || c == '|' || c == '&' || c == '$')
-		return (true);
-	return (false);
-}
-
 bool	lexical(char *input, t_token **tokens)
 {
 	int		i;
@@ -125,36 +120,46 @@ bool	lexical(char *input, t_token **tokens)
 	int		error;
 	char	*data;
 	char	quote;
+	int		quote_type;
 
 	i = -1;
 	error = NO_ERROR;
 	while (++i < (int)strlen(input))
 	{
+		quote = 0;
 		start = i;
+		quote_type = 0;
 		if (is_special_char(input[i]))
 		{
 			i = cmds_data(input, i, start, tokens);
 			continue ;
 		}
-		else 
+		else
 		{
-			while (input[++i] != '\0' && input[i] != ' ' && !is_special_char(input[i]))
+			while (ft_isspace(input[i]))
 			{
-				if ((input[i] == '"' || input[i] == '\''))
-				{
-					quote = input[i];
-					while (input[++i] != '\0' && input[i] != quote)
-						;
-					if (input[i] == '\0')
-						error = UNCLOSED_QUOTE;
-				}
+				i++;
+				start++;
 			}
-			data = ft_substr(input, start, (i-- - start));
-			if (ft_contains(data, "\'") || ft_contains(data, "\""))
-				data = remove_quotes(data);
-			if (error != NO_ERROR)
-				return (false);
-			addtoken(tokens, data, (int []){NONE, error});
+			while (input[i] && (!ft_isspace(input[i]) || quote != 0 ))
+			{
+				if (input[i] == '"' || input[i] == '\'')
+				{
+					quote_type = input[i];
+					if (quote == 0)
+						quote = input[i];
+					else if (quote == input[i])
+						quote = 0;
+				}
+				i++;
+			}
+			if (quote != 0)
+				error = UNCLOSED_QUOTE;
+			data = ft_substr(input, start, i - start);
+			data = remove_quotes(data);
+			if (quote != 0)
+				error = UNCLOSED_QUOTE;
+			addtoken(tokens, data, (int []){quote_type, error});
 		}
 	}
 	return (error);
