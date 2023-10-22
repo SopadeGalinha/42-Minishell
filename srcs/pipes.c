@@ -12,36 +12,42 @@
 
 #include "../includes/minishell.h"
 
-int pipes_counter(t_token *tokens)
+int	pipes_counter(t_token *tokens)
 {
-	int i = 0;
-	t_token *current = tokens;
+	int		i;
+	t_token	*current;
 
+	i = 0;
+	current = tokens;
 	while (current != NULL)
 	{
 		if (current->type == PIPELINE)
 			i++;
 		current = current->next;
 	}
-	return i;
+	return (i);
 }
 
-int count_cmds_in_pipeline(t_token *current)
+int	count_cmds_in_pipeline(t_token *current)
 {
-	int command_count = 0;
-	t_token *temp = current;
-	
-	while (temp != NULL && temp->type != PIPELINE) {
+	t_token	*temp;
+	int		command_count;
+
+	temp = current;
+	command_count = 0;
+	while (temp != NULL && temp->type != PIPELINE)
+	{
 		command_count++;
 		temp = temp->next;
 	}
-	
 	return (command_count);
 }
 
-t_pipes *new_pipe_node(char **cmds)
+t_pipes	*new_pipe_node(char **cmds)
 {
-	t_pipes *new_pipeline = (t_pipes *)malloc(sizeof(t_pipes));
+	t_pipes	*new_pipeline;
+
+	new_pipeline = (t_pipes *)malloc(sizeof(t_pipes));
 	if (new_pipeline)
 	{
 		new_pipeline->cmds = cmds;
@@ -50,25 +56,26 @@ t_pipes *new_pipe_node(char **cmds)
 	return (new_pipeline);
 }
 
-void insert_pipe_node(t_pipes **head, t_pipes *new_pipeline)
+void	insert_pipe_node(t_pipes **head, t_pipes *new_pipeline)
 {
-	t_pipes *current;
-	
+	t_pipes	*current;
+
 	if (*head == NULL)
 		*head = new_pipeline;
 	else
 	{
 		current = *head;
-		while (current->next != NULL) {
+		while (current->next != NULL)
 			current = current->next;
-		}
 		current->next = new_pipeline;
 	}
 }
 
-void copy_cmds_to_pipeline(char **cmds, t_token **current)
+void	copy_cmds_to_pipeline(char **cmds, t_token **current)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	if (!cmds)
 		return ;
 	while (*current != NULL && (*current)->type != PIPELINE)
@@ -80,7 +87,7 @@ void copy_cmds_to_pipeline(char **cmds, t_token **current)
 	cmds[i] = NULL;
 }
 
-bool handle_pipes(t_shell *shell)
+bool	handle_pipes(t_shell *shell)
 {
 	char	**cmds;
 	int		c_pipes;
@@ -92,9 +99,9 @@ bool handle_pipes(t_shell *shell)
 	c_pipes = pipes_counter(shell->tokens) + 1;
 	while (c_pipes-- > 0)
 	{
-		cmds = (char **)malloc((count_cmds_in_pipeline(current) + 1) * sizeof(char *));
+		cmds = malloc((count_cmds_in_pipeline(current) + 1) * sizeof(char *));
 		if (cmds == NULL)
-				return (free_pipes(shell->pipes));
+			return (free_pipes(shell->pipes));
 		new_pipeline = new_pipe_node(cmds);
 		if (!new_pipe_node)
 			return (free_pipes(shell->pipes));
@@ -103,5 +110,5 @@ bool handle_pipes(t_shell *shell)
 		if (current != NULL && current->type == PIPELINE)
 			current = current->next;
 	}
-	return true;
+	return (true);
 }
