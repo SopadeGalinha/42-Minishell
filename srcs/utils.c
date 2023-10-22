@@ -33,7 +33,7 @@ void	init_shell(t_shell *shell, char **env)
 
 bool	print_error(char *error, int exit_code)
 {
-	ft_printf_fd(1, "%s\n", error);
+	ft_printf_fd(2, "%s\n", error);
 	exit_status = exit_code;
 	return (false);
 }
