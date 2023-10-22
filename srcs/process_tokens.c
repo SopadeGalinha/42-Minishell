@@ -12,6 +12,8 @@
 
 #include "../includes/minishell.h"
 
+// SIX FUNCTIONS IN A FILE
+
 int	define_token(const char *token)
 {
 	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
@@ -50,7 +52,7 @@ char	*get_env_value(t_env *env, char *key)
 	{
 		if (ft_strncmp(current->key, key, ft_strlen(key)) == 0
 			&& ft_strlen(current->key) == ft_strlen(key))
-			return (current->value);
+			return (ft_strdup(current->value));
 		current = current->next;
 	}
 	return (ft_strdup(""));
@@ -66,8 +68,27 @@ char	*get_key(char *token, int i)
 		;
 	key = ft_substr(token, start + 1, i - start - 1);
 	return (key);
-	printf("key: %s\n", key);
-	exit(0);
+}
+
+void	aux_(t_env *env, char *token, int *si)
+{
+	char	*aux;
+	char	*key;
+	char	*value;
+
+	key = ft_substr(token, si[START] + 1, si[INDEX] - si[START] - 1);
+	value = get_env_value(env, key);
+	free(key);
+	key = ft_substr(token, 0, si[START]);
+	aux = ft_strjoin(key, value);
+	free(key);
+	key = ft_substr(token, si[INDEX], ft_strlen(token) - si[INDEX]);
+	free(token);
+	token = ft_strjoin(aux, key);
+	si[INDEX] = si[START] + ft_strlen(value) - 1;
+	free(aux);
+	free(key);
+	free(value);
 }
 
 char	*expand_env(t_env *env, char *token)
@@ -79,28 +100,15 @@ char	*expand_env(t_env *env, char *token)
 
 	si[START] = 0;
 	si[INDEX] = -1;
-	
 	while (token[++si[INDEX]])
 	{
 		if (token[si[INDEX]] == '$')
 		{
 			si[START] = si[INDEX];
-			while (ft_isalnum(token[++si[INDEX]]) || token[si[INDEX]] == '_' || token[si[INDEX]] == '?')
+			while (ft_isalnum(token[++si[INDEX]])
+				|| token[si[INDEX]] == '_' || token[si[INDEX]] == '?')
 				;
-			key = ft_substr(token, si[START] + 1, si[INDEX] - si[START] - 1);
-			value = get_env_value(env, key);
-			free(key);
-			key = ft_substr(token, 0, si[START]);
-			
-			aux = ft_strjoin(key, value);
-			free(key);
-			key = ft_substr(token, si[INDEX], ft_strlen(token) - si[INDEX]);
-			free(token);
-			token = ft_strjoin(aux, key);
-			si[INDEX] = si[START] + ft_strlen(value) - 1;
-			free(aux);
-			free(key);
-			free(value);
+			aux_(env, token, si);
 		}
 	}
 	return (token);
@@ -118,10 +126,8 @@ bool	process_tokens(t_shell *shell)
 		{
 			if (current->prev != NULL && current->prev->type == HEREDOC)
 				;
-			else{
+			else
 				current->data = expand_env(shell->env, current->data);
-				exit(0);
-			}
 		}
 		if (current->type == OR
 			|| current->type == AND || current->type == SEMICOLON)

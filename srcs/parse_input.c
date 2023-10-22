@@ -18,9 +18,8 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (process_tokens(shell) == false)
 		return (false);
-	print_tokens(shell->tokens);
 	if (handle_pipes(shell) == false)
 		return (false);
-	// print_pipes(shell->pipes);
+	print_pipes(shell->pipes);
 	return (true);
 }

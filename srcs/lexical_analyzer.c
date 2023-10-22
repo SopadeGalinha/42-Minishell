@@ -59,6 +59,18 @@ bool	is_special_char(char c)
 	return (false);
 }
 
+static void	process_special_tokens(char *data, t_token **tokens)
+{
+	if (ft_strncmp(data, "&", 1) == 0 && ft_strlen(data) == 1)
+		addtoken(tokens, data, (int []){NONE, BACKGROUND_NOT_SUPPORTED});
+	else if (ft_strncmp(data, "||", 2) == 0 && ft_strlen(data) == 2)
+		addtoken(tokens, data, (int []){NONE, D_PIPELINE_NOT_SUPPORTED});
+	else if (ft_strncmp(data, ";", 1) == 0 && ft_strlen(data) == 1)
+		addtoken(tokens, data, (int []){NONE, SEMICOLON_NOT_SUPPORTED});
+	else
+		addtoken(tokens, data, (int []){NONE, NO_ERROR});
+}
+
 static int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
@@ -79,17 +91,10 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 		while (input[++i] != '\0' && !is_special_char(input[i])
 			&& input[i] != '"' && input[i] != '\''
 			&& input[i] != ' ' && input[i])
-				;
+			;
 		data = ft_substr(input, start, (i-- - start));
 	}
-	if ((ft_strncmp(data, "&", 1)) == 0 && ft_strlen(data) == 1)
-		addtoken(tokens, data, (int []){NONE, BACKGROUND_NOT_SUPPORTED});
-	else if (ft_strncmp(data, "||", 2) == 0 && ft_strlen(data) == 2)
-		addtoken(tokens, data, (int []){NONE, D_PIPELINE_NOT_SUPPORTED});
-	else if (ft_strncmp(data, ";", 1) == 0 && ft_strlen(data) == 1)
-		addtoken(tokens, data, (int []){NONE, SEMICOLON_NOT_SUPPORTED});
-	else
-		addtoken(tokens, data, (int []){NONE, NO_ERROR});
+	process_special_tokens (data, tokens);
 	return (i);
 }
 
