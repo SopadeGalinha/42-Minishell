@@ -83,6 +83,55 @@ static bool	ft_isdigit_str(char *str)
 			return (false);
 	return (true);
 }
+int	token_checker(char *str)
+{
+	int	i = 0;
+
+	if (ft_isdigit(str[0]))
+	{
+		printf("nao pode colocar numero no inicio na key vacilao\n");
+		return (-1);
+	}
+	else if (str[0] == '_' && str[1])
+	{
+		if(!ft_isalnum(str[1]) && str[1] != '_')
+		{
+			printf("Depois do UNDERLINE so pode numero, letra ou outro UNDELINE\n");
+			return (-1);
+		}
+		else
+			return (1);
+	}
+	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
+	{
+		printf("Apenas UNDERLINE o codigo nao faz nada\n");
+		return (-2);
+	}
+	return (1);
+}
+
+
+void	ft_export(t_shell *shell)
+{
+    t_token *current_token = shell->tokens->next;
+
+	if (shell->tokens->next)
+	{
+		while (current_token)
+		{
+			if(token_checker(current_token->data) > 0)
+			{
+				if (ft_strchr(current_token->data, '='))
+					update_lists(shell, current_token->data, 1);
+				else if (!ft_strchr(current_token->data, '='))
+					update_lists(shell, current_token->data, 0);
+			}
+			current_token = current_token->next;
+		}
+	}
+    else
+        print_list(shell->exp, 0);
+}
 
 void	execute_builtin(t_shell *shell)
 {
@@ -93,18 +142,7 @@ void	execute_builtin(t_shell *shell)
 	else if (ft_strncmp(shell->tokens->data, "pwd", ft_strlen("pwd")) == 0)
 		ft_pwd();
 	else if (ft_strncmp(shell->tokens->data, "export", ft_strlen("export")) == 0)
-	{
-		if (shell->tokens->next) //verificar cada variavel se forem passadas muitas variaveis
-		{						// Nao deixar passar token com numeros ou caracters especias antes do =
-			if (ft_strchr(shell->tokens->next->data, '='))
-				update_lists(shell, shell->tokens->next->data, 1);
-			if (!ft_strchr(shell->tokens->next->data, '='))
-				update_lists(shell, shell->tokens->next->data, 0);
-		}
-		else
-			print_list(shell->exp, 0);
-	}
-	
+		ft_export(shell);
 	else if (ft_strncmp(shell->tokens->data, "unset", ft_strlen("unset")) == 0)
 	{
 		if (shell->tokens->next)
@@ -136,9 +174,9 @@ void	execute(t_shell *shell)
 	t_shell	*sh;
 	t_token	*tk;
 
-	/* sh = shell;
+	sh = shell;
 	tk = sh->tokens;
 	if (is_builtin(tk->data))
-		execute_builtin(sh); */
+		execute_builtin(sh); 
 	
 }
