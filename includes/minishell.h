@@ -68,12 +68,14 @@ enum errorType {
 enum indexesType {
 	QUOTE,
 	ERROR,
+	INDEX = 0,
+	START,
 };
 
 typedef struct s_pipes
 {
 	char				**cmds;
-	struct s_pipelines	*next;
+	struct s_pipes	*next;
 }					t_pipes;
 
 typedef struct s_env
@@ -101,7 +103,6 @@ typedef struct s_shell
 	t_env	*env;
 	t_env	*exp;
 	t_pipes	*pipes;
-	char	*path_env;
 	char	*input;
 	int		error;
 }				t_shell;
@@ -122,8 +123,12 @@ typedef struct s_shell
 # define EGG			"code destroyer found"
 
 // ERRORS
-# define TRY		BOLD_CYAN	" Try: ./minishell\n"RESET
-# define ERROR_ARGS	BOLD_RED	"Invalid arguments\n" TRY RESET
+# define MS_ERR			BOLD_RED	"Minishell Error: "RESET
+# define TRY			BOLD_CYAN	"Try: ./minishell\n"RESET
+# define ERROR_ARGS		MS_ERR BOLD_RED	"Invalid arguments\n" TRY RESET
+# define UNSUP_MCMDS	MS_ERR BOLD_RED	"Unsupported multiple commands\n" RESET
+# define UNCLOSED_QT	MS_ERR BOLD_RED	"Unclosed quote\n" RESET
+# define SYNTAX			MS_ERR "syntax error near unexpected token"
 
 // BEAUTIFUL PROMPT
 # define P	BOLD_BLUE	"mi\001\033[0m\002"
@@ -147,7 +152,6 @@ void		insert_sorted(t_env **export_list, t_env *env);
 t_env		*create_node(char *key, char *value, char *line);
 t_env		*init_export(t_env *env);
 
-
 //UPDATE_LISTS
 int 	create_add_node_to_back(t_env **head, char *line);
 int		find_node(t_env *lst, char *key);
@@ -155,7 +159,6 @@ void	update_node(t_env *lst, char *key, char *line);
 int 	create_find_add_insert_node(t_env **head, char *line);
 void	update_lists(t_shell *shell, char *line, int flag);
 void	update_exp(t_shell *shell, char *line);
-
 
 //UNSET
 void	ft_unset(t_shell *shell, char *key);
@@ -166,9 +169,9 @@ void	ft_handle_signals(void);
 void	execute(t_shell *shell);
 
 //PARSER
-bool	lexical(char *input, t_token **tokens);
+bool	lexical_analyzer(char *input, t_token **tokens);
 char	*ft_getenv(char **env, char *var_name);
-bool	parse_input(char *path_env, t_shell *shell);
+bool	parse_input(t_shell *shell);
 char	*get_env_value(t_env *env, char *key);
 
 //UTILS
@@ -180,6 +183,13 @@ void	init_shell(t_shell *shell, char **env);
 bool	input_is_valid(char *input);
 bool	print_error(char *error, int exit_code);
 
+bool handle_pipes(t_shell *shell);
+bool free_pipes(t_pipes *pipes);
+
+// INUTILS
+void	print_tokens(t_token *head);
+void print_pipes(t_pipes *pipes);
+bool process_tokens(t_shell *shell);
 //---------------------------------END FUNCTIONS---------------------------------//
 
 #endif

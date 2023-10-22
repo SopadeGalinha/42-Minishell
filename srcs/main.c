@@ -49,7 +49,7 @@ int main(int ac, char **av, char **envp)
 			continue ;
 		if (shell.input)
 			if (shell.input[0] && input_is_valid(shell.input))
-				if (parse_input(shell.path_env, &shell))
+				if (parse_input(&shell))
 					execute(&shell);
 		free_struct(&shell, 0);
 	}
