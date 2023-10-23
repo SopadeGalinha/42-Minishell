@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/18 18:19:10 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/10/22 12:25:51 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,20 @@ void	execute_builtin(t_shell *shell)
 	/* else if (ft_strncmp(shell->tokens->data, "exit", ft_strlen("exit")) == 0
 		|| ft_strncmp(shell->tokens->data, "quit", ft_strlen("quit")) == 0)
 	{
-	 	if (shell->tokens->next != NULL && ft_isdigit_str(shell->tokens->next->data))
+		if (shell->tokens->next != NULL && ft_isdigit_str(shell->tokens->next->data))
 			exit(ft_atoi(shell->tokens->next->data));
 		exit(0); */
+}
+
+int lstsize(t_token *lst)
+{
+	int i = 0;
+	while (lst)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return i;
 }
 
 void	execute(t_shell *shell)
@@ -125,9 +136,9 @@ void	execute(t_shell *shell)
 	t_shell	*sh;
 	t_token	*tk;
 
-	sh = shell;
+	/* sh = shell;
 	tk = sh->tokens;
 	if (is_builtin(tk->data))
-		execute_builtin(sh);
+		execute_builtin(sh); */
 	
 }
