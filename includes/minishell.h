@@ -54,6 +54,8 @@ enum QuoteType {
 	NONE,
 	SINGLE	= '\'',
 	DOUBLE	= '\"',
+	IN = 0,
+	OUT,
 };
 
 enum errorType {
@@ -72,10 +74,20 @@ enum indexesType {
 	START,
 };
 
+typedef struct s_redir
+{
+	int				type;
+	char			*file;
+	struct	s_redir	*next;
+}				t_redir;
+
 typedef struct s_pipes
 {
-	char				**cmds;
-	struct s_pipes	*next;
+	char						**cmds;
+	struct	s_redir				*redir_in;
+	struct	s_redir				*redir_out;
+	int							id;
+	struct s_pipes				*next;
 }					t_pipes;
 
 typedef struct s_env
