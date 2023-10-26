@@ -89,14 +89,14 @@ int	token_checker(char *str)
 
 	if (ft_isdigit(str[0]))
 	{
-		printf("nao pode colocar numero no inicio na key vacilao\n");
+		printf("minishell: export: `%s': not a valid identifier\n", str);
 		return (-1);
 	}
 	else if (str[0] == '_' && str[1])
 	{
 		if(!ft_isalnum(str[1]) && str[1] != '_')
 		{
-			printf("Depois do UNDERLINE so pode numero, letra ou outro UNDELINE\n");
+			printf("minishell: export: `%s': not a valid identifier\n", str);
 			return (-1);
 		}
 		else
@@ -104,7 +104,7 @@ int	token_checker(char *str)
 	}
 	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
 	{
-		printf("Apenas UNDERLINE o codigo nao faz nada\n");
+		//printf("Apenas UNDERLINE o codigo nao faz nada\n");
 		return (-2);
 	}
 	return (1);
