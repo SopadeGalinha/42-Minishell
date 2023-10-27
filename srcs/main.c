@@ -42,7 +42,7 @@ int main(int ac, char **av, char **envp)
 		return (ft_printf_fd(2, ERROR_ARGS));
   	shell = (t_shell){0};
 	init_shell(&shell, envp);
-  	while (true)
+	while (true)
 	{
 		get_input(&shell);
 		if (shell.input == NULL)

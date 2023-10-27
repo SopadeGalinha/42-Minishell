@@ -28,85 +28,78 @@ int	pipes_counter(t_token *tokens)
 	return (i);
 }
 
-int	count_cmds_in_pipeline(t_token *current)
+void	insert_redir(t_redir *head, char *data, int type)
 {
-	t_token	*temp;
-	int		command_count;
+	t_redir	*new;
+	t_redir	*tmp;
 
-	temp = current;
-	command_count = 0;
-	while (temp != NULL && temp->type != PIPELINE)
-	{
-		command_count++;
-		temp = temp->next;
-	}
-	return (command_count);
-}
-
-t_pipes	*new_pipe_node(char **cmds)
-{
-	t_pipes	*new_pipeline;
-
-	new_pipeline = (t_pipes *)malloc(sizeof(t_pipes));
-	if (new_pipeline)
-	{
-		new_pipeline->cmds = cmds;
-		new_pipeline->next = NULL;
-	}
-	return (new_pipeline);
-}
-
-void	insert_pipe_node(t_pipes **head, t_pipes *new_pipeline)
-{
-	t_pipes	*current;
-
-	if (*head == NULL)
-		*head = new_pipeline;
+	new = malloc(sizeof(t_redir));
+	if (new == NULL)
+		return ;
+	new->type = type;
+	new->file = ft_strdup(data);
+	if (head == NULL)
+		head = new;
 	else
 	{
-		current = *head;
-		while (current->next != NULL)
-			current = current->next;
-		current->next = new_pipeline;
+		tmp = head;
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = new;
 	}
 }
 
-void	copy_cmds_to_pipeline(char **cmds, t_token **current)
+void	printfredir(t_redir *redir)
 {
-	int	i;
+	while (redir != NULL)
+	{
+		printf("type: %d\n", redir->type);
+		printf("file: %s\n", redir->file);
+		redir = redir->next;
+	}
+}
 
+t_pipes	*copy_tokens_to_pipeline(t_token **current)
+{
+	t_pipes	pipes;
+	t_token	*tmp;
+	int		i;
+
+	i = -1;
+	tmp = *current;
+	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
+		tmp = tmp->next;
+	pipes.cmds = malloc(sizeof(char *) * (i + 1));
+	pipes.cmds[i] = NULL;
 	i = 0;
-	if (!cmds)
-		return ;
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
-		cmds[i] = ft_strdup((*current)->data);
-		i++;
+		if ((*current)->type == REDIR_OUT || (*current)->type == D_REDIR_OUT)
+		{
+			(*current) = (*current)->next;
+			if ((*current) == NULL)
+				return (NULL);
+			insert_redir(pipes.redir_out, (*current)->data, (*current)->prev->type);
+		}
+		else 
+			pipes.cmds[i++] = ft_strdup((*current)->data);
 		*current = (*current)->next;
 	}
-	cmds[i] = NULL;
+	printfredir(pipes.redir_out);
+	exit(0);
 }
 
-bool	handle_pipes(t_shell *shell)
+bool	create_pipeline_node(t_shell *shell)
 {
-	char	**cmds;
-	int		c_pipes;
 	t_token	*current;
-	t_pipes	*new_pipeline;
+	int		c_pipes;
 
-	shell->pipes = NULL;
 	current = shell->tokens;
 	c_pipes = pipes_counter(shell->tokens) + 1;
 	while (c_pipes-- > 0)
 	{
-		cmds = malloc((count_cmds_in_pipeline(current) + 1) * sizeof(char *));
-		if (cmds == NULL)
-			return (free_pipes(shell->pipes));
-		new_pipeline = new_pipe_node(cmds);
-		if (!new_pipe_node)
-			return (free_pipes(shell->pipes));
-		copy_cmds_to_pipeline(new_pipeline->cmds, &current);
-		insert_pipe_node(&shell->pipes, new_pipeline);
+		shell->pipes = copy_tokens_to_pipeline(&current);
+		exit(0);
 		if (current != NULL && current->type == PIPELINE)
 			current = current->next;
 	}
