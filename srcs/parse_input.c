@@ -20,6 +20,8 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (create_pipeline_node(shell) == false)
 		return (false);
+	if (shell->error == true)
+		printf("error\n");
 	print_pipes(shell->pipes);
 	return (true);
 }

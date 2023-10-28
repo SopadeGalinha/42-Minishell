@@ -12,17 +12,17 @@
 
 #include "../includes/minishell.h"
 
-bool free_pipes(t_pipes *pipes)
+bool	free_pipes(t_pipes *pipes)
 {
-	t_pipes *current_pipeline;
-	
-    while (pipes != NULL)
-    {
-        current_pipeline = pipes;
-        pipes = pipes->next;
-        free(current_pipeline);
-    }
-    return false;
+	t_pipes	*current_pipeline;
+
+	while (pipes != NULL)
+	{
+		current_pipeline = pipes;
+		pipes = pipes->next;
+		free(current_pipeline);
+	}
+	return (false);
 }
 
 static void	free_tokens(t_token **tokens)
@@ -59,7 +59,7 @@ static void	free_env(t_env *env)
 	env = NULL;
 }
 
-void	free_struct(t_shell *shell, int	running)
+void	free_struct(t_shell *shell, int running)
 {
 	free(shell->input);
 	free(shell->pipes);

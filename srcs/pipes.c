@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	pipes_counter(t_token *tokens)
+static int	pipes_counter(t_token *tokens)
 {
 	int		i;
 	t_token	*current;
@@ -28,80 +28,78 @@ int	pipes_counter(t_token *tokens)
 	return (i);
 }
 
-void	insert_redir(t_redir *head, char *data, int type)
+static int	is_redirect(t_token *current)
 {
-	t_redir	*new;
-	t_redir	*tmp;
+	return (current->type == REDIR_OUT || current->type == D_REDIR_OUT
+		|| current->type == REDIR_IN || current->type == HEREDOC);
+}
 
-	new = malloc(sizeof(t_redir));
-	if (new == NULL)
-		return ;
-	new->type = type;
-	new->file = ft_strdup(data);
-	if (head == NULL)
-		head = new;
+static void	*copy_tokens_to_pipeline(t_token **current)
+{
+	int		i;
+	t_token	*tmp;
+	t_pipes	*pipes;
+
+	i = -1;
+	tmp = *current;
+	pipes = ft_calloc(1, sizeof(t_pipes));
+	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
+		tmp = tmp->next;
+	pipes->cmds = ft_calloc(i + 2, sizeof(char *));
+	if (pipes->cmds == NULL)
+		return (NULL);
+	i = 0;
+	while (*current != NULL && (*current)->type != PIPELINE)
+	{
+		if (is_redirect(*current))
+			handle_redirects(current, &pipes->redir_in, &pipes->redir_out);
+		else
+			pipes->cmds[i++] = ft_strdup((*current)->data);
+		*current = (*current)->next;
+	}
+	return (pipes);
+}
+
+static void	add_node_to_pipeline(t_pipes **head, t_pipes *new)
+{
+	t_pipes	*tmp;
+
+	if (*head == NULL)
+		*head = new;
 	else
 	{
-		tmp = head;
+		tmp = *head;
 		while (tmp->next != NULL)
 			tmp = tmp->next;
 		tmp->next = new;
 	}
 }
 
-void	printfredir(t_redir *redir)
-{
-	while (redir != NULL)
-	{
-		printf("type: %d\n", redir->type);
-		printf("file: %s\n", redir->file);
-		redir = redir->next;
-	}
-}
-
-t_pipes	*copy_tokens_to_pipeline(t_token **current)
-{
-	t_pipes	pipes;
-	t_token	*tmp;
-	int		i;
-
-	i = -1;
-	tmp = *current;
-	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
-		tmp = tmp->next;
-	pipes.cmds = malloc(sizeof(char *) * (i + 1));
-	pipes.cmds[i] = NULL;
-	i = 0;
-	while (*current != NULL && (*current)->type != PIPELINE)
-	{
-		if ((*current)->type == REDIR_OUT || (*current)->type == D_REDIR_OUT)
-		{
-			(*current) = (*current)->next;
-			if ((*current) == NULL)
-				return (NULL);
-			insert_redir(pipes.redir_out, (*current)->data, (*current)->prev->type);
-		}
-		else 
-			pipes.cmds[i++] = ft_strdup((*current)->data);
-		*current = (*current)->next;
-	}
-	printfredir(pipes.redir_out);
-	exit(0);
-}
-
 bool	create_pipeline_node(t_shell *shell)
 {
+	int		aux[2];
 	t_token	*current;
-	int		c_pipes;
+	t_pipes	*head;
+	t_pipes	*new_pipe;
+	t_pipes	*current_pipe;
 
+	aux[0] = 0;
+	head = NULL;
+	new_pipe = NULL;
+	current_pipe = NULL;
 	current = shell->tokens;
-	c_pipes = pipes_counter(shell->tokens) + 1;
-	while (c_pipes-- > 0)
+	aux[1] = pipes_counter(shell->tokens) + 1;
+	while (aux[1]-- > 0)
 	{
-		shell->pipes = copy_tokens_to_pipeline(&current);
-		exit(0);
+		new_pipe = copy_tokens_to_pipeline(&current);
+		if (new_pipe == NULL)
+			return (false);
+		new_pipe->next = NULL;
+		new_pipe->id = ++aux[0];
+		add_node_to_pipeline(&head, new_pipe);
 		if (current != NULL && current->type == PIPELINE)
 			current = current->next;
 	}
+	shell->pipes = head;
 	return (true);
 }
