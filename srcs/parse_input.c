@@ -18,8 +18,10 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (process_tokens(shell) == false)
 		return (false);
-	if (handle_pipes(shell) == false)
+	if (create_pipeline_node(shell) == false)
 		return (false);
+	if (shell->error == true)
+		printf("error\n");
 	print_pipes(shell->pipes);
 	return (true);
 }

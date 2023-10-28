@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static void sig_handler(int signum)
+static void	sig_handler(int signum)
 {
 	rl_replace_line("", 0);
 	ft_printf_fd(0, "\n");
@@ -20,9 +20,9 @@ static void sig_handler(int signum)
 	rl_redisplay();
 }
 
-void ft_handle_signals(void)
+void	ft_handle_signals(void)
 {
-	struct sigaction sig_actions;
+	struct sigaction	sig_actions;
 
 	signal(SIGQUIT, SIG_IGN);
 	sig_actions.sa_handler = sig_handler;

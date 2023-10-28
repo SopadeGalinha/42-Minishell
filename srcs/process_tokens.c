@@ -14,7 +14,7 @@
 
 // SIX FUNCTIONS IN A FILE
 
-int	define_token(const char *token)
+static int	define_token(const char *token)
 {
 	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
 		return (PIPELINE);
@@ -43,22 +43,7 @@ int	define_token(const char *token)
 	return (WORD);
 }
 
-char	*get_env_value(t_env *env, char *key)
-{
-	t_env	*current;
-
-	current = env;
-	while (current)
-	{
-		if (ft_strncmp(current->key, key, ft_strlen(key)) == 0
-			&& ft_strlen(current->key) == ft_strlen(key))
-			return (ft_strdup(current->value));
-		current = current->next;
-	}
-	return (ft_strdup(""));
-}
-
-char	*get_key(char *token, int i)
+static char	*get_key(char *token, int i)
 {
 	int		start;
 	char	*key;
@@ -70,7 +55,7 @@ char	*get_key(char *token, int i)
 	return (key);
 }
 
-void	aux_(t_env *env, char *token, int *si)
+static void	aux_(t_env *env, char *token, int *si)
 {
 	char	*aux;
 	char	*key;
@@ -91,7 +76,7 @@ void	aux_(t_env *env, char *token, int *si)
 	free(value);
 }
 
-char	*expand_env(t_env *env, char *token)
+static char	*expand_env(t_env *env, char *token)
 {
 	int		si[2];
 	char	*aux;

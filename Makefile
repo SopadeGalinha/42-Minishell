@@ -27,7 +27,8 @@ commit_msg	= "auto commit"
 
 SRCS_LIST	=	main.c parse_input.c utils.c ft_handle_signals.c env.c export.c \
 				ft_frees.c execute.c updates_lists.c lexical_analyzer.c \
-				pipes.c inutils.c process_tokens.c
+				pipes.c inutils.c process_tokens.c lexer_aux.c redirects.c \
+				validations.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
