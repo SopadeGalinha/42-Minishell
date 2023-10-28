@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/10/22 12:25:51 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/10/28 17:52:38 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ bool	is_builtin(char *cmd)
 		return (true);
 	return (false);
 }
-
-void	ft_echo(t_token *tokens)
+/*void	ft_echo(t_token *tokens)
 {
 	while (tokens)
 	{
@@ -71,20 +70,7 @@ void	ft_pwd(void)
 	free(path);
 }
 
-static bool	ft_isdigit_str(char *str)
-{
-	int	i;
-
-	i = -1;
-	if (str[0] == '-' || str[0] == '+')
-		i = 0;
-	while (str[++i])
-		if (str[i] < '0' || str[i] > '9')
-			return (false);
-	return (true);
-}
-
-void	execute_builtin(t_shell *shell)
+/* void	execute_builtin(t_shell *shell)
 {
 	if (ft_strncmp(shell->tokens->data, "echo", ft_strlen("echo")) == 0)
 		ft_echo(shell->tokens->next);
@@ -112,33 +98,22 @@ void	execute_builtin(t_shell *shell)
 	}
 	else if (ft_strncmp(shell->tokens->data, "env", ft_strlen("env")) == 0)
 		print_list(shell->env, 1);
-	/* else if (ft_strncmp(shell->tokens->data, "exit", ft_strlen("exit")) == 0
+	else if (ft_strncmp(shell->tokens->data, "exit", ft_strlen("exit")) == 0
 		|| ft_strncmp(shell->tokens->data, "quit", ft_strlen("quit")) == 0)
 	{
 		if (shell->tokens->next != NULL && ft_isdigit_str(shell->tokens->next->data))
 			exit(ft_atoi(shell->tokens->next->data));
-		exit(0); */
+		exit(0); 
 }
-
-int lstsize(t_token *lst)
-{
-	int i = 0;
-	while (lst)
-	{
-		lst = lst->next;
-		i++;
-	}
-	return i;
-}
+*/
 
 void	execute(t_shell *shell)
 {
 	t_shell	*sh;
 	t_token	*tk;
 
-	/* sh = shell;
+	sh = shell;
 	tk = sh->tokens;
-	if (is_builtin(tk->data))
-		execute_builtin(sh); */
-	
+	if (ft_strncmp(shell->pipes->cmds[0], "exit", ft_strlen("exit")) == 0)
+		exit(0);
 }

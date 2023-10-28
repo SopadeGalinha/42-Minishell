@@ -1,46 +1,61 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
+/*   Updated: 2023/10/28 17:33:31 by jhogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-int exit_status;
+int	g_exit_status;
 
-void delete_node(t_env **lst, char *key)
+//linha 29: O nó a ser excluído é o primeiro da lista
+//linha 34: O nó a ser excluído não é o primeiro
+//linha 35: Libera a memória alocada para o nó excluído
+void	delete_node(t_env **lst, char *key)
 {
-	t_env *current = *lst;
-	t_env *prev = NULL;
+	t_env	*current;
+	t_env	*prev;
 
-	while (current != NULL) {
-		if (strncmp(current->key, key, strlen(current->key)) == 0) {
-			if (prev == NULL) {
-				// O nó a ser excluído é o primeiro da lista
+	prev = NULL;
+	current = *lst;
+	while (current != NULL)
+	{
+		if (strncmp(current->key, key, strlen(current->key)) == 0)
+		{
+			if (prev == NULL)
 				*lst = current->next;
-			} else {
-				// O nó a ser excluído não é o primeiro
+			else
 				prev->next = current->next;
-			}
-			// Libera a memória alocada para o nó excluído
 			free(current->key);
 			free(current->value);
 			free(current->line);
 			free(current);
-			return;
+			return ;
 		}
 		prev = current;
 		current = current->next;
 	}
 }
 
-void ft_unset(t_shell *shell, char *key)
+void	ft_unset(t_shell *shell, char *key)
 {
 	delete_node(&shell->env, key);
 	delete_node(&shell->exp, key);
 }
 
-
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	t_shell	shell;
+
 	if (ac != 1 || !av)
 		return (ft_printf_fd(2, ERROR_ARGS));
-  	shell = (t_shell){0};
+	shell = (t_shell){0};
 	init_shell(&shell, envp);
 	while (true)
 	{

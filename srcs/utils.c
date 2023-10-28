@@ -12,15 +12,19 @@
 
 #include "../includes/minishell.h"
 
-bool	ft_isspace_str(char *str)
+char	*get_env_value(t_env *env, char *key)
 {
-	int	i;
+	t_env	*current;
 
-	i = -1;
-	while (str[++i])
-		if (str[i] != 32 && (str[i] < 9 || str[i] > 13))
-			return (false);
-	return (true);
+	current = env;
+	while (current)
+	{
+		if (ft_strncmp(current->key, key, ft_strlen(key)) == 0
+			&& ft_strlen(current->key) == ft_strlen(key))
+			return (ft_strdup(current->value));
+		current = current->next;
+	}
+	return (ft_strdup(""));
 }
 
 void	init_shell(t_shell *shell, char **env)
@@ -34,32 +38,8 @@ void	init_shell(t_shell *shell, char **env)
 bool	print_error(char *error, int exit_code)
 {
 	ft_printf_fd(2, "%s\n", error);
-	exit_status = exit_code;
+	g_exit_status = exit_code;
 	return (false);
-}
-
-bool	input_is_valid(char *input)
-{
-	int	end;
-
-	end = ft_strlen(input) - 1;
-	if (input[0] == ';')
-		return (print_error(SYNTAX BOLD_WHITE" `;'"RESET, 258));
-	if (input[0] == '|')
-		return (print_error(SYNTAX BOLD_WHITE" `|'"RESET, 258));
-	if (input[0] == '&')
-		return (print_error(SYNTAX BOLD_WHITE" `&'"RESET, 258));
-	if (input[end] == ';')
-		return (print_error(SYNTAX BOLD_WHITE" `;'"RESET, 258));
-	if (input[end] == '|')
-		return (print_error(SYNTAX BOLD_WHITE" `|'"RESET, 258));
-	if (input[end] == '&')
-		return (print_error(SYNTAX BOLD_WHITE" `&'"RESET, 258));
-	if (input[end] == '<')
-		return (print_error(SYNTAX BOLD_WHITE" `<'"RESET, 258));
-	if (input[end] == '>')
-		return (print_error(SYNTAX BOLD_WHITE" `>'", 258));
-	return (true);
 }
 
 void	get_input(t_shell *shell)

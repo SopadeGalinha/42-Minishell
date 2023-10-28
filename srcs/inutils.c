@@ -12,25 +12,6 @@
 
 #include "../includes/minishell.h"
 
-void print_pipes(t_pipes *pipes)
-{
-	t_pipes *current = pipes;
-	int i = 0;
-	while (current != NULL)
-	{
-		printf("PIPELINE %d:\n", i);
-		int j = 0;
-		while (current->cmds[j] != NULL)
-		{
-			printf("Command %d: %s\n", j, current->cmds[j]);
-			j++;
-		}
-		printf("\n");
-		current = current->next;
-		i++;
-	}
-}
-
 void	print_tokens(t_token *head)
 {
 	char	*typeStr;
@@ -123,6 +104,67 @@ void	print_tokens(t_token *head)
 					printf("\n");
 			}
 		}
+		current = current->next;
+	}
+}
+
+void	print_cmds(char	**cmds)
+{
+	int	i;
+
+	i = -1;
+	while (cmds[++i] != NULL)
+		printf(BOLD_WHITE"%s "RESET, cmds[i]);
+}
+
+void	print_redir(t_redir *head)
+{
+	t_redir	*current;
+
+	current = head;
+	while (current != NULL)
+	{
+		if (current->type == REDIR_OUT)
+			printf(BOLD_WHITE"> "RESET);
+		if (current->type == D_REDIR_OUT)
+			printf(BOLD_WHITE">> "RESET);
+		if (current->type == REDIR_IN)
+			printf(BOLD_WHITE"< "RESET);
+		if (current->type == HEREDOC)
+			printf(BOLD_WHITE"<< "RESET);
+		printf(BOLD_WHITE"%s "RESET, current->file);
+		current = current->next;
+	}
+}
+
+void	print_pipes(t_pipes *head)
+{
+	t_pipes	*current;
+	int		i;
+	int		pipe;
+
+	current = head;
+	pipe = 0;
+	while (current != NULL)
+	{
+		i = 0;
+		pipe++;
+		printf(BOLD_GREEN"PIPELINE[%d]\n"RESET, pipe);
+
+		print_redir(current->redir_in);
+		print_cmds(current->cmds);
+		print_redir(current->redir_out);
+
+		printf("\n\n");
+		printf(BOLD_RED"redir_in:\n"RESET);
+		print_redir(current->redir_in);
+		printf("\n");
+		printf(BOLD_RED"cmds:\n"RESET);
+		print_cmds(current->cmds);
+		printf("\n");
+		printf(BOLD_RED"redir_out:\n"RESET);
+		print_redir(current->redir_out);
+		printf("\n\n");
 		current = current->next;
 	}
 }
