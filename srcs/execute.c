@@ -70,7 +70,6 @@ void	ft_pwd(void)
 	free(path);
 }
 
-/* void	execute_builtin(t_shell *shell)
 {
 	if (ft_strncmp(shell->tokens->data, "echo", ft_strlen("echo")) == 0)
 		ft_echo(shell->tokens->next);
@@ -79,18 +78,7 @@ void	ft_pwd(void)
 	else if (ft_strncmp(shell->tokens->data, "pwd", ft_strlen("pwd")) == 0)
 		ft_pwd();
 	else if (ft_strncmp(shell->tokens->data, "export", ft_strlen("export")) == 0)
-	{
-		if (shell->tokens->next) //verificar cada variavel se forem passadas muitas variaveis
-		{						// Nao deixar passar token com numeros ou caracters especias antes do =
-			if (ft_strchr(shell->tokens->next->data, '='))
-				update_lists(shell, shell->tokens->next->data, 1);
-			if (!ft_strchr(shell->tokens->next->data, '='))
-				update_lists(shell, shell->tokens->next->data, 0);
-		}
-		else
-			print_list(shell->exp, 0);
-	}
-	
+		ft_export(shell);
 	else if (ft_strncmp(shell->tokens->data, "unset", ft_strlen("unset")) == 0)
 	{
 		if (shell->tokens->next)
@@ -113,7 +101,7 @@ void	execute(t_shell *shell)
 	t_token	*tk;
 
 	sh = shell;
-	tk = sh->tokens;
+	tk = sh->tokens;	
 	if (ft_strncmp(shell->pipes->cmds[0], "exit", ft_strlen("exit")) == 0)
 		exit(0);
 }
