@@ -12,17 +12,34 @@
 
 #include "../includes/minishell.h"
 
+static void	ft_free_redirect(t_redir **redir)
+{
+	t_redir	*current;
+	t_redir	*tmp;
+
+	current = *redir;
+	while (current != NULL)
+	{
+		tmp = current->next;
+		free(current->file);
+		free(current);
+		current = tmp;
+	}
+	*redir = NULL;
+}
+
 bool	free_pipes(t_pipes *pipes)
 {
 	t_pipes	*current_pipeline;
 
-	while (pipes != NULL)
+	current_pipeline = pipes;
+	while (current_pipeline != NULL)
 	{
-		current_pipeline = pipes;
-		pipes = pipes->next;
-		free(current_pipeline);
+		ft_free_redirect(&current_pipeline->redir_in);
+		ft_free_redirect(&current_pipeline->redir_out);
+		ft_free_array(current_pipeline->cmds);
+		current_pipeline = current_pipeline->next;
 	}
-	return (false);
 }
 
 static void	free_tokens(t_token **tokens)
@@ -34,7 +51,8 @@ static void	free_tokens(t_token **tokens)
 	while (current != NULL)
 	{
 		tmp = current->next;
-		free(current->data);
+		if (current->data)
+			free(current->data);
 		free(current);
 		current = tmp;
 	}
@@ -62,8 +80,8 @@ static void	free_env(t_env *env)
 void	free_struct(t_shell *shell, int running)
 {
 	free(shell->input);
-	free(shell->pipes);
 	free_tokens(&shell->tokens);
+	free_pipes(shell->pipes);
 	shell->error = NO_ERROR;
 	if (running == 0)
 		return ;

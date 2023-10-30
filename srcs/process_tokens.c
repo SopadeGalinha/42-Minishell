@@ -12,8 +12,6 @@
 
 #include "../includes/minishell.h"
 
-// SIX FUNCTIONS IN A FILE
-
 static int	define_token(const char *token)
 {
 	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
@@ -55,48 +53,53 @@ static char	*get_key(char *token, int i)
 	return (key);
 }
 
-static void	aux_(t_env *env, char *token, int *si)
+static char *aux_expand(t_env *env, char *token, int *si)
 {
-	char	*aux;
-	char	*key;
-	char	*value;
+	char *aux;
+	char *key;
+	char *value;
 
 	key = ft_substr(token, si[START] + 1, si[INDEX] - si[START] - 1);
+	printf("si[START]: [%d] si[INDEX]: [%d]\n", si[START], si[INDEX]);
+	printf("token: [%s]\n", token);
+	printf("key: [%s]\n", key);
+	exit(0);
 	value = get_env_value(env, key);
 	free(key);
 	key = ft_substr(token, 0, si[START]);
 	aux = ft_strjoin(key, value);
 	free(key);
 	key = ft_substr(token, si[INDEX], ft_strlen(token) - si[INDEX]);
+	char *new_token = ft_strjoin(aux, key);
 	free(token);
-	token = ft_strjoin(aux, key);
-	si[INDEX] = si[START] + ft_strlen(value) - 1;
 	free(aux);
 	free(key);
 	free(value);
+	return new_token;
 }
 
-static char	*expand_env(t_env *env, char *token)
+static char *expand_env(t_env *env, char *token)
 {
-	int		si[2];
-	char	*aux;
-	char	*key;
-	char	*value;
+    int si[2];
+    char *aux;
+    char *key;
+    char *value;
 
-	si[START] = 0;
-	si[INDEX] = -1;
-	while (token[++si[INDEX]])
-	{
-		if (token[si[INDEX]] == '$')
-		{
-			si[START] = si[INDEX];
-			while (ft_isalnum(token[++si[INDEX]])
-				|| token[si[INDEX]] == '_' || token[si[INDEX]] == '?')
-				;
-			aux_(env, token, si);
-		}
-	}
-	return (token);
+    si[START] = 0;
+    si[INDEX] = -1;
+    char *newToken = token; // Create a new variable to store the updated token
+    while (newToken[++si[INDEX]]) // Use newToken here
+    {
+        if (newToken[si[INDEX]] == '$')
+        {
+            si[START] = si[INDEX];
+            while (ft_isalnum(newToken[++si[INDEX]])
+                || newToken[si[INDEX]] == '_' || newToken[si[INDEX]] == '?')
+                ;
+            newToken = aux_expand(env, newToken, si); // Update newToken
+        }
+    }
+    return newToken; // Return the updated token
 }
 
 bool	process_tokens(t_shell *shell)
