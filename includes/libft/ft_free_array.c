@@ -12,12 +12,15 @@
 
 #include "libft.h"
 
-void	ft_free_array(char **split_ptr)
+void ft_free_array(char **split_ptr)
 {
-	int	i;
+    int i;
 
-	i = -1;
-	while (split_ptr[++i])
-		free(split_ptr[i]);
-	free(split_ptr);
+    i = 0;
+    while (split_ptr[i] != NULL)
+    {
+        free(split_ptr[i]);
+        i++;
+    }
+    free(split_ptr);
 }
