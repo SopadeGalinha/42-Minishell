@@ -33,6 +33,13 @@ void	init_shell(t_shell *shell, char **env)
 	shell->error = NO_ERROR;
 	shell->env = init_env(env);
 	shell->exp = init_export(shell->env);
+	shell->stdin = dup(STDIN_FILENO);
+	shell->stdout = dup(STDOUT_FILENO);
+	shell->stderr = dup(STDERR_FILENO);
+	shell->input = NULL;
+	shell->builtin[0] = ft_pwd;
+	shell->builtin[1] = ft_cd;
+	shell->builtin[2] = ft_echo;
 }
 
 bool	print_error(char *error, int exit_code)

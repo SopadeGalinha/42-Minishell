@@ -39,8 +39,10 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 	int		i;
 	t_token	*tmp;
 	t_pipes	*pipes;
+	int		index;
 
 	i = -1;
+	index = 0;
 	tmp = *current;
 	pipes = ft_calloc(1, sizeof(t_pipes));
 	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
@@ -51,6 +53,7 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 	i = 0;
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
+		index++;
 		if (is_redirect(*current))
 			handle_redirects(current, &pipes->redir_in, &pipes->redir_out);
 		else

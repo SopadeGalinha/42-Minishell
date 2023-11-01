@@ -10,8 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-.SILENT:
-.ONE_SHELL:
+# .SILENT:
+# .ONE_SHELL:
 
 NAME		= minishell
 
@@ -58,10 +58,9 @@ fclean: clean
 #@make -s fclean -C $(LIBFT_DIR)
 
 leak: all
-	@valgrind -q --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression ./$(NAME) 
+	@valgrind -q --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression ./$(NAME)
 log: all
-	@valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression --log-file=log%p.txt ./$(NAME) 
-
+	@valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression --log-file=log%p.txt ./$(NAME)
 
 git: fclean
 ifdef M
