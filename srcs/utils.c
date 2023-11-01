@@ -40,6 +40,10 @@ void	init_shell(t_shell *shell, char **env)
 	shell->builtin[0] = ft_pwd;
 	shell->builtin[1] = ft_cd;
 	shell->builtin[2] = ft_echo;
+	shell->builtin[3] = ft_export;
+	shell->builtin[4] = ft_exit;
+	shell->builtin[5] = ft_unset;
+	shell->builtin[6] = ft_env;
 }
 
 bool	print_error(char *error, int exit_code)
