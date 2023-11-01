@@ -40,6 +40,7 @@ bool	free_pipes(t_pipes *pipes)
 		ft_free_array(current_pipeline->cmds);
 		current_pipeline = current_pipeline->next;
 	}
+	free(pipes);
 }
 
 static void	free_tokens(t_token **tokens)
@@ -87,4 +88,22 @@ void	free_struct(t_shell *shell, int running)
 		return ;
 	free_env(shell->env);
 	free_env(shell->exp);
+	free(shell->oldpwd);
+	close(shell->stdin);
+	close(shell->stdout);
+	ft_printf_fd(1, "Bye bye!\n");
+	exit(g_exit_status);
+}
+
+void	ft_free_array(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i] != NULL)
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }

@@ -89,6 +89,7 @@ typedef struct s_pipes
 {
 	int							id;
 	char						**cmds;
+	int							pipe[2];
 	struct	s_redir				*redir_in;
 	struct	s_redir				*redir_out;
 	struct s_pipes				*next;
@@ -120,7 +121,12 @@ typedef struct s_shell
 	t_env	*exp;
 	t_pipes	*pipes;
 	char	*input;
+	char	*oldpwd;
 	int		error;
+	int		stdin;
+	int		stdout;
+	int		stderr;
+	void	(*builtin[3])(struct s_shell *shell);
 }				t_shell;
 
 /*__________________________________MACROS____________________________________*/
@@ -216,6 +222,11 @@ void	free_struct(t_shell *shell, int	running);
 void	print_tokens(t_token *head);
 void	print_pipes(t_pipes *pipes);
 
+
+// BUILTINS
+void	ft_pwd(t_shell *shell);
+void	ft_echo(t_shell *shell);
+void	ft_cd(t_shell *shell);
 //---------------------------------END FUNCTIONS---------------------------------//
 
 #endif
