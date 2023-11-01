@@ -41,6 +41,8 @@ bool	free_pipes(t_pipes *pipes)
 		current_pipeline = current_pipeline->next;
 	}
 	free(pipes);
+
+	return (true);
 }
 
 static void	free_tokens(t_token **tokens)
