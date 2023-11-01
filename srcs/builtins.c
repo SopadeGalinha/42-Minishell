@@ -82,8 +82,24 @@ void	ft_cd(t_shell *shell)
 
 void	ft_export(t_shell *shell)
 {
-	ft_printf_fd(shell->std_out, "export\n");
-	// print_list(shell, 1);
+		int	i = 1;
+
+	if (shell->pipes->cmds[i])
+	{
+		while (shell->pipes->cmds[i])
+		{
+			if(token_checker(shell->pipes->cmds[i]) > 0)
+			{
+				if (ft_strchr(shell->pipes->cmds[i], '='))
+					update_lists(shell, shell->pipes->cmds[i], 1);
+				else if (!ft_strchr(shell->pipes->cmds[i], '='))
+					update_lists(shell, shell->pipes->cmds[i], 0);
+			}
+			i++;
+		}
+	}
+    else
+        print_list(shell, 0);
 }
 
 void	ft_env(t_shell *shell)
