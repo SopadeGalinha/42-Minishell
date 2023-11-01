@@ -38,10 +38,17 @@ static void	delete_node(t_env **lst, char *key)
 	}
 }
 
-void	ft_unset(t_shell *shell, char *key)
+void	ft_unset(t_shell *shell)
 {
-	delete_node(&shell->env, key);
-	delete_node(&shell->exp, key);
+	int	i;
+
+	i = 0;
+	ft_printf_fd(shell->std_out, "unset\n");
+	while (shell->pipes->cmds[++i])
+	{
+		delete_node(&shell->env, shell->pipes->cmds[++i]);
+		delete_node(&shell->exp, shell->pipes->cmds[++i]);
+	}
 }
 
 void	ft_pwd(t_shell *shell)
@@ -71,6 +78,25 @@ void	ft_cd(t_shell *shell)
 		ft_printf_fd(2, "cd: %s: %s\n", param, strerror(errno));
 		g_exit_status = 1;
 	}
+}
+
+void	ft_export(t_shell *shell)
+{
+	ft_printf_fd(shell->std_out, "export\n");
+	// print_list(shell, 1);
+}
+
+void	ft_env(t_shell *shell)
+{
+	ft_printf_fd(shell->std_out, "env\n");
+	// print_list(shell, 0);
+}
+
+void	ft_exit(t_shell *shell)
+{
+	(void)shell;
+	ft_printf_fd(1, "exit\n");
+	free_struct(shell , 1);
 }
 
 void	ft_echo(t_shell *shell)

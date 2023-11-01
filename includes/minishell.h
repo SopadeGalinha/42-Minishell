@@ -126,7 +126,7 @@ typedef struct s_shell
 	int		std_in;
 	int		std_out;
 	int		std_err;
-	void	(*builtin[3])(struct s_shell *shell);
+	void	(*builtin[7])(struct s_shell *shell);
 }				t_shell;
 
 /*__________________________________MACROS____________________________________*/
@@ -224,7 +224,10 @@ void	print_pipes(t_pipes *pipes);
 void	ft_pwd(t_shell *shell);
 void	ft_echo(t_shell *shell);
 void	ft_cd(t_shell *shell);
-void	ft_unset(t_shell *shell, char *key);
+void	ft_unset(t_shell *shell);
+void	ft_export(t_shell *shell);
+void	ft_env(t_shell *shell);
+void	ft_exit(t_shell *shell);
 
 //---------------------------------END FUNCTIONS---------------------------------//
 
