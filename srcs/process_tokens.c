@@ -74,35 +74,36 @@ static char	*aux_expand(t_env *env, char *token, int *si)
 	free(aux);
 	free(key);
 	free(value);
-	return new_token;
+	return (new_token);
 }
 
-static char *expand_env(t_env *env, char *token)
+static char	*expand_env(t_env *env, char *token)
 {
-	int si[2];
-	char *aux;
-	char *key;
-	char *value;
+	int		si[2];
+	char	*aux;
+	char	*key;
+	char	*value;
+	char	*new_token;
 
 	si[START] = 0;
 	si[INDEX] = -1;
-	char *newToken = ft_strdup(token);
-	if (!newToken)
-		return NULL;
-	while (newToken[++si[INDEX]] != '\0')
+	new_token = ft_strdup(token);
+	if (!new_token)
+		return (NULL);
+	while (new_token[++si[INDEX]] != '\0')
 	{
-		if (newToken[si[INDEX]] == '$')
+		if (new_token[si[INDEX]] == '$')
 		{
 			si[START] = si[INDEX];
-			while (ft_isalnum(newToken[++si[INDEX]]))
+			while (ft_isalnum(new_token[++si[INDEX]]))
 				;
-			newToken = aux_expand(env, newToken, si);
-			if (!newToken)
-				return NULL;
+			new_token = aux_expand(env, new_token, si);
+			if (!new_token)
+				return (NULL);
 			si[INDEX] = -1;
 		}
 	}
-	return newToken; // Return the updated token
+	return (new_token);
 }
 
 bool	process_tokens(t_shell *shell)

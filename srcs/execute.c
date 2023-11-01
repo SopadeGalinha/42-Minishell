@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/01 08:12:18 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/01 08:38:26 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	execute(t_shell *shell)
 			break ;
 		if (ft_strncmp(pipes->cmds[0], "exit", 4) == 0 \
 			&& ft_strlen(pipes->cmds[0]) == 4)
-				free_struct(shell, 1);
+			free_struct(shell, 1);
 	}
 	if (function < 3)
 		shell->builtin[function](shell);
