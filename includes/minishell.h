@@ -218,7 +218,7 @@ void	free_struct(t_shell *shell, int	running);
 // INUTILS
 void	print_tokens(t_token *head);
 void	print_pipes(t_pipes *pipes);
-int		token_checker(char *str);
+int		arg_checker(t_shell *shell, char *str);
 
 
 // BUILTINS
