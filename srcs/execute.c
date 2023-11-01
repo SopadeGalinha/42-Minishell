@@ -6,7 +6,7 @@
 /*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/01 16:22:15 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/11/01 16:34:08 by heolivei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,28 +39,6 @@ int	token_checker(char *str)
 	return (1);
 }
 
-void	ft_export(t_shell *shell)
-{
-	int	i = 1;
-
-	if (shell->pipes->cmds[i])
-	{
-		while (shell->pipes->cmds[i])
-		{
-			if(token_checker(shell->pipes->cmds[i]) > 0)
-			{
-				if (ft_strchr(shell->pipes->cmds[i], '='))
-					update_lists(shell, shell->pipes->cmds[i], 1);
-				else if (!ft_strchr(shell->pipes->cmds[i], '='))
-					update_lists(shell, shell->pipes->cmds[i], 0);
-			}
-			i++;
-		}
-	}
-    else
-        print_list(shell, 0);
-}
-
 void	execute(t_shell *shell)
 {
 	t_pipes		*pipes;
@@ -74,11 +52,11 @@ void	execute(t_shell *shell)
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-	
+
 	function = -1;
 	pipes = shell->pipes;
 	while (++function < 7)
-	{	
+	{
 		if (ft_strncmp(pipes->cmds[0], builtin[function], \
 		ft_strlen(builtin[function])) == 0
 			&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtin[function]))
