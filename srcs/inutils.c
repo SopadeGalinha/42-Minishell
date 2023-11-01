@@ -17,7 +17,7 @@ void	print_tokens(t_token *head)
 	char	*typeStr;
 	char	*quoteStr;
 	t_token	*current;
-	
+
 
 	current = head;
 	while (current != NULL)
@@ -78,7 +78,7 @@ void	print_tokens(t_token *head)
 			default:
 				quoteStr = "none";
 		}
-		
+
 		printf(BOLD_ORANGE"data: "RESET"%-8s"BOLD_BLUE" type:"RESET" %-2s", current->data, typeStr);
 		if (current->quote != NONE)
 			printf(BOLD_RED" %-8s\n\n"RESET, quoteStr);
@@ -140,14 +140,14 @@ void	print_redir(t_redir *head)
 void	print_pipes(t_pipes *head)
 {
 	t_pipes	*current;
-	int		i;
+	//int		i;
 	int		pipe;
 
 	current = head;
 	pipe = 0;
 	while (current != NULL)
 	{
-		i = 0;
+		//i = 0;
 		pipe++;
 		printf(BOLD_GREEN"PIPELINE[%d]\n"RESET, pipe);
 

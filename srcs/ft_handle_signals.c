@@ -14,6 +14,7 @@
 
 static void	sig_handler(int signum)
 {
+	(void)signum;
 	rl_replace_line("", 0);
 	ft_printf_fd(0, "\n");
 	rl_on_new_line();

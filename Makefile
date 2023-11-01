@@ -15,7 +15,7 @@
 
 NAME		= minishell
 
-CC			= cc
+CC			= gcc
 RM			= /bin/rm -rf
 FLAGS		= -g #-Wall -Wextra -Werror -fsanitize=address
 
@@ -32,7 +32,7 @@ SRCS_LIST	=	main.c parse_input.c utils.c ft_handle_signals.c env.c export.c \
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
-LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))	
+LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))
 
 all: $(NAME)
 

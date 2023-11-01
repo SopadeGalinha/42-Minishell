@@ -44,8 +44,8 @@ static char	*remove_quotes(char *data)
 	result = ft_strdup("");
 	while (data[++si[INDEX]])
 	{
-		if (!si[QT] && (data[si[INDEX]] == '"' || \
-		data[si[INDEX]] == '\'') || (si[QT] == data[si[INDEX]]))
+		if (!si[QT] && ((data[si[INDEX]] == '"' || \
+		data[si[INDEX]] == '\'') || (si[QT] == data[si[INDEX]])))
 		{
 			if (si[QT] == data[si[INDEX]])
 				si[QT] = 0;
