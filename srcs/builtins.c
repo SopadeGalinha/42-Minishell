@@ -43,11 +43,10 @@ void	ft_unset(t_shell *shell)
 	int	i;
 
 	i = 0;
-	ft_printf_fd(shell->std_out, "unset\n");
 	while (shell->pipes->cmds[++i])
 	{
-		delete_node(&shell->env, shell->pipes->cmds[++i]);
-		delete_node(&shell->exp, shell->pipes->cmds[++i]);
+		delete_node(&shell->env, shell->pipes->cmds[i]);
+		delete_node(&shell->exp, shell->pipes->cmds[i]);
 	}
 }
 
@@ -88,7 +87,7 @@ void	ft_export(t_shell *shell)
 	{
 		while (shell->pipes->cmds[i])
 		{
-			if(token_checker(shell->pipes->cmds[i]) > 0)
+			if(arg_checker(shell, shell->pipes->cmds[i]) > 0)
 			{
 				if (ft_strchr(shell->pipes->cmds[i], '='))
 					update_lists(shell, shell->pipes->cmds[i], 1);
@@ -104,8 +103,7 @@ void	ft_export(t_shell *shell)
 
 void	ft_env(t_shell *shell)
 {
-	ft_printf_fd(shell->std_out, "env\n");
-	// print_list(shell, 0);
+	print_list(shell, 1);
 }
 
 void	ft_exit(t_shell *shell)

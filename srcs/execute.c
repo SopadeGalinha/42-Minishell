@@ -6,26 +6,42 @@
 /*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/01 16:34:08 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/11/01 19:12:07 by heolivei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	token_checker(char *str)
+static int	str_isalpha(char *str, int flag)
+{
+	int	i;
+
+	i = 0;
+	if (flag)
+		i = 1;
+	while (str[i])
+	{
+		if (!isalpha(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	arg_checker(t_shell *shell, char *str)
 {
 	int	i = 0;
 
 	if (ft_isdigit(str[0]))
 	{
-		printf("nao pode colocar numero no inicio na key vacilao\n");
+		ft_printf_fd(shell->std_out, "minishell: export: `%s': not a valid identifier\n", str);
 		return (-1);
 	}
 	else if (str[0] == '_' && str[1])
 	{
-		if(!ft_isalnum(str[1]) && str[1] != '_')
+		if ((!ft_isalnum(str[1]) && str[1] != '_') || str_isalpha(str, 1) == 0)
 		{
-			printf("Depois do UNDERLINE so pode numero, letra ou outro UNDELINE\n");
+			ft_printf_fd(shell->std_out, "minishell: export: `%s': not a valid identifier\n", str);;
 			return (-1);
 		}
 		else
@@ -33,11 +49,17 @@ int	token_checker(char *str)
 	}
 	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
 	{
-		printf("Apenas UNDERLINE o codigo nao faz nada\n");
 		return (-2);
+	}
+	else if (str_isalpha(str, 0) == 0)
+	{
+		ft_printf_fd(shell->std_out, "minishell: export: `%s': not a valid identifier\n", str);
+		return (-1);
 	}
 	return (1);
 }
+
+
 
 void	execute(t_shell *shell)
 {
