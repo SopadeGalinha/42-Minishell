@@ -91,8 +91,8 @@ void	free_struct(t_shell *shell, int running)
 	free_env(shell->env);
 	free_env(shell->exp);
 	free(shell->oldpwd);
-	close(shell->stdin);
-	close(shell->stdout);
+	close(shell->std_in);
+	close(shell->std_out);
 	ft_printf_fd(1, "Bye bye!\n");
 	exit(g_exit_status);
 }

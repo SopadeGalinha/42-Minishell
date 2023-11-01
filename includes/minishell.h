@@ -123,9 +123,9 @@ typedef struct s_shell
 	char	*input;
 	char	*oldpwd;
 	int		error;
-	int		stdin;
-	int		stdout;
-	int		stderr;
+	int		std_in;
+	int		std_out;
+	int		std_err;
 	void	(*builtin[3])(struct s_shell *shell);
 }				t_shell;
 
@@ -169,7 +169,7 @@ typedef struct s_shell
 char		*ft_strdup_equal_value(const char *src);
 char		*ft_strdup_equal_key(const char *src);
 int			create_add_node_to_list(t_env **head, char *line);
-void 		print_list(t_env *head, int flag);
+void 		print_list(t_shell *shell, int flag);
 t_env		*init_env(char **envp);
 
 void		insert_sorted(t_env **export_list, t_env *env);
@@ -184,9 +184,6 @@ int 	create_find_add_insert_node(t_env **head, char *line);
 void	update_lists(t_shell *shell, char *line, int flag);
 void	update_exp(t_shell *shell, char *line);
 
-//UNSET
-void	ft_unset(t_shell *shell, char *key);
-void	delete_node(t_env **lst, char *key);
 
 //MAIN
 void	ft_handle_signals(void);
@@ -227,6 +224,8 @@ void	print_pipes(t_pipes *pipes);
 void	ft_pwd(t_shell *shell);
 void	ft_echo(t_shell *shell);
 void	ft_cd(t_shell *shell);
+void	ft_unset(t_shell *shell, char *key);
+
 //---------------------------------END FUNCTIONS---------------------------------//
 
 #endif
