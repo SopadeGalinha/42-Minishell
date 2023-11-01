@@ -93,10 +93,11 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 
 bool	lexical_analyzer(char *input, t_token **tokens)
 {
-	int		si[3];
+	int		si[4]; //VERIFICAR
 	char	*data;
-	int		quote_type;
+	//int		quote_type;
 
+	data = NULL;
 	si[INDEX] = -1;
 	si[START] = 0;
 	while (++si[INDEX] < (int)strlen(input))

@@ -41,7 +41,7 @@ static int	define_token(const char *token)
 	return (WORD);
 }
 
-static char	*get_key(char *token, int i)
+/*static char	*get_key(char *token, int i)
 {
 	int		start;
 	char	*key;
@@ -51,7 +51,7 @@ static char	*get_key(char *token, int i)
 		;
 	key = ft_substr(token, start + 1, i - start - 1);
 	return (key);
-}
+}*/
 
 static char	*aux_expand(t_env *env, char *token, int *si)
 {
@@ -80,9 +80,9 @@ static char	*aux_expand(t_env *env, char *token, int *si)
 static char *expand_env(t_env *env, char *token)
 {
 	int si[2];
-	char *aux;
-	char *key;
-	char *value;
+	//char *aux;
+	//char *key;
+	//char *value;
 
 	si[START] = 0;
 	si[INDEX] = -1;

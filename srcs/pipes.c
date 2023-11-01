@@ -84,12 +84,12 @@ bool	create_pipeline_node(t_shell *shell)
 	t_token	*current;
 	t_pipes	*head;
 	t_pipes	*new_pipe;
-	t_pipes	*current_pipe;
+	//t_pipes	*current_pipe;
 
 	aux[0] = 0;
 	head = NULL;
 	new_pipe = NULL;
-	current_pipe = NULL;
+	//current_pipe = NULL;
 	current = shell->tokens;
 	aux[1] = pipes_counter(shell->tokens) + 1;
 	while (aux[1]-- > 0)
