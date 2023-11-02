@@ -16,10 +16,11 @@ bool	parse_input(t_shell *shell)
 {
 	if (!lexical_analyzer(shell->input, &shell->tokens))
 		return (false);
-	if (process_tokens(shell) == false)
+	if (!process_tokens(shell))
 		return (false);
-	if (handle_pipes(shell) == false)
+	if (!create_pipeline_node(shell))
 		return (false);
-	print_pipes(shell->pipes);
+	if (shell->error == true)
+		printf("Error só n sei qual\n");
 	return (true);
 }

@@ -1,9 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   updates_lists.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/01 14:21:24 by jhogonca          #+#    #+#             */
+/*   Updated: 2023/11/01 14:21:53 by jhogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-int create_add_node_to_back(t_env **head, char *line)
+int	create_add_node_to_back(t_env **head, char *line)
 {
-	t_env *new = (t_env *)malloc(sizeof(t_env));
-	t_env *temp = *head;
+	t_env	*new;
+	t_env *temp;
+
+	new = (t_env *)malloc(sizeof(t_env));
+	temp = *head;
 	if (!new)
 	{
 		ft_printf_fd(2, "Failed to allocate memory for t_env\n");
@@ -62,10 +77,14 @@ void	update_node(t_env *lst, char *key, char *line)
 		current = current->next;
 	}
 }
+
 int create_find_add_insert_node(t_env **head, char *line)
 {
-	t_env *new = (t_env *)malloc(sizeof(t_env));
-	if (!new) {
+	t_env *new;
+
+	new = (t_env *)malloc(sizeof(t_env));
+	if (!new)
+	{
 		ft_printf_fd(2, "Failed to allocate memory for t_env\n");
 		return (0);
 	}
@@ -73,9 +92,9 @@ int create_find_add_insert_node(t_env **head, char *line)
 	new->value = ft_strdup_equal_value(line);
 	new->line = ft_strdup(line);
 	new->next = NULL;
-
-	if (!*head) {
-		*head = new;  // Se a lista estiver vazia, o novo nó é o único nó na lista.
+	if (!*head)
+	{
+		*head = new;
 		return (1);
 	}
 	insert_sorted(head, new);
@@ -84,7 +103,9 @@ int create_find_add_insert_node(t_env **head, char *line)
 
 void	update_lists(t_shell *shell, char *line, int flag)
 {
-	char	*key = ft_strdup_equal_key(line);
+	char	*key;
+
+	key = ft_strdup_equal_key(line);
 	if (flag)
 	{
 		if (find_node(shell->env, key))

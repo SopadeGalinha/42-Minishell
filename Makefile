@@ -10,12 +10,12 @@
 #                                                                              #
 # **************************************************************************** #
 
-.SILENT:
-.ONE_SHELL:
+# .SILENT:
+# .ONE_SHELL:
 
 NAME		= minishell
 
-CC			= cc
+CC			= gcc
 RM			= /bin/rm -rf
 FLAGS		= -g #-Wall -Wextra -Werror -fsanitize=address
 
@@ -25,13 +25,16 @@ OBJS_DIR	= srcs/objs/
 LIBFT_DIR	= includes/libft/
 commit_msg	= "auto commit"
 
-SRCS_LIST	=	main.c parse_input.c utils.c ft_handle_signals.c env.c export.c \
-				ft_frees.c execute.c updates_lists.c lexical_analyzer.c \
-				pipes.c inutils.c process_tokens.c
+PARSER_LIST	=	parse_input.c lexical_analyzer.c lexer_aux.c \
+				process_tokens.c pipes.c redirects.c
+
+SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
+				export.c ft_frees.c execute.c updates_lists.c \
+				inutils.c validations.c builtins.c $(PARSER_LIST)
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
-LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))	
+LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))
 
 all: $(NAME)
 
@@ -57,10 +60,9 @@ fclean: clean
 #@make -s fclean -C $(LIBFT_DIR)
 
 leak: all
-	@valgrind -q --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression ./$(NAME) 
+	@valgrind -q --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression ./$(NAME)
 log: all
-	@valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression --log-file=log%p.txt ./$(NAME) 
-
+	@valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression --log-file=log%p.txt ./$(NAME)
 
 git: fclean
 ifdef M
@@ -71,7 +73,7 @@ endif
 	$(RM) $(NAME)
 	git add .
 	git commit -m "$(commit_msg)"
-	git push origin hellom
+	git push
 
 re: fclean all
 

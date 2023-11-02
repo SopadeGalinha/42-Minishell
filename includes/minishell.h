@@ -20,13 +20,14 @@
 # include <signal.h>
 # include <string.h>
 # include <dirent.h>
+# include <stdarg.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include "./libft/libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
-extern int exit_status;
+extern int g_exit_status;
 
 //---------------------------------END HEADERS--------------------------------//
 
@@ -54,6 +55,8 @@ enum QuoteType {
 	NONE,
 	SINGLE	= '\'',
 	DOUBLE	= '\"',
+	IN = 0,
+	OUT,
 };
 
 enum errorType {
@@ -70,12 +73,26 @@ enum indexesType {
 	ERROR,
 	INDEX = 0,
 	START,
+	QT,
+	QT_TYPE,
+	ERR_TYPE,
 };
+
+typedef struct s_redir
+{
+	int				type;
+	char			*file;
+	struct	s_redir	*next;
+}				t_redir;
 
 typedef struct s_pipes
 {
-	char				**cmds;
-	struct s_pipes	*next;
+	int							id;
+	char						**cmds;
+	int							pipe[2];
+	struct	s_redir				*redir_in;
+	struct	s_redir				*redir_out;
+	struct s_pipes				*next;
 }					t_pipes;
 
 typedef struct s_env
@@ -104,7 +121,12 @@ typedef struct s_shell
 	t_env	*exp;
 	t_pipes	*pipes;
 	char	*input;
+	char	*oldpwd;
 	int		error;
+	int		std_in;
+	int		std_out;
+	int		std_err;
+	void	(*builtin[7])(struct s_shell *shell);
 }				t_shell;
 
 /*__________________________________MACROS____________________________________*/
@@ -138,14 +160,16 @@ typedef struct s_shell
 # define PP	BOLD_RED	"el\001\033[0m\002"
 # define T	BOLD_WHITE	"l\001\033[0m\002"
 # define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
-//---------------------------------END MACROS---------------------------------//
+//------------------------------ END MACROS ----------------------------------//
 
-/*__________________________________FUNCTIONS____________________________________*/
+/*_______________________________ FUNCTIONS __________________________________*/
+
+//---------------------------- ENVIRONMENT PART ------------------------------//
 
 char		*ft_strdup_equal_value(const char *src);
 char		*ft_strdup_equal_key(const char *src);
 int			create_add_node_to_list(t_env **head, char *line);
-void 		print_list(t_env *head, int flag);
+void 		print_list(t_shell *shell, int flag);
 t_env		*init_env(char **envp);
 
 void		insert_sorted(t_env **export_list, t_env *env);
@@ -160,36 +184,52 @@ int 	create_find_add_insert_node(t_env **head, char *line);
 void	update_lists(t_shell *shell, char *line, int flag);
 void	update_exp(t_shell *shell, char *line);
 
-//UNSET
-void	ft_unset(t_shell *shell, char *key);
-void	delete_node(t_env **lst, char *key);
 
 //MAIN
 void	ft_handle_signals(void);
 void	execute(t_shell *shell);
 
+//---------------------------- PARSER PART -----------------------------------//
+
 //PARSER
-bool	lexical_analyzer(char *input, t_token **tokens);
-char	*ft_getenv(char **env, char *var_name);
 bool	parse_input(t_shell *shell);
-char	*get_env_value(t_env *env, char *key);
+bool	lexical_analyzer(char *input, t_token **tokens);
+bool	process_tokens(t_shell *shell);
+bool	process_tokens(t_shell *shell);
+bool	create_pipeline_node(t_shell *shell);
+void	handle_redirects(t_token **current, t_redir **r_in, t_redir **r_out);
+bool	lexical_aux(char *input, t_token **tokens, int *si, char *data);
+bool	is_special_char(char c);
+void	addtoken(t_token **tokens, char *data, int *quo_err);
 
 //UTILS
-int		define_token(const char *token);
-void	print_tokens(t_token *head);
-void	free_struct(t_shell *shell, int	running);
-void	get_input(t_shell *shell);
-void	init_shell(t_shell *shell, char **env);
+bool	ft_isspace_str(char *str);
+bool	ft_isdigit_str(char *str);
 bool	input_is_valid(char *input);
 bool	print_error(char *error, int exit_code);
+void	init_shell(t_shell *shell, char **env);
+void	get_input(t_shell *shell);
+char	*get_env_value(t_env *env, char *key);
 
-bool handle_pipes(t_shell *shell);
-bool free_pipes(t_pipes *pipes);
+// FREE
+bool	free_pipes(t_pipes *pipes);
+void	free_struct(t_shell *shell, int	running);
 
 // INUTILS
 void	print_tokens(t_token *head);
-void print_pipes(t_pipes *pipes);
-bool process_tokens(t_shell *shell);
+void	print_pipes(t_pipes *pipes);
+int		arg_checker(t_shell *shell, char *str);
+
+
+// BUILTINS
+void	ft_pwd(t_shell *shell);
+void	ft_echo(t_shell *shell);
+void	ft_cd(t_shell *shell);
+void	ft_unset(t_shell *shell);
+void	ft_export(t_shell *shell);
+void	ft_env(t_shell *shell);
+void	ft_exit(t_shell *shell);
+
 //---------------------------------END FUNCTIONS---------------------------------//
 
 #endif

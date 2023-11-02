@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	pipes_counter(t_token *tokens)
+static int	pipes_counter(t_token *tokens)
 {
 	int		i;
 	t_token	*current;
@@ -28,87 +28,81 @@ int	pipes_counter(t_token *tokens)
 	return (i);
 }
 
-int	count_cmds_in_pipeline(t_token *current)
+static int	is_redirect(t_token *current)
 {
-	t_token	*temp;
-	int		command_count;
-
-	temp = current;
-	command_count = 0;
-	while (temp != NULL && temp->type != PIPELINE)
-	{
-		command_count++;
-		temp = temp->next;
-	}
-	return (command_count);
+	return (current->type == REDIR_OUT || current->type == D_REDIR_OUT
+		|| current->type == REDIR_IN || current->type == HEREDOC);
 }
 
-t_pipes	*new_pipe_node(char **cmds)
+static void	*copy_tokens_to_pipeline(t_token **current)
 {
-	t_pipes	*new_pipeline;
+	int		i;
+	t_token	*tmp;
+	t_pipes	*pipes;
+	int		index;
 
-	new_pipeline = (t_pipes *)malloc(sizeof(t_pipes));
-	if (new_pipeline)
-	{
-		new_pipeline->cmds = cmds;
-		new_pipeline->next = NULL;
-	}
-	return (new_pipeline);
-}
-
-void	insert_pipe_node(t_pipes **head, t_pipes *new_pipeline)
-{
-	t_pipes	*current;
-
-	if (*head == NULL)
-		*head = new_pipeline;
-	else
-	{
-		current = *head;
-		while (current->next != NULL)
-			current = current->next;
-		current->next = new_pipeline;
-	}
-}
-
-void	copy_cmds_to_pipeline(char **cmds, t_token **current)
-{
-	int	i;
-
+	i = -1;
+	index = 0;
+	tmp = *current;
+	pipes = ft_calloc(1, sizeof(t_pipes));
+	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
+		tmp = tmp->next;
+	pipes->cmds = ft_calloc(i + 2, sizeof(char *));
+	if (pipes->cmds == NULL)
+		return (NULL);
 	i = 0;
-	if (!cmds)
-		return ;
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
-		cmds[i] = ft_strdup((*current)->data);
-		i++;
+		index++;
+		if (is_redirect(*current))
+			handle_redirects(current, &pipes->redir_in, &pipes->redir_out);
+		else
+			pipes->cmds[i++] = ft_strdup((*current)->data);
 		*current = (*current)->next;
 	}
-	cmds[i] = NULL;
+	return (pipes);
 }
 
-bool	handle_pipes(t_shell *shell)
+static void	add_node_to_pipeline(t_pipes **head, t_pipes *new)
 {
-	char	**cmds;
-	int		c_pipes;
-	t_token	*current;
-	t_pipes	*new_pipeline;
+	t_pipes	*tmp;
 
-	shell->pipes = NULL;
-	current = shell->tokens;
-	c_pipes = pipes_counter(shell->tokens) + 1;
-	while (c_pipes-- > 0)
+	if (*head == NULL)
+		*head = new;
+	else
 	{
-		cmds = malloc((count_cmds_in_pipeline(current) + 1) * sizeof(char *));
-		if (cmds == NULL)
-			return (free_pipes(shell->pipes));
-		new_pipeline = new_pipe_node(cmds);
-		if (!new_pipe_node)
-			return (free_pipes(shell->pipes));
-		copy_cmds_to_pipeline(new_pipeline->cmds, &current);
-		insert_pipe_node(&shell->pipes, new_pipeline);
+		tmp = *head;
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
+}
+
+bool	create_pipeline_node(t_shell *shell)
+{
+	int		aux[2];
+	t_token	*current;
+	t_pipes	*head;
+	t_pipes	*new_pipe;
+	//t_pipes	*current_pipe;
+
+	aux[0] = 0;
+	head = NULL;
+	new_pipe = NULL;
+	//current_pipe = NULL;
+	current = shell->tokens;
+	aux[1] = pipes_counter(shell->tokens) + 1;
+	while (aux[1]-- > 0)
+	{
+		new_pipe = copy_tokens_to_pipeline(&current);
+		if (new_pipe == NULL)
+			return (false);
+		new_pipe->next = NULL;
+		new_pipe->id = ++aux[0];
+		add_node_to_pipeline(&head, new_pipe);
 		if (current != NULL && current->type == PIPELINE)
 			current = current->next;
 	}
+	shell->pipes = head;
 	return (true);
 }

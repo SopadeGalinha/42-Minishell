@@ -12,9 +12,7 @@
 
 #include "../includes/minishell.h"
 
-// SIX FUNCTIONS IN A FILE
-
-int	define_token(const char *token)
+static int	define_token(const char *token)
 {
 	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
 		return (PIPELINE);
@@ -43,38 +41,12 @@ int	define_token(const char *token)
 	return (WORD);
 }
 
-char	*get_env_value(t_env *env, char *key)
-{
-	t_env	*current;
-
-	current = env;
-	while (current)
-	{
-		if (ft_strncmp(current->key, key, ft_strlen(key)) == 0
-			&& ft_strlen(current->key) == ft_strlen(key))
-			return (ft_strdup(current->value));
-		current = current->next;
-	}
-	return (ft_strdup(""));
-}
-
-char	*get_key(char *token, int i)
-{
-	int		start;
-	char	*key;
-
-	start = i;
-	while (ft_isalnum(token[++i]) || token[i] == '_')
-		;
-	key = ft_substr(token, start + 1, i - start - 1);
-	return (key);
-}
-
-void	aux_(t_env *env, char *token, int *si)
+static char	*aux_expand(t_env *env, char *token, int *si)
 {
 	char	*aux;
 	char	*key;
 	char	*value;
+	char	*new_token;
 
 	key = ft_substr(token, si[START] + 1, si[INDEX] - si[START] - 1);
 	value = get_env_value(env, key);
@@ -82,36 +54,41 @@ void	aux_(t_env *env, char *token, int *si)
 	key = ft_substr(token, 0, si[START]);
 	aux = ft_strjoin(key, value);
 	free(key);
+	if (!token[si[INDEX]])
+		return (aux);
 	key = ft_substr(token, si[INDEX], ft_strlen(token) - si[INDEX]);
+	new_token = ft_strjoin(aux, key);
 	free(token);
-	token = ft_strjoin(aux, key);
-	si[INDEX] = si[START] + ft_strlen(value) - 1;
 	free(aux);
 	free(key);
 	free(value);
+	return (new_token);
 }
 
-char	*expand_env(t_env *env, char *token)
+static char	*expand_env(t_env *env, char *token)
 {
 	int		si[2];
-	char	*aux;
-	char	*key;
-	char	*value;
+	char	*new_token;
 
 	si[START] = 0;
 	si[INDEX] = -1;
-	while (token[++si[INDEX]])
+	new_token = ft_strdup(token);
+	if (!new_token)
+		return (NULL);
+	while (new_token[++si[INDEX]] != '\0')
 	{
-		if (token[si[INDEX]] == '$')
+		if (new_token[si[INDEX]] == '$')
 		{
 			si[START] = si[INDEX];
-			while (ft_isalnum(token[++si[INDEX]])
-				|| token[si[INDEX]] == '_' || token[si[INDEX]] == '?')
+			while (ft_isalnum(new_token[++si[INDEX]]))
 				;
-			aux_(env, token, si);
+			new_token = aux_expand(env, new_token, si);
+			if (!new_token)
+				return (NULL);
+			si[INDEX] = -1;
 		}
 	}
-	return (token);
+	return (new_token);
 }
 
 bool	process_tokens(t_shell *shell)
@@ -128,6 +105,8 @@ bool	process_tokens(t_shell *shell)
 				;
 			else
 				current->data = expand_env(shell->env, current->data);
+			if (current->data == NULL)
+				return (false);
 		}
 		if (current->type == OR
 			|| current->type == AND || current->type == SEMICOLON)
