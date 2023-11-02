@@ -57,7 +57,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 	$(RM) *.txt
-#@make -s fclean -C $(LIBFT_DIR)
+	@make -s fclean -C $(LIBFT_DIR)
 
 leak: all
 	@valgrind -q --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression ./$(NAME)

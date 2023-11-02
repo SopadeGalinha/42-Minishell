@@ -17,6 +17,8 @@ static void	ft_free_redirect(t_redir **redir)
 	t_redir	*current;
 	t_redir	*tmp;
 
+	if (!redir)
+		return ;
 	current = *redir;
 	while (current != NULL)
 	{
@@ -32,12 +34,16 @@ bool	free_pipes(t_pipes *pipes)
 {
 	t_pipes	*current_pipeline;
 
+	if (pipes == NULL)
+		return (true);
 	current_pipeline = pipes;
 	while (current_pipeline != NULL)
 	{
 		ft_free_redirect(&current_pipeline->redir_in);
 		ft_free_redirect(&current_pipeline->redir_out);
 		ft_free_array(current_pipeline->cmds);
+		close(current_pipeline->pipe[0]);
+		close(current_pipeline->pipe[1]);
 		current_pipeline = current_pipeline->next;
 	}
 	free(pipes);
@@ -50,6 +56,8 @@ static void	free_tokens(t_token **tokens)
 	t_token	*current;
 	t_token	*tmp;
 
+	if (tokens == NULL)
+		return ;
 	current = *tokens;
 	while (current != NULL)
 	{
@@ -62,12 +70,14 @@ static void	free_tokens(t_token **tokens)
 	*tokens = NULL;
 }
 
-static void	free_env(t_env *env)
+static void free_env(t_env **env)
 {
 	t_env	*current;
 	t_env	*tmp;
 
-	current = env;
+	if (env == NULL)
+		return;
+	current = *env;
 	while (current != NULL)
 	{
 		tmp = current->next;
@@ -77,35 +87,26 @@ static void	free_env(t_env *env)
 		free(current);
 		current = tmp;
 	}
-	env = NULL;
+	*env = NULL;
 }
 
 void	free_struct(t_shell *shell, int running)
 {
-	free(shell->input);
-	free_tokens(&shell->tokens);
-	free_pipes(shell->pipes);
+ 	if (shell->input != NULL)
+		free(shell->input);
+/*
+	if (shell->pipes != NULL)
+		free_pipes(shell->pipes);
+	if (shell->tokens != NULL) */
+	free_tokens(&(shell->tokens));
 	shell->error = NO_ERROR;
 	if (running == 0)
 		return ;
-	free_env(shell->env);
-	free_env(shell->exp);
+	free_env(&shell->env);
+	free_env(&shell->exp);
 	free(shell->oldpwd);
 	close(shell->std_in);
 	close(shell->std_out);
 	ft_printf_fd(1, "Bye bye!\n");
 	exit(g_exit_status);
-}
-
-void	ft_free_array(char **array)
-{
-	int	i;
-
-	i = 0;
-	while (array[i] != NULL)
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
 }

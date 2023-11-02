@@ -93,26 +93,23 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 
 bool	lexical_analyzer(char *input, t_token **tokens)
 {
-	int		si[4]; //VERIFICAR
+	int		si[4];
 	char	*data;
-	//int		quote_type;
 
 	data = NULL;
-	si[INDEX] = -1;
+	si[INDEX] = 0;
 	si[START] = 0;
-	while (++si[INDEX] < (int)strlen(input))
+	while (si[INDEX] < (int)strlen(input))
 	{
 		si[QT] = 0;
 		si[START] = si[INDEX];
 		si[QT_TYPE] = 0;
 		if (is_special_char(input[si[INDEX]]))
-		{
 			si[INDEX] = cmds_data(input, si[INDEX], si[START], tokens);
-			continue ;
-		}
 		else
 			if (!lexical_aux(input, tokens, si, data))
 				return (false);
+		si[INDEX]++;
 	}
 	return (true);
 }
