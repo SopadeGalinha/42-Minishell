@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/02 19:38:20 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/02 20:22:41 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,32 @@ int	arg_checker(t_shell *shell, char *str)
 	return (1);
 }
 
+bool	ft_access(t_shell *shell)
+{
+	t_pipes	*tmp;
+	char	**array;
+	int		i;
+	char	*path;
 
+	i = -1;
+	tmp = shell->pipes;
+	path = get_env_value(shell->env, "PATH");
+	array = ft_split(path, ':');
+	while (array[++i])
+	{
+		free(path);
+		path = ft_strjoin(array[i], "/");
+		path = ft_strjoin(path, tmp->cmds[0]);
+		 if (access(path, F_OK) == 0)
+		{
+			tmp->path = ft_strdup(path);
+			free(path);
+			break ;
+		}
+	}
+	execve(tmp->path, tmp->cmds, NULL);
+	return (true);
+}
 
 void	execute(t_shell *shell)
 {
@@ -87,5 +112,5 @@ void	execute(t_shell *shell)
 	if (function < 7)
 		shell->builtin[function](shell);
 	else
-		ft_printf_fd(shell->std_out, "Not a builtin\n");
+		ft_access(shell);
 }

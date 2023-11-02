@@ -66,6 +66,7 @@ log: all
 
 git: fclean
 ifdef M
+
 	$(eval commit_msg = $(M))
 else
 	$(eval commit_msg = "auto commit")
