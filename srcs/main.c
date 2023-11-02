@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/01 13:45:42 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/02 19:16:47 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ int	main(int ac, char **av, char **envp)
 		get_input(&shell);
 		if (shell.input == NULL)
 			continue ;
-		if (shell.input)
-			if (shell.input[0] && input_is_valid(shell.input))
+		if (shell.input[0])
+		{
+			if (shell.input && input_is_valid(shell.input))
 				if (parse_input(&shell))
 					execute(&shell);
+		}
 		free_struct(&shell, 0);
 	}
 	free_struct(&shell, 1);

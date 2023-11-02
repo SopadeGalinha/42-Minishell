@@ -89,6 +89,7 @@ typedef struct s_pipes
 {
 	int							id;
 	char						**cmds;
+	char						*path;
 	int							pipe[2];
 	struct	s_redir				*redir_in;
 	struct	s_redir				*redir_out;
@@ -115,12 +116,13 @@ typedef struct s_token
 
 typedef struct s_shell
 {
+	char	*input;
+	t_pipes	*pipes;
+	
 	t_token	*tokens;
 	t_token	*cmds;
 	t_env	*env;
 	t_env	*exp;
-	t_pipes	*pipes;
-	char	*input;
 	char	*oldpwd;
 	int		error;
 	int		std_in;
