@@ -60,23 +60,70 @@ void	ft_pwd(t_shell *shell)
 	free(pwd);
 }
 
+int	ft_count_words(char **str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
 void	ft_cd(t_shell *shell)
 {
 	char	*param;
 	char	*pwd;
+	int		status;
+	char	*oldpwd;
+	char	*tmp;
+	char	*key;
 
-	param = shell->pipes->cmds[1];
-	if (param == NULL)
+	g_exit_status = 0;
+	if (ft_count_words(shell->pipes->cmds) > 2)
 	{
-		pwd = getcwd(NULL, 0);
-		ft_printf_fd(shell->std_out, "%s\n", pwd);
-		free(pwd);
+		print_error("minishell: cd: too many arguments", 1);
+		return ;
 	}
-	else if (chdir(param) == -1)
+	oldpwd = getcwd(NULL, 0);
+	if (ft_strncmp(shell->pipes->cmds[1], "-", 1) == 0
+		&& ft_strlen(shell->pipes->cmds[1]) <= 2)
 	{
-		ft_printf_fd(2, "cd: %s: %s\n", param, strerror(errno));
-		g_exit_status = 1;
+		if (strlen(shell->pipes->cmds[1]) == 1)
+			key = ft_strdup("OLDPWD");
+		else if (shell->pipes->cmds[1][1] == '-')
+			key = ft_strdup("HOME");
 	}
+	if (ft_strlen(key) > 1)
+	{
+		param = get_env_value(shell->env, key);
+		if (ft_strncmp(param, "", 1) == 0)
+		{
+			free(oldpwd);
+			ft_printf_fd(2, "minishell: cd: %s not set\n", key);
+			g_exit_status = 1;
+			return ;
+		}
+		else
+			ft_printf_fd(1, "%s\n", param);
+	}
+	else
+		param = shell->pipes->cmds[1];
+	status = chdir(param);
+	if (status == -1)
+	{
+		free(oldpwd);
+		ft_printf_fd(2, "minishell: cd: %s: %s\n", param, strerror(errno));
+		return ;
+	}
+	pwd = getcwd(NULL, 0);
+	tmp = ft_strjoin("OLDPWD=", oldpwd);
+	update_lists(shell, tmp, 1);
+	free(tmp);
+	tmp = ft_strjoin("PWD=", pwd);
+	update_lists(shell, tmp, 1);
+	free(tmp);
+	free(pwd);
 }
 
 void	ft_export(t_shell *shell)

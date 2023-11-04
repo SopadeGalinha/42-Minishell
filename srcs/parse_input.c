@@ -24,6 +24,6 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (shell->error == true)
 		printf("Error só n sei qual\n");
-	print_pipes(shell->pipes);
+	// print_pipes(shell->pipes);
 	return (true);
 }

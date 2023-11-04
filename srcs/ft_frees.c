@@ -30,24 +30,21 @@ static void	ft_free_redirect(t_redir **redir)
 	*redir = NULL;
 }
 
-bool	free_pipes(t_pipes *pipes)
+bool	free_pipes(t_pipes **pipes)
 {
 	t_pipes	*current_pipeline;
 
 	if (pipes == NULL)
 		return (true);
-	current_pipeline = pipes;
+	current_pipeline = *pipes;
 	while (current_pipeline != NULL)
 	{
 		ft_free_redirect(&current_pipeline->redir_in);
 		ft_free_redirect(&current_pipeline->redir_out);
 		ft_free_array(current_pipeline->cmds);
-		close(current_pipeline->pipe[0]);
-		close(current_pipeline->pipe[1]);
 		current_pipeline = current_pipeline->next;
 	}
-	free(pipes);
-
+	*pipes = NULL;
 	return (true);
 }
 
@@ -94,10 +91,9 @@ void	free_struct(t_shell *shell, int running)
 {
  	if (shell->input != NULL)
 		free(shell->input);
-/*
 	if (shell->pipes != NULL)
-		free_pipes(shell->pipes);
-	if (shell->tokens != NULL) */
+		free_pipes(&(shell->pipes));
+	if (shell->tokens != NULL)
 	free_tokens(&(shell->tokens));
 	shell->error = NO_ERROR;
 	if (running == 0)
