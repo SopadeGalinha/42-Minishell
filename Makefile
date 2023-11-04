@@ -66,10 +66,9 @@ log: all
 
 git: fclean
 ifdef M
-
 	$(eval commit_msg = $(M))
 else
-	$(eval commit_msg = "auto commit")
+	$(eval commit_msg = auto commit)
 endif
 	$(RM) $(NAME)
 	git add .
