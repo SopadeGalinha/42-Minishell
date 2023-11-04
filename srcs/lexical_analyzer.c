@@ -22,6 +22,8 @@ static t_token	*create_token(char *data, int *quo_err)
 	if (quo_err[QUOTE] != SINGLE && quo_err[QUOTE] != DOUBLE)
 		quo_err[QUOTE] = NONE;
 	new->data = ft_strdup(data);
+	if (!new->data)
+		return (NULL);
 	free(data);
 	new->quote = quo_err[QUOTE];
 	new->error = quo_err[ERROR];
