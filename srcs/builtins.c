@@ -38,19 +38,19 @@ static void	delete_node(t_env **lst, char *key)
 	}
 }
 
-void	ft_unset(t_shell *shell)
+void	ft_unset(t_shell *shell, t_pipes *pipes)
 {
 	int	i;
 
 	i = 0;
-	while (shell->pipes->cmds[++i])
+	while (pipes->cmds[++i])
 	{
-		delete_node(&shell->env, shell->pipes->cmds[i]);
-		delete_node(&shell->exp, shell->pipes->cmds[i]);
+		delete_node(&shell->env, pipes->cmds[i]);
+		delete_node(&shell->exp, pipes->cmds[i]);
 	}
 }
 
-void	ft_pwd(t_shell *shell)
+void	ft_pwd(t_shell *shell, t_pipes *pipes)
 {
 	char	*pwd;
 
@@ -70,28 +70,27 @@ int	ft_count_words(char **str)
 	return (i);
 }
 
-void	ft_cd(t_shell *shell)
+void	ft_cd(t_shell *shell, t_pipes *pipes)
 {
 	char	*param;
-	char	*pwd;
 	int		status;
 	char	*oldpwd;
 	char	*tmp;
 	char	*key;
 
 	g_exit_status = 0;
-	if (ft_count_words(shell->pipes->cmds) > 2)
+	if (ft_count_words(pipes->cmds) > 2)
 	{
 		print_error("minishell: cd: too many arguments", 1);
 		return ;
 	}
 	oldpwd = getcwd(NULL, 0);
-	if (ft_strncmp(shell->pipes->cmds[1], "-", 1) == 0
-		&& ft_strlen(shell->pipes->cmds[1]) <= 2)
+	if (ft_strncmp(pipes->cmds[1], "-", 1) == 0
+		&& ft_strlen(pipes->cmds[1]) <= 2)
 	{
-		if (strlen(shell->pipes->cmds[1]) == 1)
+		if (strlen(pipes->cmds[1]) == 1)
 			key = ft_strdup("OLDPWD");
-		else if (shell->pipes->cmds[1][1] == '-')
+		else if (pipes->cmds[1][1] == '-')
 			key = ft_strdup("HOME");
 	}
 	if (ft_strlen(key) > 1)
@@ -108,7 +107,7 @@ void	ft_cd(t_shell *shell)
 			ft_printf_fd(1, "%s\n", param);
 	}
 	else
-		param = shell->pipes->cmds[1];
+		param = pipes->cmds[1];
 	status = chdir(param);
 	if (status == -1)
 	{
@@ -116,30 +115,32 @@ void	ft_cd(t_shell *shell)
 		ft_printf_fd(2, "minishell: cd: %s: %s\n", param, strerror(errno));
 		return ;
 	}
-	pwd = getcwd(NULL, 0);
+	free(param);
+	param = getcwd(NULL, 0);
 	tmp = ft_strjoin("OLDPWD=", oldpwd);
 	update_lists(shell, tmp, 1);
 	free(tmp);
-	tmp = ft_strjoin("PWD=", pwd);
+	tmp = ft_strjoin("PWD=", param);
 	update_lists(shell, tmp, 1);
 	free(tmp);
-	free(pwd);
+	free(param);
 }
 
-void	ft_export(t_shell *shell)
+
+void	ft_export(t_shell *shell, t_pipes *pipes)
 {
 		int	i = 1;
 
-	if (shell->pipes->cmds[i])
+	if (pipes->cmds[i])
 	{
-		while (shell->pipes->cmds[i])
+		while (pipes->cmds[i])
 		{
-			if(arg_checker(shell, shell->pipes->cmds[i]) > 0)
+			if(arg_checker(shell, pipes->cmds[i]) > 0)
 			{
-				if (ft_strchr(shell->pipes->cmds[i], '='))
-					update_lists(shell, shell->pipes->cmds[i], 1);
-				else if (!ft_strchr(shell->pipes->cmds[i], '='))
-					update_lists(shell, shell->pipes->cmds[i], 0);
+				if (ft_strchr(pipes->cmds[i], '='))
+					update_lists(shell, pipes->cmds[i], 1);
+				else if (!ft_strchr(pipes->cmds[i], '='))
+					update_lists(shell, pipes->cmds[i], 0);
 			}
 			i++;
 		}
@@ -148,32 +149,32 @@ void	ft_export(t_shell *shell)
         print_list(shell, 0);
 }
 
-void	ft_env(t_shell *shell)
+void	ft_env(t_shell *shell, t_pipes *pipes)
 {
 	print_list(shell, 1);
 }
 
-void	ft_exit(t_shell *shell)
+void	ft_exit(t_shell *shell, t_pipes *pipes)
 {
 	(void)shell;
 	ft_printf_fd(1, "exit\n");
 	free_struct(shell , 1);
 }
 
-void	ft_echo(t_shell *shell)
+void	ft_echo(t_shell *shell, t_pipes *pipes)
 {
 	int		i;
 	int		n_flag;
 
 	i = 0;
 	n_flag = 0;
-	while (shell->pipes->cmds[++i]
-		&& ft_strncmp(shell->pipes->cmds[i], "-n", 2) == 0)
+	while (pipes->cmds[++i]
+		&& ft_strncmp(pipes->cmds[i], "-n", 2) == 0)
 		n_flag = 1;
-	while (shell->pipes->cmds[i])
+	while (pipes->cmds[i])
 	{
-		ft_printf_fd(1, "%s", shell->pipes->cmds[i]);
-		if (shell->pipes->cmds[i + 1])
+		ft_printf_fd(1, "%s", pipes->cmds[i]);
+		if (pipes->cmds[i + 1])
 			ft_printf_fd(shell->std_out, " ");
 		i++;
 	}
