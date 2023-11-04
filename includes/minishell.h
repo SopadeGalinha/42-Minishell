@@ -120,14 +120,12 @@ typedef struct s_shell
 	t_pipes	*pipes;
 	
 	t_token	*tokens;
-	t_token	*cmds;
 	t_env	*env;
 	t_env	*exp;
 	char	*oldpwd;
 	int		error;
 	int		std_in;
 	int		std_out;
-	int		std_err;
 	void	(*builtin[7])(struct s_shell *shell);
 }				t_shell;
 
@@ -214,7 +212,7 @@ void	get_input(t_shell *shell);
 char	*get_env_value(t_env *env, char *key);
 
 // FREE
-bool	free_pipes(t_pipes *pipes);
+bool	free_pipes(t_pipes **pipes);
 void	free_struct(t_shell *shell, int	running);
 
 // INUTILS
