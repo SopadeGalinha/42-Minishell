@@ -126,7 +126,7 @@ typedef struct s_shell
 	int		error;
 	int		std_in;
 	int		std_out;
-	void	(*builtin[7])(struct s_shell *shell);
+	void	(*builtin[7])(struct s_shell *shell, t_pipes *pipes);
 }				t_shell;
 
 /*__________________________________MACROS____________________________________*/
@@ -222,13 +222,13 @@ int		arg_checker(t_shell *shell, char *str);
 
 
 // BUILTINS
-void	ft_pwd(t_shell *shell);
-void	ft_echo(t_shell *shell);
-void	ft_cd(t_shell *shell);
-void	ft_unset(t_shell *shell);
-void	ft_export(t_shell *shell);
-void	ft_env(t_shell *shell);
-void	ft_exit(t_shell *shell);
+void	ft_pwd(t_shell *shell, t_pipes *pipes);
+void	ft_echo(t_shell *shell, t_pipes *pipes);
+void	ft_cd(t_shell *shell, t_pipes *pipes);
+void	ft_unset(t_shell *shell, t_pipes *pipes);
+void	ft_export(t_shell *shell, t_pipes *pipes);
+void	ft_env(t_shell *shell, t_pipes *pipes);
+void	ft_exit(t_shell *shell, t_pipes *pipes);
 
 //---------------------------------END FUNCTIONS---------------------------------//
 

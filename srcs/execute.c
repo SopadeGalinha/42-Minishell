@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/02 20:22:41 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/04 18:50:13 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ int	arg_checker(t_shell *shell, char *str)
 
 	if (ft_isdigit(str[0]))
 	{
-		ft_printf_fd(shell->std_out, "minishell: export: `%s': not a valid identifier\n", str);
+		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
 		return (-1);
 	}
 	else if (str[0] == '_' && str[1])
 	{
 		if ((!ft_isalnum(str[1]) && str[1] != '_') || str_isalpha(str, 1) == 0)
 		{
-			ft_printf_fd(shell->std_out, "minishell: export: `%s': not a valid identifier\n", str);;
+			ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);;
 			return (-1);
 		}
 		else
@@ -53,7 +53,7 @@ int	arg_checker(t_shell *shell, char *str)
 	}
 	else if (str_isalpha(str, 0) == 0)
 	{
-		ft_printf_fd(shell->std_out, "minishell: export: `%s': not a valid identifier\n", str);
+		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
 		return (-1);
 	}
 	return (1);
@@ -100,17 +100,21 @@ void	execute(t_shell *shell)
 	builtin[5] = "unset";
 	builtin[6] = "env";
 
-	function = -1;
 	pipes = shell->pipes;
-	while (++function < 7)
+	while (pipes)
 	{
-		if (ft_strncmp(pipes->cmds[0], builtin[function], \
-		ft_strlen(builtin[function])) == 0
-			&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtin[function]))
-			break ;
+		function = -1;
+		while (++function < 7)
+		{
+			if (ft_strncmp(pipes->cmds[0], builtin[function], \
+			ft_strlen(builtin[function])) == 0
+				&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtin[function]))
+				break ;
+		}
+		if (function < 7)
+			shell->builtin[function](shell, pipes);
+		else
+			ft_printf_fd(2, "minishell: %s: command not found\n", pipes->cmds[0]);
+		pipes = pipes->next;
 	}
-	if (function < 7)
-		shell->builtin[function](shell);
-	else
-		ft_access(shell);
 }
