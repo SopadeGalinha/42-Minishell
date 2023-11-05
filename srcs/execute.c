@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/04 18:50:13 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/05 16:34:11 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,101 @@ bool	ft_access(t_shell *shell)
 	return (true);
 }
 
+void setup_redirections(t_pipes *pipes) {
+    while (pipes->redir_in) {
+        int in_fd = open(pipes->redir_in->file, O_RDONLY);
+        if (in_fd == -1) {
+            ft_printf_fd(2, "minishell: cannot open %s: %s\n", pipes->redir_in->file, strerror(errno));
+            exit(1);
+        }
+        if (dup2(in_fd, 0) == -1) {
+            ft_printf_fd(2, "minishell: dup2 failed: %s\n", strerror(errno));
+            exit(1);
+        }
+        close(in_fd);
+        pipes->redir_in = pipes->redir_in->next;
+    }
+
+    while (pipes->redir_out) {
+        int out_fd;
+        if (pipes->redir_out->type == D_REDIR_OUT) {
+            out_fd = open(pipes->redir_out->file, O_WRONLY | O_APPEND | O_CREAT, 0644);
+        } else {
+            out_fd = open(pipes->redir_out->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        }
+
+        if (out_fd == -1) {
+            ft_printf_fd(2, "minishell: cannot open %s: %s\n", pipes->redir_out->file, strerror(errno));
+            exit(1);
+        }
+        if (dup2(out_fd, 1) == -1) {
+            ft_printf_fd(2, "minishell: dup2 failed: %s\n", strerror(errno));
+            exit(1);
+        }
+        close(out_fd);
+        pipes->redir_out = pipes->redir_out->next;
+    }
+}
+
+void ft_execve(t_shell *shell, t_pipes *pipes) {
+    pid_t pid;
+    int status;
+
+    pid = fork();
+    if (pid == 0) {
+        setup_redirections(pipes); // Set up redirections
+        if (ft_strchr(pipes->cmds[0], '/')) {
+            if (access(pipes->cmds[0], F_OK) == 0)
+                execve(pipes->cmds[0], pipes->cmds, NULL);
+            else {
+                ft_printf_fd(2, "minishell: %s: %s\n", pipes->cmds[0], strerror(errno));
+                exit(127);
+            }
+        } else {
+            if (ft_access(shell)) {
+                ft_printf_fd(2, "minishell: %s: command not found\n", pipes->cmds[0]);
+                exit(127);
+            }
+        }
+    } else if (pid < 0) {
+        ft_printf_fd(2, "minishell: %s\n", strerror(errno));
+        exit(1);
+    } else {
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            g_exit_status = WEXITSTATUS(status);
+    }
+}
+
+void	execution(t_shell *shell, const char **builtins_array)
+{
+	t_pipes	*pipes;
+	int		function;
+
+	pipes = shell->pipes;
+	if (pipes->cmds[0] == NULL)
+		return ;
+	function = -1;
+	while (pipes)
+	{
+		while (++function < 7)
+		{
+			if (ft_strncmp(pipes->cmds[0], builtins_array[function], \
+			ft_strlen(builtins_array[function])) == 0
+				&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtins_array[function]))
+				break ;
+		}
+		if (function < 7)
+			shell->builtin[function](shell, pipes);
+		else
+			ft_execve(shell, pipes);
+		pipes = pipes->next;
+	}
+	
+}
+
 void	execute(t_shell *shell)
 {
-	t_pipes		*pipes;
-	int			function;
 	const char	*builtin[7];
 
 	builtin[0] = "pwd";
@@ -99,22 +190,5 @@ void	execute(t_shell *shell)
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-
-	pipes = shell->pipes;
-	while (pipes)
-	{
-		function = -1;
-		while (++function < 7)
-		{
-			if (ft_strncmp(pipes->cmds[0], builtin[function], \
-			ft_strlen(builtin[function])) == 0
-				&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtin[function]))
-				break ;
-		}
-		if (function < 7)
-			shell->builtin[function](shell, pipes);
-		else
-			ft_printf_fd(2, "minishell: %s: command not found\n", pipes->cmds[0]);
-		pipes = pipes->next;
-	}
+	execution(shell, builtin);
 }

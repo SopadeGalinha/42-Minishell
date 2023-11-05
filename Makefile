@@ -57,6 +57,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 	$(RM) *.txt
+	$(RM) .nfs*
 	@make -s fclean -C $(LIBFT_DIR)
 
 leak: all
