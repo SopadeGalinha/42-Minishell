@@ -141,8 +141,6 @@ typedef struct s_shell
 # define BOLD_BLUE		"\001\033[1;94m\002"
 # define BOLD_CYAN		"\001\033[1;96m\002"
 # define BOLD_WHITE		"\001\033[1;97m\002"
-# define EASTER			"luiza"
-# define EGG			"code destroyer found"
 
 // ERRORS
 # define MS_ERR			BOLD_RED	"Minishell Error: "RESET
