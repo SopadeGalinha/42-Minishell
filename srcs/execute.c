@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/05 16:34:11 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/06 18:39:36 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool	ft_access(t_shell *shell)
 		free(path);
 		path = ft_strjoin(array[i], "/");
 		path = ft_strjoin(path, tmp->cmds[0]);
-		 if (access(path, F_OK) == 0)
+		if (access(path, F_OK) == 0)
 		{
 			tmp->path = ft_strdup(path);
 			free(path);
@@ -86,70 +86,95 @@ bool	ft_access(t_shell *shell)
 	return (true);
 }
 
-void setup_redirections(t_pipes *pipes) {
-    while (pipes->redir_in) {
-        int in_fd = open(pipes->redir_in->file, O_RDONLY);
-        if (in_fd == -1) {
-            ft_printf_fd(2, "minishell: cannot open %s: %s\n", pipes->redir_in->file, strerror(errno));
-            exit(1);
-        }
-        if (dup2(in_fd, 0) == -1) {
-            ft_printf_fd(2, "minishell: dup2 failed: %s\n", strerror(errno));
-            exit(1);
-        }
-        close(in_fd);
-        pipes->redir_in = pipes->redir_in->next;
-    }
+void setup_redirections(t_pipes *pipes)
+{
+	int in_fd;
+	int out_fd;
+	
+	while (pipes->redir_in)
+	{
+		in_fd = open(pipes->redir_in->file, O_RDONLY);
+		if (in_fd == -1)
+		{
+			ft_printf_fd(2, "minishell: cannot open %s: %s\n", pipes->redir_in->file, strerror(errno));
+			g_exit_status = 1;
+			// exit(1);
+		}
+		if (dup2(in_fd, 0) == -1)
+		{
+			ft_printf_fd(2, "minishell: dup2 failed: %s\n", strerror(errno));
+			g_exit_status = 1;
+			// exit(1);
+		}
+		close(in_fd);
+		pipes->redir_in = pipes->redir_in->next;
+	}
 
-    while (pipes->redir_out) {
-        int out_fd;
-        if (pipes->redir_out->type == D_REDIR_OUT) {
-            out_fd = open(pipes->redir_out->file, O_WRONLY | O_APPEND | O_CREAT, 0644);
-        } else {
-            out_fd = open(pipes->redir_out->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        }
-
-        if (out_fd == -1) {
-            ft_printf_fd(2, "minishell: cannot open %s: %s\n", pipes->redir_out->file, strerror(errno));
-            exit(1);
-        }
-        if (dup2(out_fd, 1) == -1) {
-            ft_printf_fd(2, "minishell: dup2 failed: %s\n", strerror(errno));
-            exit(1);
-        }
-        close(out_fd);
-        pipes->redir_out = pipes->redir_out->next;
-    }
+	while (pipes->redir_out)
+	{
+		if (pipes->redir_out->type == D_REDIR_OUT)
+			out_fd = open(pipes->redir_out->file, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		else
+			out_fd = open(pipes->redir_out->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (out_fd == -1)
+		{
+			ft_printf_fd(2, "minishell: cannot open %s: %s\n", pipes->redir_out->file, strerror(errno));
+			g_exit_status = 1;
+			// exit(1);
+		}
+		if (dup2(out_fd, 1) == -1)
+		{
+			ft_printf_fd(2, "minishell: dup2 failed: %s\n", strerror(errno));
+			g_exit_status = 1;
+			// exit(1);
+		}
+		close(out_fd);
+		pipes->redir_out = pipes->redir_out->next;
+	}
 }
 
-void ft_execve(t_shell *shell, t_pipes *pipes) {
-    pid_t pid;
-    int status;
+void ft_execve(t_shell *shell, t_pipes *pipes)
+{
+	pid_t pid;
+	int status;
 
-    pid = fork();
-    if (pid == 0) {
-        setup_redirections(pipes); // Set up redirections
-        if (ft_strchr(pipes->cmds[0], '/')) {
-            if (access(pipes->cmds[0], F_OK) == 0)
-                execve(pipes->cmds[0], pipes->cmds, NULL);
-            else {
-                ft_printf_fd(2, "minishell: %s: %s\n", pipes->cmds[0], strerror(errno));
-                exit(127);
-            }
-        } else {
-            if (ft_access(shell)) {
-                ft_printf_fd(2, "minishell: %s: command not found\n", pipes->cmds[0]);
-                exit(127);
-            }
-        }
-    } else if (pid < 0) {
-        ft_printf_fd(2, "minishell: %s\n", strerror(errno));
-        exit(1);
-    } else {
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
-            g_exit_status = WEXITSTATUS(status);
-    }
+	pid = fork();
+	if (pid == 0)
+	{
+		setup_redirections(pipes); // Set up redirections
+		if (ft_strchr(pipes->cmds[0], '/'))
+		{
+			if (access(pipes->cmds[0], F_OK) == 0)
+				execve(pipes->cmds[0], pipes->cmds, NULL);
+			else
+			{
+				ft_printf_fd(2, "minishell: %s: %s\n", pipes->cmds[0], strerror(errno));
+				g_exit_status = 127;
+				// exit(127);
+			}
+		}
+		else
+		{
+			if (ft_access(shell))
+			{
+				ft_printf_fd(2, "minishell: %s: command not found\n", pipes->cmds[0]);
+				g_exit_status = 127;
+				// exit(127);
+			}
+		}
+	}
+	else if (pid < 0)
+	{
+		ft_printf_fd(2, "minishell: %s\n", strerror(errno));
+		g_exit_status = 1;
+		// exit(1);
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			g_exit_status = WEXITSTATUS(status);
+	}
 }
 
 void	execution(t_shell *shell, const char **builtins_array)
