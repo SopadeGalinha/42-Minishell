@@ -21,7 +21,7 @@ static void	delete_node(t_env **lst, char *key)
 	current = *lst;
 	while (current != NULL)
 	{
-		if (strncmp(current->key, key, strlen(current->key)) == 0)
+		if (ft_strncmp(current->key, key, strlen(current->key)) == 0)
 		{
 			if (prev == NULL)
 				*lst = current->next;
@@ -50,92 +50,62 @@ void	ft_unset(t_shell *shell, t_pipes *pipes)
 	}
 }
 
-void	ft_pwd(t_shell *shell, t_pipes *pipes)
-{
-	char	*pwd;
-
-	(void)shell;
-	pwd = getcwd(NULL, 0);
-	ft_printf_fd(shell->std_out, "%s\n", pwd);
-	free(pwd);
-}
-
-int	ft_count_words(char **str)
+static int	str_isalpha(char *str, int flag)
 {
 	int	i;
 
 	i = 0;
+	if (flag)
+		i = 1;
 	while (str[i])
+	{
+		if (!isalpha(str[i]))
+			return (0);
 		i++;
-	return (i);
+	}
+	return (1);
 }
 
-void	ft_cd(t_shell *shell, t_pipes *pipes)
+int	arg_checker(t_shell *shell, char *str)
 {
-	char	*param;
-	int		status;
-	char	*oldpwd;
-	char	*tmp;
-	char	*key;
-
-	g_exit_status = 0;
-	if (ft_count_words(pipes->cmds) > 2)
+	(void)shell;
+	if (ft_isdigit(str[0]))
 	{
-		print_error("minishell: cd: too many arguments", 1);
-		return ;
+		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
+		return (-1);
 	}
-	oldpwd = getcwd(NULL, 0);
-	if (ft_strncmp(pipes->cmds[1], "-", 1) == 0
-		&& ft_strlen(pipes->cmds[1]) <= 2)
+	else if (str[0] == '_' && str[1])
 	{
-		if (strlen(pipes->cmds[1]) == 1)
-			key = ft_strdup("OLDPWD");
-		else if (pipes->cmds[1][1] == '-')
-			key = ft_strdup("HOME");
-	}
-	if (ft_strlen(key) > 1)
-	{
-		param = get_env_value(shell->env, key);
-		if (ft_strncmp(param, "", 1) == 0)
+		if ((!ft_isalnum(str[1]) && str[1] != '_') || str_isalpha(str, 1) == 0)
 		{
-			free(oldpwd);
-			ft_printf_fd(2, "minishell: cd: %s not set\n", key);
-			g_exit_status = 1;
-			return ;
+			ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
+			return (-1);
 		}
 		else
-			ft_printf_fd(1, "%s\n", param);
+			return (1);
 	}
-	else
-		param = pipes->cmds[1];
-	status = chdir(param);
-	if (status == -1)
+	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
 	{
-		free(oldpwd);
-		ft_printf_fd(2, "minishell: cd: %s: %s\n", param, strerror(errno));
-		return ;
+		return (-2);
 	}
-	free(param);
-	param = getcwd(NULL, 0);
-	tmp = ft_strjoin("OLDPWD=", oldpwd);
-	update_lists(shell, tmp, 1);
-	free(tmp);
-	tmp = ft_strjoin("PWD=", param);
-	update_lists(shell, tmp, 1);
-	free(tmp);
-	free(param);
+	else if (str_isalpha(str, 0) == 0)
+	{
+		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
+		return (-1);
+	}
+	return (1);
 }
-
 
 void	ft_export(t_shell *shell, t_pipes *pipes)
 {
-		int	i = 1;
-
+	int	i;
+	
+	i = 1;
 	if (pipes->cmds[i])
 	{
 		while (pipes->cmds[i])
 		{
-			if(arg_checker(shell, pipes->cmds[i]) > 0)
+			if (arg_checker(shell, pipes->cmds[i]) > 0)
 			{
 				if (ft_strchr(pipes->cmds[i], '='))
 					update_lists(shell, pipes->cmds[i], 1);
@@ -145,20 +115,21 @@ void	ft_export(t_shell *shell, t_pipes *pipes)
 			i++;
 		}
 	}
-    else
-        print_list(shell, 0);
+	else
+		print_list(shell, 0);
 }
 
 void	ft_env(t_shell *shell, t_pipes *pipes)
 {
+	(void)pipes;
 	print_list(shell, 1);
 }
 
 void	ft_exit(t_shell *shell, t_pipes *pipes)
 {
 	(void)shell;
-	ft_printf_fd(1, "exit\n");
-	free_struct(shell , 1);
+	(void)pipes;
+	free_struct(shell, 1);
 }
 
 void	ft_echo(t_shell *shell, t_pipes *pipes)

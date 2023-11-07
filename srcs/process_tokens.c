@@ -54,25 +54,26 @@ static char	*aux_expand(t_env *env, char *token, int *si)
 	key = ft_substr(token, 0, si[START]);
 	aux = ft_strjoin(key, value);
 	free(key);
+	free(value);
 	if (!token[si[INDEX]])
+	{
+		free(token);
 		return (aux);
+	}
 	key = ft_substr(token, si[INDEX], ft_strlen(token) - si[INDEX]);
 	new_token = ft_strjoin(aux, key);
 	free(token);
 	free(aux);
 	free(key);
-	free(value);
 	return (new_token);
 }
 
-static char	*expand_env(t_env *env, char *token)
+static char	*expand_env(t_env *env, char *new_token)
 {
 	int		si[2];
-	char	*new_token;
 
 	si[START] = 0;
 	si[INDEX] = -1;
-	new_token = ft_strdup(token);
 	if (!new_token)
 		return (NULL);
 	while (new_token[++si[INDEX]] != '\0')
@@ -88,6 +89,7 @@ static char	*expand_env(t_env *env, char *token)
 			si[INDEX] = -1;
 		}
 	}
+
 	return (new_token);
 }
 
@@ -107,6 +109,12 @@ bool	process_tokens(t_shell *shell)
 				current->data = expand_env(shell->env, current->data);
 			if (current->data == NULL)
 				return (false);
+			if (ft_strncmp(current->data, "~", 1) == 0 && ft_strlen(current->data) == 1)
+				if (current->quote != DOUBLE && current->quote != SINGLE)
+				{
+					free(current->data);
+					current->data = ft_strdup(get_env_value(shell->env, "HOME"));
+				}
 		}
 		if (current->type == OR
 			|| current->type == AND || current->type == SEMICOLON)

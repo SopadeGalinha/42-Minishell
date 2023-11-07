@@ -12,8 +12,6 @@
 
 #include "../includes/minishell.h"
 
-
-
 bool	parse_input(t_shell *shell)
 {
 	if (!lexical_analyzer(shell->input, &shell->tokens))
@@ -22,8 +20,5 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
-	if (shell->error == true)
-		printf("Error só n sei qual\n");
-	// print_pipes(shell->pipes);
 	return (true);
 }

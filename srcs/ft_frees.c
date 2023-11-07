@@ -30,42 +30,48 @@ static void	ft_free_redirect(t_redir **redir)
 	*redir = NULL;
 }
 
-bool	free_pipes(t_pipes **pipes)
+bool free_pipes(t_pipes **pipes)
 {
-	t_pipes	*current_pipeline;
+    t_pipes *current_pipeline;
 
-	if (pipes == NULL)
-		return (true);
-	current_pipeline = *pipes;
-	while (current_pipeline != NULL)
-	{
-		ft_free_redirect(&current_pipeline->redir_in);
-		ft_free_redirect(&current_pipeline->redir_out);
-		ft_free_array(current_pipeline->cmds);
-		current_pipeline = current_pipeline->next;
-	}
-	*pipes = NULL;
-	return (true);
+    if (pipes == NULL || *pipes == NULL)
+        return true;
+
+    current_pipeline = *pipes;
+    while (current_pipeline != NULL)
+    {
+        ft_free_redirect(&current_pipeline->redir_in);
+        ft_free_redirect(&current_pipeline->redir_out);
+        ft_free_array(current_pipeline->cmds);
+        t_pipes *next_pipeline = current_pipeline->next;
+        free(current_pipeline);
+        current_pipeline = next_pipeline;
+    }    
+    *pipes = NULL;
+    
+    return true;
 }
 
-static void	free_tokens(t_token **tokens)
+static void free_tokens(t_token **tokens)
 {
-	t_token	*current;
-	t_token	*tmp;
+    t_token *current;
+    t_token *tmp;
 
-	if (tokens == NULL)
-		return ;
-	current = *tokens;
-	while (current != NULL)
-	{
-		tmp = current->next;
-		if (current->data)
-			free(current->data);
-		free(current);
-		current = tmp;
-	}
-	*tokens = NULL;
+    if (tokens == NULL || *tokens == NULL)
+        return;
+
+    current = *tokens;
+    while (current != NULL)
+    {
+        tmp = current->next;
+        if (current->data)
+            free(current->data);
+        free(current);
+        current = tmp;
+    }
+    *tokens = NULL;
 }
+
 
 static void free_env(t_env **env)
 {
