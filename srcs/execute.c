@@ -6,58 +6,12 @@
 /*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/06 18:39:36 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/07 21:46:34 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	str_isalpha(char *str, int flag)
-{
-	int	i;
-
-	i = 0;
-	if (flag)
-		i = 1;
-	while (str[i])
-	{
-		if (!isalpha(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int	arg_checker(t_shell *shell, char *str)
-{
-	int	i = 0;
-
-	if (ft_isdigit(str[0]))
-	{
-		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
-		return (-1);
-	}
-	else if (str[0] == '_' && str[1])
-	{
-		if ((!ft_isalnum(str[1]) && str[1] != '_') || str_isalpha(str, 1) == 0)
-		{
-			ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);;
-			return (-1);
-		}
-		else
-			return (1);
-	}
-	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
-	{
-		return (-2);
-	}
-	else if (str_isalpha(str, 0) == 0)
-	{
-		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
-		return (-1);
-	}
-	return (1);
-}
 
 bool	ft_access(t_shell *shell)
 {
@@ -215,5 +169,6 @@ void	execute(t_shell *shell)
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-	execution(shell, builtin);
+	ft_cd(shell, shell->pipes);
+	// execution(shell, builtin);
 }
