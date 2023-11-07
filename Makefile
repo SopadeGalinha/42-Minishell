@@ -10,14 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 
-# .SILENT:
-# .ONE_SHELL:
+.ONE_SHELL:
 
 NAME		= minishell
 
 CC			= gcc
 RM			= /bin/rm -rf
-FLAGS		= -g #-Wall -Wextra -Werror -fsanitize=address
+FLAGS		= -g #-Wall -Wextra -Werror #-fsanitize=address
 
 LIBFT_A		= libft.a
 SRCS_DIR	= srcs/
@@ -26,11 +25,12 @@ LIBFT_DIR	= includes/libft/
 commit_msg	= "auto commit"
 
 PARSER_LIST	=	parse_input.c lexical_analyzer.c lexer_aux.c \
-				process_tokens.c pipes.c redirects.c
+				process_tokens.c create_pipeline.c redirects.c \
 
 SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
 				export.c ft_frees.c execute.c updates_lists.c \
-				inutils.c validations.c builtins.c $(PARSER_LIST)
+				inutils.c validations.c builtins.c \
+				$(PARSER_LIST) builtins_aux.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
@@ -57,6 +57,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 	$(RM) *.txt
+	$(RM) .nfs*
 	@make -s fclean -C $(LIBFT_DIR)
 
 leak: all
