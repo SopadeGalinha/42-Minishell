@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/07 21:46:34 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/09 15:45:44 by heolivei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void setup_redirections(t_pipes *pipes)
 {
 	int in_fd;
 	int out_fd;
-	
+
 	while (pipes->redir_in)
 	{
 		in_fd = open(pipes->redir_in->file, O_RDONLY);
@@ -131,6 +131,23 @@ void ft_execve(t_shell *shell, t_pipes *pipes)
 	}
 }
 
+int	ft_pipelstsize(t_pipes *lst)
+{
+	int	i;
+
+	i = 0;
+	if (!lst)
+		return (0);
+	while (lst)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}
+
+
+
 void	execution(t_shell *shell, const char **builtins_array)
 {
 	t_pipes	*pipes;
@@ -140,6 +157,7 @@ void	execution(t_shell *shell, const char **builtins_array)
 	if (pipes->cmds[0] == NULL)
 		return ;
 	function = -1;
+
 	while (pipes)
 	{
 		while (++function < 7)
@@ -155,9 +173,25 @@ void	execution(t_shell *shell, const char **builtins_array)
 			ft_execve(shell, pipes);
 		pipes = pipes->next;
 	}
-	
-}
 
+}
+void	open_pipe(t_shell *shell,  const char **builtins_array)
+{
+	int		fd_in;
+
+	int		count_pipes;
+
+	count_pipes = ft_pipelstsize(shell->pipes);
+	if (count_pipes > 1)
+	{
+		//fd_in = dup(STDIN_FILENO);
+		//children(commands, fd_in, count_pipes);
+		//parent(fd_in, count_pipes);
+		ft_printf_fd(2, "minishell pipes count: %d\n", count_pipes);
+	}
+	else
+		execution(shell, builtins_array);
+}
 void	execute(t_shell *shell)
 {
 	const char	*builtin[7];
@@ -169,6 +203,7 @@ void	execute(t_shell *shell)
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-	ft_cd(shell, shell->pipes);
-	// execution(shell, builtin);
+	//ft_cd(shell, shell->pipes);
+	open_pipe(shell, builtin);
+	//execution(shell, builtin);
 }
