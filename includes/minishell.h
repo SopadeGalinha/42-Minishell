@@ -118,7 +118,7 @@ typedef struct s_shell
 {
 	char	*input;
 	t_pipes	*pipes;
-	
+
 	t_token	*tokens;
 	t_env	*env;
 	t_env	*exp;
@@ -229,5 +229,7 @@ void	ft_env(t_shell *shell, t_pipes *pipes);
 void	ft_exit(t_shell *shell, t_pipes *pipes);
 
 //---------------------------------END FUNCTIONS---------------------------------//
+
+void	open_pipe(t_shell *shell);
 
 #endif

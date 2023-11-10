@@ -14,7 +14,7 @@
 
 NAME		= minishell
 
-CC			= gcc
+CC			= cc
 RM			= /bin/rm -rf
 FLAGS		= -g #-Wall -Wextra -Werror #-fsanitize=address
 
