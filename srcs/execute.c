@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/07 21:46:34 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/10 12:59:34 by heolivei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void setup_redirections(t_pipes *pipes)
 {
 	int in_fd;
 	int out_fd;
-	
+
 	while (pipes->redir_in)
 	{
 		in_fd = open(pipes->redir_in->file, O_RDONLY);
@@ -131,6 +131,23 @@ void ft_execve(t_shell *shell, t_pipes *pipes)
 	}
 }
 
+int	ft_pipelstsize(t_pipes *lst)
+{
+	int	i;
+
+	i = 0;
+	if (!lst)
+		return (0);
+	while (lst)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}
+
+
+
 void	execution(t_shell *shell, const char **builtins_array)
 {
 	t_pipes	*pipes;
@@ -140,24 +157,84 @@ void	execution(t_shell *shell, const char **builtins_array)
 	if (pipes->cmds[0] == NULL)
 		return ;
 	function = -1;
-	while (pipes)
+
+	while (++function < 7)
 	{
-		while (++function < 7)
-		{
-			if (ft_strncmp(pipes->cmds[0], builtins_array[function], \
-			ft_strlen(builtins_array[function])) == 0
-				&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtins_array[function]))
-				break ;
-		}
-		if (function < 7)
-			shell->builtin[function](shell, pipes);
-		else
-			ft_execve(shell, pipes);
-		pipes = pipes->next;
+		if (ft_strncmp(pipes->cmds[0], builtins_array[function], \
+		ft_strlen(builtins_array[function])) == 0
+			&& ft_strlen(pipes->cmds[0]) == ft_strlen(builtins_array[function]))
+			break ;
 	}
-	
+	if (function < 7)
+		shell->builtin[function](shell, pipes);
+	else
+		ft_execve(shell, pipes);
 }
 
+void	close_write_read(int *pipes)
+{
+	close(pipes[0]);
+	close(pipes[1]);
+}
+
+void	parent(int fd_in, int count_pipes)
+{
+	int	i;
+
+	i = 0;
+	close(fd_in);
+	while (i < count_pipes)
+	{
+		wait(NULL);
+		i++;
+	}
+}
+
+void	children(t_shell *shell, int fd_in, int count_pipes)
+{
+	int		i;
+	int		pipes[2];
+	pid_t	pid;
+
+	i = 0;
+	while (i < count_pipes)
+	{
+		pipe(pipes);
+		pid = fork();
+		if (pid == 0)
+		{
+			if (i != 0)
+				dup2(fd_in, STDIN_FILENO);
+			if ((i + 1) != count_pipes)
+				dup2(pipes[1], STDOUT_FILENO);
+			close_write_read(pipes);
+			close(fd_in);
+			execute(shell);
+			exit(g_exit_status);
+		}
+		dup2(pipes[0], fd_in);
+		close_write_read(pipes);
+		shell->pipes = shell->pipes->next;
+		i++;
+	}
+}
+
+void	open_pipe(t_shell *shell)
+{
+	int		fd_in;
+
+	int		count_pipes;
+
+	count_pipes = ft_pipelstsize(shell->pipes);
+	if (count_pipes > 1)
+	{
+		fd_in = dup(STDIN_FILENO);
+		children(shell, fd_in, count_pipes);
+		parent(fd_in, count_pipes);
+	}
+	else
+		execute(shell);
+}
 void	execute(t_shell *shell)
 {
 	const char	*builtin[7];
@@ -169,6 +246,7 @@ void	execute(t_shell *shell)
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-	ft_cd(shell, shell->pipes);
-	// execution(shell, builtin);
+	//ft_cd(shell, shell->pipes);
+
+	execution(shell, builtin);
 }

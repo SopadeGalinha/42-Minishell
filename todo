@@ -2,3 +2,9 @@
 - leaks
 - Atualizar variaveis
 - adicionar as builtins --- Se houver < ou <<
+- Comando "cd" com segmentation fault
+
+
+//STDIN_FILENO - 0
+//STDOUT_FILENO - 1
+//STDERR_FILENO - 2
