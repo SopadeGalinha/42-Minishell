@@ -71,14 +71,16 @@ int	arg_checker(t_shell *shell, char *str)
 	(void)shell;
 	if (ft_isdigit(str[0]))
 	{
-		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
+		ft_printf_fd(2, "minishell: export: ");
+		ft_printf_fd(2, "'%s': not a valid identifier\n", str);
 		return (-1);
 	}
 	else if (str[0] == '_' && str[1])
 	{
 		if ((!ft_isalnum(str[1]) && str[1] != '_') || str_isalpha(str, 1) == 0)
 		{
-			ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
+			ft_printf_fd(2, "minishell: export: ");
+			ft_printf_fd(2, "'%s': not a valid identifier\n", str);
 			return (-1);
 		}
 		else
@@ -90,7 +92,8 @@ int	arg_checker(t_shell *shell, char *str)
 	}
 	else if (str_isalpha(str, 0) == 0)
 	{
-		ft_printf_fd(2, "minishell: export: `%s': not a valid identifier\n", str);
+		ft_printf_fd(2, "minishell: export: ");
+		ft_printf_fd(2, "'%s': not a valid identifier\n", str);
 		return (-1);
 	}
 	return (1);
@@ -99,7 +102,7 @@ int	arg_checker(t_shell *shell, char *str)
 void	ft_export(t_shell *shell, t_pipes *pipes)
 {
 	int	i;
-	
+
 	i = 1;
 	if (pipes->cmds[i])
 	{
@@ -123,32 +126,4 @@ void	ft_env(t_shell *shell, t_pipes *pipes)
 {
 	(void)pipes;
 	print_list(shell, 1);
-}
-
-void	ft_exit(t_shell *shell, t_pipes *pipes)
-{
-	(void)shell;
-	(void)pipes;
-	free_struct(shell, 1);
-}
-
-void	ft_echo(t_shell *shell, t_pipes *pipes)
-{
-	int		i;
-	int		n_flag;
-
-	i = 0;
-	n_flag = 0;
-	while (pipes->cmds[++i]
-		&& ft_strncmp(pipes->cmds[i], "-n", 2) == 0)
-		n_flag = 1;
-	while (pipes->cmds[i])
-	{
-		ft_printf_fd(1, "%s", pipes->cmds[i]);
-		if (pipes->cmds[i + 1])
-			ft_printf_fd(shell->std_out, " ");
-		i++;
-	}
-	if (!n_flag)
-		ft_printf_fd(shell->std_out, "\n");
 }

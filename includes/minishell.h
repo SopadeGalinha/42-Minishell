@@ -85,12 +85,14 @@ typedef struct s_redir
 	struct	s_redir	*next;
 }				t_redir;
 
+# define IN 0
+# define OUT 1
 typedef struct s_pipes
 {
 	int							id;
 	char						**cmds;
 	char						*path;
-	int							pipe[2];
+	int							fd[2];
 	struct	s_redir				*redir_in;
 	struct	s_redir				*redir_out;
 	struct s_pipes				*next;
