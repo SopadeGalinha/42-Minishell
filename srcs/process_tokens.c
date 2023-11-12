@@ -89,8 +89,35 @@ static char	*expand_env(t_env *env, char *new_token)
 			si[INDEX] = -1;
 		}
 	}
-
 	return (new_token);
+}
+
+static bool	process_aux(t_shell *shell, t_token *current)
+{
+	if (current->quote != SINGLE)
+	{
+		if ((current->prev != NULL && current->prev->type == HEREDOC))
+			;
+		else if (current->type == EXIT_STATUS)
+		{
+			free(current->data);
+			current->data = ft_itoa(g_exit_status);
+			if (current->data == NULL)
+				return (false);
+		}
+		else
+			current->data = expand_env(shell->env, current->data);
+		if (current->data == NULL)
+			return (false);
+		if ((ft_strncmp(current->data, "~", 1) == 0
+				&& ft_strlen(current->data) == 1)
+			&& current->quote != DOUBLE)
+		{
+			free(current->data);
+			current->data = get_env_value(shell->env, "HOME");
+		}
+	}
+	return (true);
 }
 
 bool	process_tokens(t_shell *shell)
@@ -101,25 +128,11 @@ bool	process_tokens(t_shell *shell)
 	while (current != NULL)
 	{
 		current->type = define_token(current->data);
-		if (current->quote != SINGLE)
-		{
-			if (current->prev != NULL && current->prev->type == HEREDOC)
-				;
-			else
-				current->data = expand_env(shell->env, current->data);
-			if (current->data == NULL)
-				return (false);
-			if (ft_strncmp(current->data, "~", 1) == 0 && ft_strlen(current->data) == 1)
-				if (current->quote != DOUBLE && current->quote != SINGLE)
-				{
-					free(current->data);
-					current->data = ft_strdup(get_env_value(shell->env, "HOME"));
-				}
-		}
-		if (current->type == OR
-			|| current->type == AND || current->type == SEMICOLON)
-			if (current->quote == NONE)
-				return (print_error(UNSUP_MCMDS, 258));
+		if (!process_aux(shell, current))
+			return (false);
+		if ((current->type == OR || current->type == SEMICOLON
+				|| current->type == AND) && current->quote == NONE)
+			return (print_error(UNSUP_MCMDS, 258));
 		current = current->next;
 	}
 	return (true);

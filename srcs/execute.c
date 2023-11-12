@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/10 12:59:34 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/11/12 10:52:27 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,5 @@ void	execute(t_shell *shell)
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-	//ft_cd(shell, shell->pipes);
-
 	execution(shell, builtin);
 }
