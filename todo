@@ -3,6 +3,7 @@
 - Atualizar variaveis
 - adicionar as builtins --- Se houver < ou <<
 - Comando "cd" com segmentation fault
+- Tratar caso do "env A"
 
 
 //STDIN_FILENO - 0
