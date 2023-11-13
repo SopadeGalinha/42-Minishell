@@ -57,6 +57,7 @@ enum QuoteType {
 	DOUBLE	= '\"',
 	IN = 0,
 	OUT,
+	PERMISSIONS = 0666,
 };
 
 enum errorType {
@@ -195,9 +196,9 @@ void	execute(t_shell *shell);
 bool	parse_input(t_shell *shell);
 bool	lexical_analyzer(char *input, t_token **tokens);
 bool	process_tokens(t_shell *shell);
-bool	process_tokens(t_shell *shell);
+char	*expand_env(t_env *env, char *new_token);
 bool	create_pipeline_node(t_shell *shell);
-void	handle_redirects(t_token **current, t_redir **r_in, t_redir **r_out);
+void	redirects(t_token **data, t_redir **r_in, t_redir **r_out, t_shell *sh);
 bool	lexical_aux(char *input, t_token **tokens, int *si, char *data);
 bool	is_special_char(char c);
 void	addtoken(t_token **tokens, char *data, int *quo_err);

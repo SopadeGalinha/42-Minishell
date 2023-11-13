@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/10 12:54:53 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/11/13 00:44:11 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int	main(int ac, char **av, char **envp)
 		if (shell.input[0])
 		{
 			if (shell.input && input_is_valid(shell.input))
-				if (parse_input(&shell))
-					open_pipe(&shell);
+				if (parse_input(&shell));
+					// open_pipe(&shell);
 		}
 		if (ft_strncmp(shell.input, "exit", 4) == 0)
 			break ;

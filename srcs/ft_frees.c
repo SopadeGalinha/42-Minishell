@@ -100,8 +100,10 @@ void	free_struct(t_shell *shell, int running)
 	if (shell->pipes != NULL)
 		free_pipes(&(shell->pipes));
 	if (shell->tokens != NULL)
-	free_tokens(&(shell->tokens));
+		free_tokens(&(shell->tokens));
 	shell->error = NO_ERROR;
+	if (access(".heredoc", F_OK) != -1)
+		unlink(".heredoc");
 	if (running == 0)
 		return ;
 	free_env(&shell->env);
