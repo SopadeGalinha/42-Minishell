@@ -61,7 +61,7 @@ static bool	process_pipeline_node(t_shell *shell, t_pipes *current)
 static bool	process_pipeline(t_shell *shell)
 {
 	t_pipes	*current;
-	
+
 	current = shell->pipes;
 	print_pipes(shell->pipes);
 	exit(0);
@@ -82,7 +82,7 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
-	if (!process_pipeline(shell))
-		return (false);
+	/*if (!process_pipeline(shell))
+		return (false);*/
 	return (true);
 }

@@ -1,11 +1,12 @@
-- fd in e out para cada pipe
 - leaks
 - Atualizar variaveis
 - adicionar as builtins --- Se houver < ou <<
-- Comando "cd" com segmentation fault
-- Tratar caso do "env A"
 
 
-//STDIN_FILENO - 0
-//STDOUT_FILENO - 1
-//STDERR_FILENO - 2
+-------------------------------------------------------------------------------------------------
+|Resposabilidades de HELLOM:                                                                    |
+|- Tratar caso do "env A"                    OPEN: 10/11 - CLOSE: 15/11       OK                |
+|- Tratar caso do "export > cur_file"        OPEN: 15/11 - CLOSE: --/--       NOK               |
+|- Tratar caso do "env > cur_file"           OPEN: 15/11 - CLOSE: --/--       NOK    CURRENT    |
+|- Tratar caso do "pwd > cur_file"           OPEN: 15/11 - CLOSE: --/--       NOK               |
+-------------------------------------------------------------------------------------------------

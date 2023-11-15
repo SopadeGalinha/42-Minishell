@@ -122,8 +122,49 @@ void	ft_export(t_shell *shell, t_pipes *pipes)
 		print_list(shell, 0);
 }
 
-void	ft_env(t_shell *shell, t_pipes *pipes)
+void ft_env(t_shell *shell, t_pipes *pipes)
 {
-	(void)pipes;
-	print_list(shell, 1);
+    if (pipes->cmds[1])
+    {
+        ft_printf_fd(2, "env: ");
+        ft_printf_fd(2, "‘%s’: No such file or directory\n", pipes->cmds[1]);
+        g_exit_status = 127;
+    }
+    else
+    {
+        // Verifica se há um descritor de arquivo na sua estrutura
+        if (shell->std_out >= 0)
+        {
+            // Redireciona a saída padrão para o descritor de arquivo especificado
+            if (dup2(shell->std_out , STDOUT_FILENO) == -1)
+            {
+                perror("dup2");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        print_list(shell, 1);
+
+        // Se você redirecionou a saída, é uma boa prática restaurá-la para STDOUT_FILENO
+        if (shell->std_out >= 0)
+        {
+            if (dup2(STDOUT_FILENO, shell->std_out) == -1)
+            {
+                perror("dup2");
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
 }
+
+/*void	ft_env(t_shell *shell, t_pipes *pipes)
+{
+	if (pipes->cmds[1])
+	{
+		ft_printf_fd(2, "env: ");
+		ft_printf_fd(2, "‘%s’: No such file or directory\n", pipes->cmds[1]);
+		g_exit_status = 127;
+	}
+	else
+		print_list(shell, 1);
+}*/
