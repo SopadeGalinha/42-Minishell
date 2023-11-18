@@ -1,18 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/09 18:18:41 by jhogonca          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/11/15 18:42:13 by heolivei         ###   ########.fr       */
-=======
-/*   Updated: 2023/11/17 20:35:59 by jhogonca         ###   ########.fr       */
->>>>>>> origin/main
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -25,9 +10,6 @@ void	init_builtin(const char *builtin[7])
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-<<<<<<< HEAD
-	execution(shell, builtin);
-=======
 	builtin[7] = NULL;
 }
 
@@ -64,5 +46,4 @@ void	execute_pipeline(t_shell *shell)
 			execute_cmd(shell, pipes);
 		pipes = pipes->next;
 	}
->>>>>>> origin/main
 }

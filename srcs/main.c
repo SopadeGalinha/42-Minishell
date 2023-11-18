@@ -6,18 +6,14 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/11/18 13:31:34 by heolivei         ###   ########.fr       */
-=======
-/*   Updated: 2023/11/17 19:55:00 by jhogonca         ###   ########.fr       */
->>>>>>> origin/main
+/*   Updated: 2023/11/18 14:48:34 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 int	g_exit_status;
-//adiciona comentario no main
+
 int	main(int ac, char **av, char **envp)
 {
 	t_shell	shell;
