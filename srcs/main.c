@@ -6,14 +6,14 @@
 /*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/15 19:26:10 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/11/18 13:31:34 by heolivei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 int	g_exit_status;
-
+//adiciona comentario no main
 int	main(int ac, char **av, char **envp)
 {
 	t_shell	shell;
