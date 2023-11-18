@@ -19,42 +19,40 @@ bool	is_special_char(char c)
 	return (false);
 }
 
-static char	*remove_quotes_aux(char *data, int *si, char *result)
+char	*remove_quotes(char *data)
 {
+	int		si[2];
+	int		quote_type;
 	char	*aux;
 	char	*tmp;
+	char	*result;
 
+	si[INDEX] = -1;
+	si[START] = 0;
+	quote_type = 0;
+	result = ft_strdup("");
+	while (data[++si[INDEX]])
+	{
+		if (!quote_type && (data[si[INDEX]] == '"' \
+			|| data[si[INDEX]] == '\'') || (quote_type == data[si[INDEX]]))
+		{
+			if (quote_type == data[si[INDEX]])
+				quote_type = 0;
+			else
+				quote_type = data[si[INDEX]];
+			aux = ft_substr(data, si[START], si[INDEX] - si[START]);
+			tmp = ft_strjoin(result, aux);
+			free(result);
+			free(aux);
+			result = tmp;
+			si[START] = si[INDEX] + 1;
+		}
+	}
 	aux = ft_substr(data, si[START], si[INDEX] - si[START]);
 	tmp = ft_strjoin(result, aux);
 	free(result);
 	free(aux);
 	result = tmp;
-	si[START] = si[INDEX] + 1;
-	return (result);
-}
-
-static char	*remove_quotes(char *data)
-{
-	int		si[3];
-	char	*result;
-
-	si[QT] = 0;
-	si[START] = 0;
-	si[INDEX] = -1;
-	result = ft_strdup("");
-	while (data[++si[INDEX]])
-	{
-		if (!si[QT] && ((data[si[INDEX]] == '"' || \
-		data[si[INDEX]] == '\'') || (si[QT] == data[si[INDEX]])))
-		{
-			if (si[QT] == data[si[INDEX]])
-				si[QT] = 0;
-			else
-				si[QT] = data[si[INDEX]];
-			result = remove_quotes_aux(data, si, result);
-		}
-	}
-	result = remove_quotes_aux(data, si, result);
 	free(data);
 	return (result);
 }

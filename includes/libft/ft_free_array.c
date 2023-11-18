@@ -17,7 +17,7 @@ void ft_free_array(char **split_ptr)
     int i;
 
     i = -1;
-    if (!split_ptr || !*split_ptr)
+    if (!split_ptr)
         return ;
     while (split_ptr[++i])
         free(split_ptr[i]);

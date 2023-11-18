@@ -32,24 +32,24 @@ static void	ft_free_redirect(t_redir **redir)
 
 bool free_pipes(t_pipes **pipes)
 {
-    t_pipes *current_pipeline;
+	t_pipes *current_pipeline;
 
-    if (pipes == NULL || *pipes == NULL)
-        return true;
+	if (pipes == NULL || *pipes == NULL)
+		return true;
 
-    current_pipeline = *pipes;
-    while (current_pipeline != NULL)
-    {
-        ft_free_redirect(&current_pipeline->redir_in);
-        ft_free_redirect(&current_pipeline->redir_out);
-        ft_free_array(current_pipeline->cmds);
-        t_pipes *next_pipeline = current_pipeline->next;
-        free(current_pipeline);
-        current_pipeline = next_pipeline;
-    }    
-    *pipes = NULL;
-    
-    return true;
+	current_pipeline = *pipes;
+	while (current_pipeline != NULL)
+	{
+		ft_free_redirect(&current_pipeline->redir_in);
+		ft_free_redirect(&current_pipeline->redir_out);
+		ft_free_array(current_pipeline->cmds);
+		t_pipes *next_pipeline = current_pipeline->next;
+		free(current_pipeline);
+		current_pipeline = next_pipeline;
+	}    
+	*pipes = NULL;
+	
+	return true;
 }
 
 static void free_tokens(t_token **tokens)

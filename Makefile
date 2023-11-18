@@ -26,6 +26,7 @@ commit_msg	= "auto commit"
 
 PARSER_LIST	=	parse_input.c lexical_analyzer.c lexer_aux.c \
 				process_tokens.c create_pipeline.c redirects.c \
+				process_pipeline.c
 
 SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
 				export.c ft_frees.c execute.c updates_lists.c \
