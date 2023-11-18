@@ -39,6 +39,10 @@ void	execute_pipeline(t_shell *shell)
 	init_builtin(builtin);
 	while (pipes)
 	{
+		if (pipes->fd[OUT] != -1)
+			shell->std_out = pipes->fd[OUT];
+		if (pipes->fd[IN] != -1)
+			shell->std_in = pipes->fd[IN];
 		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
 		if (is_builtin != -1)
 			shell->builtin[is_builtin](shell, pipes);

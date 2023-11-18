@@ -70,7 +70,7 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	}
 	while (pipes->cmds[i])
 	{
-		ft_printf_fd(1, "%s", pipes->cmds[i]);
+		ft_printf_fd(shell->std_out, "%s", pipes->cmds[i]);
 		if (pipes->cmds[i + 1])
 			ft_printf_fd(shell->std_out, " ");
 		i++;
