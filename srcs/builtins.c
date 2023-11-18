@@ -50,7 +50,7 @@ void	ft_unset(t_shell *shell, t_pipes *pipes)
 	}
 }
 
-static int	str_isalpha(char *str, int flag)
+static int	str_isalpha_isequal_isunder(char *str, int flag)
 {
 	int	i;
 
@@ -59,7 +59,7 @@ static int	str_isalpha(char *str, int flag)
 		i = 1;
 	while (str[i])
 	{
-		if (!isalpha(str[i]))
+		if (!isalpha(str[i]) || str[i] == '_' || str[i] == '=')
 			return (0);
 		i++;
 	}
@@ -71,16 +71,18 @@ int	arg_checker(t_shell *shell, char *str)
 	(void)shell;
 	if (ft_isdigit(str[0]))
 	{
-		ft_printf_fd(2, "minishell: export: ");
-		ft_printf_fd(2, "'%s': not a valid identifier\n", str);
+		ft_printf_fd(shell->std_out, "minishell: export: ");
+		ft_printf_fd(shell->std_out, "'%s': not a valid identifier\n", str);
+		g_exit_status = 1;
 		return (-1);
 	}
 	else if (str[0] == '_' && str[1])
 	{
-		if ((!ft_isalnum(str[1]) && str[1] != '_') || str_isalpha(str, 1) == 0)
+		if (!ft_isalnum(str[1]) && str_isalpha_isequal_isunder(str, 1) == 0)
 		{
-			ft_printf_fd(2, "minishell: export: ");
-			ft_printf_fd(2, "'%s': not a valid identifier\n", str);
+			ft_printf_fd(shell->std_out, "minishell: export: ");
+			ft_printf_fd(shell->std_out, "'%s': not a valid identifier\n", str);
+			g_exit_status = 1;
 			return (-1);
 		}
 		else
@@ -90,10 +92,11 @@ int	arg_checker(t_shell *shell, char *str)
 	{
 		return (-2);
 	}
-	else if (str_isalpha(str, 0) == 0)
+	else if (str[0] == '=' || (str_isalpha_isequal_isunder(str, 0) == 0 && ft_strchr(str, '=') == NULL))
 	{
-		ft_printf_fd(2, "minishell: export: ");
-		ft_printf_fd(2, "'%s': not a valid identifier\n", str);
+		ft_printf_fd(shell->std_out, "minishell: export: ");
+		ft_printf_fd(shell->std_out, "'%s': not a valid identifier\n", str);
+		g_exit_status = 1;
 		return (-1);
 	}
 	return (1);
@@ -122,8 +125,16 @@ void	ft_export(t_shell *shell, t_pipes *pipes)
 		print_list(shell, 0);
 }
 
+
+
 void	ft_env(t_shell *shell, t_pipes *pipes)
 {
-	(void)pipes;
-	print_list(shell, 1);
+	if (pipes->cmds[1])
+	{
+		ft_printf_fd(shell->std_out, "env: ");
+		ft_printf_fd(shell->std_out, "‘%s’: No such file or directory\n", pipes->cmds[1]);
+		g_exit_status = 127;
+	}
+	else
+		print_list(shell, 1);
 }

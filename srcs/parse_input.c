@@ -20,7 +20,7 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
-	// if (!process_pipeline(shell))
-	// 	return (false);
+	/*if (!process_pipeline(shell))
+		return (false);*/
 	return (true);
 }
