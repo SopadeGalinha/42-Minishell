@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 22:04:37 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/12 10:39:49 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/18 15:17:45 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	ft_cd(t_shell *shell, t_pipes *pipes)
 	oldpwd = getcwd(NULL, 0);
 	ft_chdir(shell, param, oldpwd);
 	free(oldpwd);
-	if (key && ft_strncmp(key, "OLDPWD", 6) == 0)
+	if (key && ft_strncmp(key, "OLDPWD", 6) == 0 && param)
 		ft_printf_fd(shell->std_out, "%s\n", param);
 	free(param);
 	free(key);
