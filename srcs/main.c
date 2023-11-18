@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <heolivei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/11/18 13:31:34 by heolivei         ###   ########.fr       */
+=======
+/*   Updated: 2023/11/17 19:55:00 by jhogonca         ###   ########.fr       */
+>>>>>>> origin/main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +35,7 @@ int	main(int ac, char **av, char **envp)
 		{
 			if (shell.input && input_is_valid(shell.input))
 				if (parse_input(&shell))
-					open_pipe(&shell);
+					execute_pipeline(&shell);
 		}
 		if (ft_strncmp(shell.input, "exit", 4) == 0)
 			break ;

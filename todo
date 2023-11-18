@@ -1,7 +1,14 @@
 - leaks
-- Atualizar variaveis
 - adicionar as builtins --- Se houver < ou <<
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+- Comando "cd" com segmentation fault
+- Tratar caso do "env A"
+>>>>>>> origin/main
 
+>>>>>>> origin/main
 
 -------------------------------------------------------------------------------------------------
 |Resposabilidades de HELLOM:                                                                    |

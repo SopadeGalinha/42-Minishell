@@ -57,6 +57,7 @@ enum QuoteType {
 	DOUBLE	= '\"',
 	IN = 0,
 	OUT,
+	PERMISSIONS = 0666,
 };
 
 enum errorType {
@@ -83,10 +84,9 @@ typedef struct s_redir
 	int				type;
 	char			*file;
 	struct	s_redir	*next;
+
 }				t_redir;
 
-# define IN 0
-# define OUT 1
 typedef struct s_pipes
 {
 	int							id;
@@ -160,6 +160,9 @@ typedef struct s_shell
 # define PP	BOLD_RED	"el\001\033[0m\002"
 # define T	BOLD_WHITE	"l\001\033[0m\002"
 # define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
+
+# define IN 0
+# define OUT 1
 //------------------------------ END MACROS ----------------------------------//
 
 /*_______________________________ FUNCTIONS __________________________________*/
@@ -195,12 +198,13 @@ void	execute(t_shell *shell);
 bool	parse_input(t_shell *shell);
 bool	lexical_analyzer(char *input, t_token **tokens);
 bool	process_tokens(t_shell *shell);
-bool	process_tokens(t_shell *shell);
+char	*expand_env(t_env *env, char *new_token);
 bool	create_pipeline_node(t_shell *shell);
-void	handle_redirects(t_token **current, t_redir **r_in, t_redir **r_out);
+void	redirects(t_token **data, t_redir **r_in, t_redir **r_out, t_shell *sh);
 bool	lexical_aux(char *input, t_token **tokens, int *si, char *data);
 bool	is_special_char(char c);
 void	addtoken(t_token **tokens, char *data, int *quo_err);
+bool	process_pipeline(t_shell *shell);
 
 //UTILS
 bool	ft_isspace_str(char *str);
@@ -232,6 +236,6 @@ void	ft_exit(t_shell *shell, t_pipes *pipes);
 
 //---------------------------------END FUNCTIONS---------------------------------//
 
-void	open_pipe(t_shell *shell);
+void	execute_pipeline(t_shell *shell);
 
 #endif

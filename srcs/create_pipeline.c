@@ -34,15 +34,13 @@ static int	is_redirect(t_token *current)
 		|| current->type == REDIR_IN || current->type == HEREDOC);
 }
 
-static void	*copy_tokens_to_pipeline(t_token **current)
+static void	*copy_tokens_to_pipeline(t_token **current, t_shell *shell)
 {
 	int		i;
 	t_token	*tmp;
 	t_pipes	*pipes;
-	int		index;
 
 	i = -1;
-	index = 0;
 	tmp = *current;
 	pipes = ft_calloc(1, sizeof(t_pipes));
 	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
@@ -53,9 +51,8 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 	i = 0;
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
-		index++;
 		if (is_redirect(*current))
-			handle_redirects(current, &pipes->redir_in, &pipes->redir_out);
+			redirects(current, &pipes->redir_in, &pipes->redir_out, shell);
 		else
 			pipes->cmds[i++] = ft_strdup((*current)->data);
 		*current = (*current)->next;
@@ -92,7 +89,7 @@ bool	create_pipeline_node(t_shell *shell)
 	aux[1] = pipes_counter(shell->tokens) + 1;
 	while (aux[1]-- > 0)
 	{
-		new_pipe = copy_tokens_to_pipeline(&current);
+		new_pipe = copy_tokens_to_pipeline(&current, shell);
 		if (new_pipe == NULL)
 			return (false);
 		new_pipe->next = NULL;

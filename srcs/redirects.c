@@ -34,21 +34,65 @@ static void	insert_redir(t_redir **head, char *data, int type)
 	}
 }
 
-void	handle_redirects(t_token **current, t_redir **r_in, t_redir **r_out)
+static void	read_heredoc_lines(int fd, char *file, t_shell *shell)
 {
-	if ((*current)->type == REDIR_OUT || (*current)->type == D_REDIR_OUT)
+	char	*line;
+
+	while (true)
 	{
-		insert_redir(r_out, (*current)->next->data, (*current)->type);
-		*current = (*current)->next;
+		line = readline("> ");
+		if (line == NULL)
+		{
+			ft_printf_fd(2, "minishell: warning: here-document delimited");
+			ft_printf_fd(2, " by end-of-file (wanted `%s')\n", file);
+			break ;
+		}
+		if (ft_strncmp(line, file, ft_strlen(file)) == 0
+			&& ft_strlen(line) == ft_strlen(file))
+		{
+			free(line);
+			break ;
+		}
+		line = expand_env(shell->env, line);
+		ft_putendl_fd(line, fd);
+		free(line);
 	}
-	else if ((*current)->type == REDIR_IN)
+}
+
+static void	handle_heredoc(char **current, t_shell *shell)
+{
+	int	fd;
+
+	if (access(".heredoc", F_OK) != -1)
+		unlink(".heredoc");
+	fd = open(".heredoc", O_CREAT | O_RDWR | O_TRUNC, PERMISSIONS);
+	if (fd == -1)
 	{
-		insert_redir(r_in, (*current)->next->data, (*current)->type);
-		*current = (*current)->next;
+		perror("minishell");
+		return ;
 	}
-	else if ((*current)->type == HEREDOC)
+	read_heredoc_lines(fd, *current, shell);
+	free(*current);
+	*current = ft_strdup(".heredoc");
+	close(fd);
+}
+
+void	redirects(t_token **data, t_redir **r_in, t_redir **r_out, t_shell *sh)
+{
+	if ((*data)->type == REDIR_OUT || (*data)->type == D_REDIR_OUT)
 	{
-		insert_redir(r_in, (*current)->next->data, (*current)->type);
-		*current = (*current)->next;
+		insert_redir(r_out, (*data)->next->data, (*data)->type);
+		*data = (*data)->next;
+	}
+	else if ((*data)->type == REDIR_IN)
+	{
+		insert_redir(r_in, (*data)->next->data, (*data)->type);
+		*data = (*data)->next;
+	}
+	else if ((*data)->type == HEREDOC)
+	{
+		handle_heredoc(&(*data)->next->data, sh);
+		insert_redir(r_in, (*data)->next->data, (*data)->type);
+		*data = (*data)->next;
 	}
 }

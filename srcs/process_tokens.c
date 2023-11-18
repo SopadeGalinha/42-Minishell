@@ -68,7 +68,7 @@ static char	*aux_expand(t_env *env, char *token, int *si)
 	return (new_token);
 }
 
-static char	*expand_env(t_env *env, char *new_token)
+char	*expand_env(t_env *env, char *new_token)
 {
 	int		si[2];
 
