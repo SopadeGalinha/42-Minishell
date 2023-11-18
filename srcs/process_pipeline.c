@@ -82,7 +82,6 @@ static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
 	int	last_valid_fd;
 
 	last_valid_fd = -1;
-
 	while (redir)
 	{
 		if (redir->type == REDIR_OUT)
@@ -123,9 +122,9 @@ bool	process_pipeline(t_shell *shell)
 		// nao retornar false em erro
 		if (!process_redir_in(shell, current->redir_in, current))
 			return (false);
+		if (!process_redir_out(shell, current->redir_out, current))
+			return (false);
 		current = current->next;
-		// if (!process_redir_out(shell, current->redir_out, current))
-		// 	return (false);
 	}
 	return (true);
 }
