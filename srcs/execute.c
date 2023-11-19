@@ -1,6 +1,48 @@
 
 #include "../includes/minishell.h"
 
+/*------------------------------INICIO---------CRIA O ENVPP PARA USAR NO EXECVE------INICIO--------------------------------------*/
+
+int ft_envsize(t_env *lst)
+{
+    int i = 0;
+    while (lst)
+    {
+        lst = lst->next;
+        i++;
+    }
+    return i;
+}
+
+// Função para criar um array a partir da informação de line em t_env
+char **create_envpp(t_shell *shell)
+{
+    int envArraySize = ft_envsize(shell->env);
+    char **envArray = (char **)malloc((envArraySize + 1) * sizeof(char *));
+    int index = 0;
+
+    t_env *currentEnv = shell->env;
+    while (currentEnv != NULL)
+    {
+        if (index >= envArraySize)
+        {
+            fprintf(stderr, "Tamanho máximo do array de ambiente atingido.\n");
+            break;
+        }
+
+        envArray[index] = strdup(currentEnv->line);
+        currentEnv = currentEnv->next;
+        index++;
+    }
+
+    envArray[index] = NULL;
+
+    return (envArray);
+}
+
+
+/*----------------------------------FIM------CRIA O ENVPP PARA USAR NO EXECVE-------FIM------------------------------------------*/
+
 void	init_builtin(const char *builtin[7])
 {
 	builtin[0] = "pwd";
@@ -10,7 +52,7 @@ void	init_builtin(const char *builtin[7])
 	builtin[4] = "exit";
 	builtin[5] = "unset";
 	builtin[6] = "env";
-	builtin[7] = NULL;
+	//builtin[7] = NULL;
 }
 
 int	ft_is_builtin(const char *builtin[7], char *cmd)
@@ -29,6 +71,7 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 	pid_t	pid;
 	int		status;
 	int		out_fd;
+	char	**envpp;
 
 	pid = fork();
 	if (pid == -1)
@@ -38,6 +81,7 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 	}
 	if (pid == 0)
 	{
+		envpp = create_envpp(shell);
 		if (prev_pipe[0] != -1)
 		{
 			if (dup2(prev_pipe[0], STDIN_FILENO) == -1)
@@ -87,11 +131,12 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 			}
 			close(out_fd);
 		}
-		if (execve(pipes->cmds[0], pipes->cmds, shell->env) == -1)
+		if (execve(pipes->cmds[0], pipes->cmds, envpp) == -1)
 		{
 			perror("execve");
 			exit(EXIT_FAILURE);
 		}
+		ft_free_array(envpp);
 	}
 	else
 	{
