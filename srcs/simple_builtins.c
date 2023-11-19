@@ -12,6 +12,44 @@
 
 #include "../includes/minishell.h"
 
+static void	delete_node(t_env **lst, char *key)
+{
+	t_env	*current;
+	t_env	*prev;
+
+	prev = NULL;
+	current = *lst;
+	while (current != NULL)
+	{
+		if (ft_strncmp(current->key, key, strlen(current->key)) == 0)
+		{
+			if (prev == NULL)
+				*lst = current->next;
+			else
+				prev->next = current->next;
+			free(current->key);
+			free(current->value);
+			free(current->line);
+			free(current);
+			return ;
+		}
+		prev = current;
+		current = current->next;
+	}
+}
+
+void	ft_unset(t_shell *shell, t_pipes *pipes)
+{
+	int	i;
+
+	i = 0;
+	while (pipes->cmds[++i])
+	{
+		delete_node(&shell->env, pipes->cmds[i]);
+		delete_node(&shell->exp, pipes->cmds[i]);
+	}
+}
+
 void	ft_pwd(t_shell *shell, t_pipes *pipes)
 {
 	char	*pwd;
@@ -19,7 +57,7 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 	(void)shell;
 	(void)pipes;
 	pwd = getcwd(NULL, 0);
-	ft_printf_fd(shell->std_out, "%s\n", pwd);
+	ft_printf_fd(pipes->fd[OUT], "%s\n", pwd);
 	free(pwd);
 }
 
@@ -72,9 +110,9 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	{
 		ft_printf_fd(shell->std_out, "%s", pipes->cmds[i]);
 		if (pipes->cmds[i + 1])
-			ft_printf_fd(shell->std_out, " ");
+			ft_printf_fd(pipes->fd[OUT], " ");
 		i++;
 	}
 	if (!n_flag)
-		ft_printf_fd(shell->std_out, "\n");
+		ft_printf_fd(pipes->fd[OUT], "\n");
 }
