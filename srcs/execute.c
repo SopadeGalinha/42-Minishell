@@ -24,6 +24,7 @@ int	ft_is_builtin(const char *builtin[7], char *cmd)
 	return (-1);
 }
 
+
 void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 {
 	pid_t	pid;
@@ -47,7 +48,6 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 			}
 			close(prev_pipe[0]);
 		}
-		// handle command-specific input redirection
 		if (pipes->redir_in != NULL)
 		{
 			int in_fd = pipes->in;
@@ -62,7 +62,6 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 			}
 			close(in_fd);
 		}
-		// handle pipe output redirection
 		if (pipes->fd[OUT] != shell->std_out)
 		{
 			if (dup2(pipes->fd[OUT], STDOUT_FILENO) == -1)
