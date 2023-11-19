@@ -24,7 +24,7 @@ int	ft_is_builtin(const char *builtin[7], char *cmd)
 	return (-1);
 }
 
-void	execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
+void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 {
 	pid_t	pid;
 	int		status;
@@ -46,6 +46,22 @@ void	execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 			}
 			close(prev_pipe[0]);
 		}
+		// handle command-specific input redirection
+		if (pipes->redir_in != NULL)
+		{
+			int in_fd = open(pipes->redir_in->file, O_RDONLY);
+			if (in_fd == -1)
+			{
+				perror("open");
+				exit(EXIT_FAILURE);
+			}
+			if (dup2(in_fd, STDIN_FILENO) == -1) {
+				perror("dup2");
+				exit(EXIT_FAILURE);
+			}
+			close(in_fd);
+		}
+		// handle pipe output redirection
 		if (pipes->fd[OUT] != shell->std_out)
 		{
 			if (dup2(pipes->fd[OUT], STDOUT_FILENO) == -1)
@@ -54,6 +70,21 @@ void	execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 				exit(EXIT_FAILURE);
 			}
 			close(pipes->fd[OUT]);
+		}
+		if (pipes->redir_out != NULL)
+		{
+			int out_fd = open(pipes->redir_out->file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+			if (out_fd == -1)
+			{
+				perror("open");
+				exit(EXIT_FAILURE);
+			}
+			if (dup2(out_fd, STDOUT_FILENO) == -1)
+			{
+				perror("dup2");
+				exit(EXIT_FAILURE);
+			}
+			close(out_fd);
 		}
 		if (execve(pipes->cmds[0], pipes->cmds, shell->env) == -1)
 		{
@@ -73,13 +104,14 @@ void	execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 	}
 }
 
+
 void execute_pipeline(t_shell *shell)
 {
 	t_pipes		*pipes;
 	const char	*builtin[7];
 	int			is_builtin;
 	int			prev_pipe[2];
-	
+
 	pipes = shell->pipes;
 	init_builtin(builtin);
 	prev_pipe[0] = -1;
