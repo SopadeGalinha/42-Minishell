@@ -129,9 +129,9 @@ static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
 		if (val_fd != -1)
 			close(val_fd);
 		if (redir->type == REDIR_OUT)
-			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, PERMISSIONS);
 		if (redir->type == D_REDIR_OUT)
-			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, PERMISSIONS);
 		if (val_fd == -1)
 		{
 			perror("minishell");
