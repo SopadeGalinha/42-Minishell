@@ -81,6 +81,6 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
-	// process_pipeline(shell);
+	process_pipeline(shell);
 	return (true);
 }

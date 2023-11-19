@@ -28,6 +28,7 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 {
 	pid_t	pid;
 	int		status;
+	int		out_fd;
 
 	pid = fork();
 	if (pid == -1)
@@ -49,7 +50,7 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 		// handle command-specific input redirection
 		if (pipes->redir_in != NULL)
 		{
-			int in_fd = open(pipes->redir_in->file, O_RDONLY);
+			int in_fd = pipes->in;
 			if (in_fd == -1)
 			{
 				perror("open");
@@ -73,7 +74,7 @@ void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 		}
 		if (pipes->redir_out != NULL)
 		{
-			int out_fd = open(pipes->redir_out->file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+			out_fd = pipes->out;
 			if (out_fd == -1)
 			{
 				perror("open");

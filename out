@@ -1,0 +1,27 @@
+- leaks$
+- adicionar as builtins --- Se houver < ou <<$
+<<<<<<< HEAD$
+=======$
+<<<<<<< HEAD$
+=======$
+- Comando "cd" com segmentation fault$
+- Tratar caso do "env A"$
+>>>>>>> origin/main$
+$
+>>>>>>> origin/main$
+$
+-------------------------------------------------------------------------------------------------$
+|Resposabilidades de HELLOM:                                                                    |$
+|- Tratar caso do "env A"                    OPEN: 10/11 - CLOSE: 15/11       ---      OK       |$
+|- Tratar caso do "builtins | grep A"        OPEN: 15/11 - CLOSE: --/--       NOK    CURRENT    |$
+|- Tratar caso do "export oi=oi"             OPEN: 18/11 - CLOSE: 19/11       ---      OK       |$
+|- Tratar caso "exit_status p/ export e env" OPEN: 18/11 - CLOSE: 19/11       ---      OK       |$
+-------------------------------------------------------------------------------------------------$
+$
+-------------------------------------------------------------------------------------------------$
+|JHON:                                                                                          |$
+|- Tratar caso "quando '$?' exit nao sai"    OPEN: 19/11 - CLOSE: --/--       NOK               |$
+|- Tratar caso do "export > cur_file"        OPEN: 15/11 - CLOSE: --/--       NOK               |$
+|- Tratar caso do "env > cur_file"           OPEN: 15/11 - CLOSE: --/--       NOK               |$
+|- Tratar caso do "pwd > cur_file"           OPEN: 15/11 - CLOSE: --/--       NOK               |$
+-------------------------------------------------------------------------------------------------$

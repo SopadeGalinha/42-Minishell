@@ -43,6 +43,7 @@ static bool	redir_heredoc(int *last_valid_fd, char *file, bool *heredoc)
 {
 	int	fd;
 
+	printf("here\n");
 	if (*last_valid_fd != -1)
 		close(*last_valid_fd);
 	fd = open(file, O_RDONLY);
@@ -76,6 +77,7 @@ static void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 		redir = redir->next;
 	}
 	current->fd[IN] = last_valid_fd;
+	current->in = last_valid_fd;
 }
 
 static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
@@ -99,6 +101,7 @@ static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
 		redir = redir->next;
 	}
 	current->fd[OUT] = val_fd;
+	current->out = val_fd;
 	return (true);
 }
 

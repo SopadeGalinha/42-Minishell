@@ -93,6 +93,8 @@ typedef struct s_pipes
 	char						**cmds;
 	char						*path;
 	int							fd[2];
+	int							in;
+	int							out;
 	struct	s_redir				*redir_in;
 	struct	s_redir				*redir_out;
 	struct s_pipes				*next;
