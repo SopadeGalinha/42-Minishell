@@ -30,56 +30,53 @@ static void	ft_free_redirect(t_redir **redir)
 	*redir = NULL;
 }
 
-bool free_pipes(t_pipes **pipes)
+bool	free_pipes(t_pipes **pipes)
 {
-	t_pipes *current_pipeline;
-
-	if (pipes == NULL || *pipes == NULL)
-		return true;
+	t_pipes	*current_pipeline;
+	t_pipes	*next_pipeline;
 
 	current_pipeline = *pipes;
+	if (pipes == NULL || *pipes == NULL)
+		return (true);
 	while (current_pipeline != NULL)
 	{
 		ft_free_redirect(&current_pipeline->redir_in);
 		ft_free_redirect(&current_pipeline->redir_out);
 		ft_free_array(current_pipeline->cmds);
-		t_pipes *next_pipeline = current_pipeline->next;
+		next_pipeline = current_pipeline->next;
 		free(current_pipeline);
 		current_pipeline = next_pipeline;
-	}    
+	}
 	*pipes = NULL;
-	
-	return true;
+	return (true);
 }
 
-static void free_tokens(t_token **tokens)
+static void	free_tokens(t_token **tokens)
 {
-    t_token *current;
-    t_token *tmp;
+	t_token	*current;
+	t_token	*tmp;
 
-    if (tokens == NULL || *tokens == NULL)
-        return;
-
-    current = *tokens;
-    while (current != NULL)
-    {
-        tmp = current->next;
-        if (current->data)
-            free(current->data);
-        free(current);
-        current = tmp;
-    }
-    *tokens = NULL;
+	if (tokens == NULL || *tokens == NULL)
+		return ;
+	current = *tokens;
+	while (current != NULL)
+	{
+		tmp = current->next;
+		if (current->data)
+			free(current->data);
+		free(current);
+		current = tmp;
+	}
+	*tokens = NULL;
 }
 
-
-static void free_env(t_env **env)
+static void	free_env(t_env **env)
 {
 	t_env	*current;
 	t_env	*tmp;
 
 	if (env == NULL)
-		return;
+		return ;
 	current = *env;
 	while (current != NULL)
 	{
@@ -95,7 +92,7 @@ static void free_env(t_env **env)
 
 void	free_struct(t_shell *shell, int running)
 {
- 	if (shell->input != NULL)
+	if (shell->input != NULL)
 		free(shell->input);
 	if (shell->pipes != NULL)
 		free_pipes(&(shell->pipes));

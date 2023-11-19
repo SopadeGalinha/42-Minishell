@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static	bool validate_tokens(t_shell *shell)
+static bool	validate_tokens(t_shell *shell)
 {
 	// mexer dps
 /* 	t_token	*token;
@@ -81,10 +81,6 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
-	if (!process_pipeline(shell))
-	{
-		// eliminar pipe atual
-	}
-	// print_pipes(shell->pipes);
+	process_pipeline(shell);
 	return (true);
 }

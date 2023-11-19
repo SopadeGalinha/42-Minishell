@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:21:24 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/01 14:21:53 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/18 18:26:22 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	create_add_node_to_back(t_env **head, char *line)
 {
 	t_env	*new;
-	t_env *temp;
+	t_env	*temp;
 
 	new = (t_env *)malloc(sizeof(t_env));
 	temp = *head;
@@ -28,24 +28,22 @@ int	create_add_node_to_back(t_env **head, char *line)
 	new->value = ft_strdup_equal_value(line);
 	new->line = ft_strdup(line);
 	new->next = NULL;
-
 	if (!*head)
 	{
-		*head = new;  // Se a lista estiver vazia, o novo nó é o único nó na lista.
+		*head = new;
 		return (1);
 	}
-
 	while (temp->next)
 		temp = temp->next;
-	temp->next = new;  // Adiciona o novo nó após o último nó existente.
+	temp->next = new;
 	return (1);
 }
 
-
 int	find_node(t_env *lst, char *key)
 {
-	t_env *current = lst;
+	t_env	*current;
 
+	current = lst;
 	while (current != NULL)
 	{
 		if (ft_strncmp(current->key, key, ft_strlen(current->key)) == 0)
@@ -54,10 +52,12 @@ int	find_node(t_env *lst, char *key)
 	}
 	return (0);
 }
+
 void	update_node(t_env *lst, char *key, char *line)
 {
-	t_env *current = lst;
+	t_env	*current;
 
+	current = lst;
 	while (current != NULL)
 	{
 		if (ft_strncmp(current->key, key, ft_strlen(current->key)) == 0)
@@ -68,19 +68,18 @@ void	update_node(t_env *lst, char *key, char *line)
 				free(current->value);
 			if (current->line)
 				free(current->line);
-			// Atualiza o valor do nó correspondente
 			current->key = ft_strdup_equal_key(line);
 			current->value = ft_strdup_equal_value(line);
 			current->line = ft_strdup(line);
-			return;
+			return ;
 		}
 		current = current->next;
 	}
 }
 
-int create_find_add_insert_node(t_env **head, char *line)
+int	create_find_add_insert_node(t_env **head, char *line)
 {
-	t_env *new;
+	t_env	*new;
 
 	new = (t_env *)malloc(sizeof(t_env));
 	if (!new)

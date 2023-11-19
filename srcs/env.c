@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:08:16 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/01 14:10:49 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/18 23:14:56 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_env	*init_env(char **envp)
 	return (env_list);
 }
 
-void	print_list(t_shell *shell, int flag)
+void	print_list(t_shell *shell, int flag, t_pipes *pipes)
 {
 	t_env	*current;
 
@@ -104,17 +104,17 @@ void	print_list(t_shell *shell, int flag)
 	while (current != NULL)
 	{
 		if (flag)
-			ft_printf_fd(shell->std_out, "%s\n", current->line);
+			ft_printf_fd(pipes->fd[OUT], "%s\n", current->line);
 		else
 		{
-			ft_printf_fd(shell->std_out, "declare -x %s", current->key);
+			ft_printf_fd(pipes->fd[OUT], "declare -x %s", current->key);
 			if (current->value)
 			{
-				ft_printf_fd(shell->std_out, "=");
-				ft_printf_fd(shell->std_out, "\"%s\"\n", current->value);
+				ft_printf_fd(pipes->fd[OUT], "=");
+				ft_printf_fd(pipes->fd[OUT], "\"%s\"\n", current->value);
 			}
 			else
-				ft_printf_fd(shell->std_out, "\n");
+				ft_printf_fd(pipes->fd[OUT], "\n");
 		}
 		current = current->next;
 	}
