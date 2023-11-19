@@ -81,6 +81,8 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
+	print_pipes(shell->pipes);
+	exit	(0);
 	process_pipeline(shell);
 	return (true);
 }
