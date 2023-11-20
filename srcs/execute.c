@@ -66,84 +66,110 @@ int	ft_is_builtin(const char *builtin[7], char *cmd)
 	return (-1);
 }
 
+/*-----------refatora-------------*/
+
+void handle_error(char *str)
+{
+    perror(str);
+    exit(EXIT_FAILURE);
+}
+
+void redirect_stdin(int source_fd)
+{
+    if (dup2(source_fd, STDIN_FILENO) == -1)
+        handle_error("dup2");
+    close(source_fd);
+}
+
+void redirect_stdout(int dest_fd)
+{
+    if (dup2(dest_fd, STDOUT_FILENO) == -1)
+        handle_error("dup2");
+    close(dest_fd);
+}
+
+
+void setup_redirection(t_pipes *pipes, int prev_pipe[2], t_shell *shell)
+{
+	int	out_fd;
+	if (prev_pipe[0] != -1)
+		redirect_stdin(prev_pipe[0]);
+	if (pipes->redir_in != NULL)
+	{
+		int in_fd = pipes->in;
+		if (in_fd == -1)
+			handle_error("open");
+		if (dup2(in_fd, STDIN_FILENO) == -1)
+			handle_error("dup2");
+		close(in_fd);
+	}
+	if (pipes->fd[OUT] != shell->std_out)
+		redirect_stdout(pipes->fd[OUT]);
+	if (pipes->redir_out != NULL)
+	{
+		out_fd = pipes->out;
+		if (out_fd == -1)
+			handle_error("open");
+		if (dup2(out_fd, STDOUT_FILENO) == -1)
+			handle_error("dup2");
+		close(out_fd);
+	}
+}
+
+void	ft_access(char **cmd, t_shell *shell)
+{
+	char	*aux;
+	char	*path;
+	char	**path_array;
+
+	if (ft_strchr(cmd[0], '/'))
+		return ;
+	path = get_env_value(shell->env, "PATH");
+	path_array = ft_split(path, ':');
+	int i = -1;
+	while (path_array[++i])
+    {
+        char *aux = cmd[0];
+        free(path);
+        path = ft_strjoin(path_array[i], "/");
+        cmd[0] = ft_strjoin(path, aux);
+        free(aux);
+        if (access(cmd[0], F_OK) == 0)
+            break;
+    }
+	ft_free_array(path_array);
+	free(path);
+}
+
+void child_process(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
+{
+    char **envpp;
+    envpp = create_envpp(shell);
+
+    setup_redirection(pipes, prev_pipe, shell);
+	ft_access(&pipes->cmds[0], shell);
+	printf("executando %s\n", pipes->cmds[0]);
+	if (pipes->cmds[0][0] == '/')
+		if (execve(pipes->cmds[0], pipes->cmds, envpp) == -1)
+			handle_error("execve");
+	ft_free_array(envpp);
+}
 
 void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
 {
 	pid_t	pid;
 	int		status;
-	int		out_fd;
 	char	**envpp;
 
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
+		handle_error("fork");
 	if (pid == 0)
-	{
-		envpp = create_envpp(shell);
-		if (prev_pipe[0] != -1)
-		{
-			if (dup2(prev_pipe[0], STDIN_FILENO) == -1)
-			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(prev_pipe[0]);
-		}
-		if (pipes->redir_in != NULL)
-		{
-			int in_fd = pipes->in;
-			if (in_fd == -1)
-			{
-				perror("open");
-				exit(EXIT_FAILURE);
-			}
-			if (dup2(in_fd, STDIN_FILENO) == -1) {
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(in_fd);
-		}
-		if (pipes->fd[OUT] != shell->std_out)
-		{
-			if (dup2(pipes->fd[OUT], STDOUT_FILENO) == -1)
-			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(pipes->fd[OUT]);
-		}
-		if (pipes->redir_out != NULL)
-		{
-			out_fd = pipes->out;
-			if (out_fd == -1)
-			{
-				perror("open");
-				exit(EXIT_FAILURE);
-			}
-			if (dup2(out_fd, STDOUT_FILENO) == -1)
-			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(out_fd);
-		}
-		if (execve(pipes->cmds[0], pipes->cmds, envpp) == -1)
-		{
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
-		ft_free_array(envpp);
-	}
+		child_process(shell, pipes, prev_pipe);
 	else
 	{
 		if (waitpid(pid, &status, 0) == -1)
-		{
-			perror("waitpid");
-			exit(EXIT_FAILURE);
-		}
+			handle_error("waitpid");
 		if (WIFEXITED(status))
 			g_exit_status = WEXITSTATUS(status);
 	}
@@ -168,10 +194,7 @@ void execute_pipeline(t_shell *shell)
 		if (pipes->next)
 		{
 			if (pipe(pipes->fd) == -1)
-			{
-				perror("pipe");
-				exit(EXIT_FAILURE);
-			}
+				handle_error("pipe");
 		}
 		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
 		if (is_builtin != -1)
