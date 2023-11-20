@@ -1,0 +1,13 @@
+total 116
+-rw-r--r-- 1 jhogonca 2023_porto     0 Nov  6 18:08 file
+drwxr-xr-x 3 jhogonca 2023_porto  4096 Nov  6 18:08 includes
+-rw-r--r-- 1 jhogonca 2023_porto     0 Nov  9 18:01 infile
+-rw-r--r-- 1 jhogonca 2023_porto     7 Nov  6 18:08 input
+-rwxr-xr-x 1 jhogonca 2023_porto  2824 Nov  7 22:11 Makefile
+-rwxr-xr-x 1 jhogonca 2023_porto 83104 Nov  9 17:28 minishell
+-rw-r--r-- 1 jhogonca 2023_porto     0 Nov  9 18:01 out
+-rw-r--r-- 1 jhogonca 2023_porto   793 Nov  6 18:11 output
+-rw-r--r-- 1 jhogonca 2023_porto    83 Nov  2 08:46 readline_supression
+drwxr-xr-x 3 jhogonca 2023_porto  4096 Nov  9 16:54 srcs
+-rw-r--r-- 1 jhogonca 2023_porto    83 Nov  6 18:40 testes
+-rw-r--r-- 1 jhogonca 2023_porto   104 Nov  6 18:08 todo
