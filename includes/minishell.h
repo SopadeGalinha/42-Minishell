@@ -236,6 +236,11 @@ void	ft_export(t_shell *shell, t_pipes *pipes);
 void	ft_env(t_shell *shell, t_pipes *pipes);
 void	ft_exit(t_shell *shell, t_pipes *pipes);
 
+// EXECUTE_UTILS
+void	ft_access(char **cmd, t_shell *shell);
+char	**get_envp_array(t_shell *shell);
+int	ft_is_builtin(const char *builtin[7], char *cmd);
+void	init_builtin(const char *builtin[7]);
 //---------------------------------END FUNCTIONS---------------------------------//
 
 void	execute_pipeline(t_shell *shell);

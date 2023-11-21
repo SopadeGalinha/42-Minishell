@@ -140,7 +140,6 @@ static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
 		redir = redir->next;
 	}
 	current->fd[OUT] = val_fd;
-	current->out = val_fd;
 	return (true);
 }
 

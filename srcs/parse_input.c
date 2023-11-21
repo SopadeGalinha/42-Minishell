@@ -73,6 +73,8 @@ static bool	validate_tokens(t_shell *shell)
 
 bool	parse_input(t_shell *shell)
 {
+	t_pipes	*pipes;
+
 	if (!lexical_analyzer(shell->input, &shell->tokens))
 		return (false);
 	if (!process_tokens(shell))
@@ -82,5 +84,11 @@ bool	parse_input(t_shell *shell)
 	if (!create_pipeline_node(shell))
 		return (false);
 	process_pipeline(shell);
+	pipes = shell->pipes;
+	while (pipes)
+	{
+		ft_access(&pipes->cmds[0], shell);
+		pipes = pipes->next;
+	}
 	return (true);
 }
