@@ -243,6 +243,4 @@ int	ft_is_builtin(const char *builtin[7], char *cmd);
 void	init_builtin(const char *builtin[7]);
 //---------------------------------END FUNCTIONS---------------------------------//
 
-void	execute_pipeline(t_shell *shell);
-
 #endif
