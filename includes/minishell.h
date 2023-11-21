@@ -89,14 +89,10 @@ typedef struct s_redir
 
 typedef struct s_pipes
 {
-	int							id;
-	char						**cmds;
-	int							fd[2];
-	int							in;
-	int							out;
-	char						*file;
-	struct	s_redir				*redir_in;
-	struct	s_redir				*redir_out;
+	char						**cmds;	// array of commands
+	int							fd[2];	// file descriptors
+	struct	s_redir				*redir_in; // list of input redirections
+	struct	s_redir				*redir_out; // list of output redirections
 	struct s_pipes				*next;
 }					t_pipes;
 
@@ -121,16 +117,14 @@ typedef struct s_token
 typedef struct s_shell
 {
 	char	*input;
-	t_pipes	*pipes;
-
+	t_pipes	*pipes;	// list of pipes
 	t_token	*tokens;
-	t_env	*env;
+	t_env	*env;	// list of environment variables
 	t_env	*exp;
 	char	*oldpwd;
 	int		error;
-	int		std_in;
 	int		std_out;
-	void	(*builtin[7])(struct s_shell *shell, t_pipes *pipes);
+	void	(*builtin[7])(struct s_shell *shell, t_pipes *pipes);	// array of builtins functions
 }				t_shell;
 
 /*__________________________________MACROS____________________________________*/
@@ -165,6 +159,8 @@ typedef struct s_shell
 
 # define IN 0
 # define OUT 1
+# define READ 0
+# define WRITE 1
 //------------------------------ END MACROS ----------------------------------//
 
 /*_______________________________ FUNCTIONS __________________________________*/

@@ -116,7 +116,6 @@ static void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 		redir = redir->next;
 	}
 	current->fd[IN] = last_valid_fd;
-	current->in = last_valid_fd;
 }
 
 static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
