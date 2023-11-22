@@ -1,45 +1,5 @@
 #include "minishell.h"
 
-void	check_commands(t_command_table **command_table, char **path_list)
-{
-	char	*test_command;
-	int		i;
-
-	if (check_builtin((*command_table)->cmd[0]))
-	{
-		return ;
-	}
-	i = 0;
-	while (path_list[i])
-	{
-		test_command = ft_strjoin(path_list[i], (*command_table)->cmd[0]);
-		if (access(test_command, F_OK | X_OK) == 0)
-		{
-			(*command_table)->cmd_target = test_command;
-			(*command_table)->command_type = EXECUTABLE;
-			return ;
-		}
-		free(test_command);
-		i++;
-	}
-	ft_printf("minishell: %s: command not found\n", (*command_table)->cmd[0]);
-	return ; // Error
-}
-
-enum e_RedirectType	redir_check(char *redir_str)
-{
-	if (ft_strlen(redir_str) == 1 && !ft_strncmp("<", redir_str, 1))
-		return (INPUT);
-	else if (ft_strlen(redir_str) == 2 && !ft_strncmp("<<", redir_str, 2))
-		return (HERE_DOC);
-	else if (ft_strlen(redir_str) == 1 && !ft_strncmp(">", redir_str, 1))
-		return (OUTPUT);
-	else if (ft_strlen(redir_str) == 2 && ! ft_strncmp(">>", redir_str, 2))
-		return (APPEND);
-	else
-		return (INVALID);
-}
-
 enum e_ValidType	check_input(t_command_table **command)
 {
 	int	i;

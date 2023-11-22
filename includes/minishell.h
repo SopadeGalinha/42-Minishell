@@ -90,7 +90,8 @@ typedef struct s_redir
 typedef struct s_pipes
 {
 	char						**cmds;	// array of commands
-	int							fd[2];	// file descriptors
+	int							redir_fd[2];	// redirections file descriptors (0 = input (< | <<), 1 = output (> | >>))
+	int							pipe_fd[2];	// pipe file descriptors (0 = input, 1 = output)
 	struct	s_redir				*redir_in; // list of input redirections
 	struct	s_redir				*redir_out; // list of output redirections
 	struct s_pipes				*next;
@@ -203,6 +204,7 @@ bool	lexical_aux(char *input, t_token **tokens, int *si, char *data);
 bool	is_special_char(char c);
 void	addtoken(t_token **tokens, char *data, int *quo_err);
 bool	process_pipeline(t_shell *shell);
+int		count_pipes(t_token *tokens);
 
 //UTILS
 bool	ft_isspace_str(char *str);
@@ -231,6 +233,8 @@ void	ft_unset(t_shell *shell, t_pipes *pipes);
 void	ft_export(t_shell *shell, t_pipes *pipes);
 void	ft_env(t_shell *shell, t_pipes *pipes);
 void	ft_exit(t_shell *shell, t_pipes *pipes);
+
+void execute(t_shell *shell);
 
 // EXECUTE_UTILS
 void	ft_access(char **cmd, t_shell *shell);

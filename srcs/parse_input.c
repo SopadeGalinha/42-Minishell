@@ -71,6 +71,7 @@ static bool	validate_tokens(t_shell *shell)
 	return (true);
 }
 
+
 bool	parse_input(t_shell *shell)
 {
 	t_pipes	*pipes;
