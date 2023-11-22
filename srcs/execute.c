@@ -1,217 +1,93 @@
-
 #include "../includes/minishell.h"
 
-/*------------------------------INICIO---------CRIA O ENVPP PARA USAR NO EXECVE------INICIO--------------------------------------*/
-
-int ft_envsize(t_env *lst)
+/* void	process(t_shell *shell, int process, const char *builtin[7], int pid)
 {
-	int i = 0;
-	while (lst)
+	t_pipes	*pipes;
+	int		is_builtin;
+	char	**envp;
+
+	envp = get_envp_array(shell);
+	pipes = shell->pipes;
+	if (pid != 0)
 	{
-		lst = lst->next;
-		i++;
+		while (process-- > 0)
+			wait(NULL);
+		return ;
 	}
-	return i;
-}
-
-// Função para criar um array a partir da informação de line em t_env
-char **create_envpp(t_shell *shell)
-{
-	int envArraySize = ft_envsize(shell->env);
-	char **envArray = (char **)malloc((envArraySize + 1) * sizeof(char *));
-	int index = 0;
-
-	t_env *currentEnv = shell->env;
-	while (currentEnv != NULL)
+	while ( pipes)
 	{
-		if (index >= envArraySize)
+		if (pipe(pipes->pipe_fd) == -1)
 		{
-			fprintf(stderr, "Tamanho máximo do array de ambiente atingido.\n");
-			break;
+			perror("minishell");
+			exit(1);
 		}
-
-		envArray[index] = strdup(currentEnv->line);
-		currentEnv = currentEnv->next;
-		index++;
+		is_builtin = ft_is_builtin(pipes->cmds[0], builtin);
+		if (is_builtin)
+			ft_is_builtin(pipes->cmds[0], builtin);
+		else
+		{
+			if (execve(pipes->cmds[0], pipes->cmds, envp) == -1)
+			{
+				perror("minishell");
+				exit(1);
+			}
+		}
 	}
-
-	envArray[index] = NULL;
-
-	return (envArray);
 }
+	/* const char	*builtin[7];
+	int			process_num;
+	int			pid;
 
+	init_builtin(builtin);
+	process_num = count_pipes(shell->tokens) + 1;
+	pid = fork();
+	process(shell, process_num, builtin, pid);
 
-/*----------------------------------FIM------CRIA O ENVPP PARA USAR NO EXECVE-------FIM------------------------------------------*/
+	*/
+// CODE VAULT START
 
-void	init_builtin(const char *builtin[7])
-{
-	builtin[0] = "pwd";
-	builtin[1] = "cd";
-	builtin[2] = "echo";
-	builtin[3] = "export";
-	builtin[4] = "exit";
-	builtin[5] = "unset";
-	builtin[6] = "env";
-	//builtin[7] = NULL;
-}
-
-int	ft_is_builtin(const char *builtin[7], char *cmd)
-{
-	int	i;
-
-	i = -1;
-	while (cmd && ++i < 7)
-		if (ft_strncmp(builtin[i], cmd, ft_strlen(builtin[i])) == 0)
-			return (i);
-	return (-1);
-}
-
-/*-----------refatora-------------*/
-
-int handle_error(char *str)
+int ft_error(char *str, int exit_code)
 {
 	perror(str);
-	return (EXIT_FAILURE);
+	return (exit_code);
 }
-
-void redirect_stdin(int source_fd)
+void execute(t_shell *shell)
 {
-	if (dup2(source_fd, STDIN_FILENO) == -1)
-		exit (handle_error("dup2"));
-	close(source_fd);
-}
+	int fd[2];
+	int pid_1;
+	int pid_2;
+	char **envp;
 
-void redirect_stdout(int dest_fd)
-{
-	if (dup2(dest_fd, STDOUT_FILENO) == -1)
-		exit (handle_error("dup2"));
-	close(dest_fd);
-}
-
-
-void setup_redirection(t_pipes *pipes, int prev_pipe[2], t_shell *shell)
-{
-	int	out_fd;
-	if (prev_pipe[0] != -1)
-		redirect_stdin(prev_pipe[0]);
-	if (pipes->redir_in != NULL)
+	envp = get_envp_array(shell);
+	if (pipe(fd) == -1)
+		exit(ft_error("pipe", 1));
+	pid_1 = fork();
+	if (pid_1 == -1)
+		exit(ft_error("fork", 1));
+	if (pid_1 == 0)
 	{
-		int in_fd = pipes->in;
-		if (in_fd == -1)
-			exit (handle_error("open"));
-		if (dup2(in_fd, STDIN_FILENO) == -1)
-			exit (handle_error("dup2"));
-		close(in_fd);
+		if (dup2(fd[1], STDOUT_FILENO) == -1)
+			exit(ft_error("dup2", 1));
+		close(fd[0]);
+		close(fd[1]);
+		if (execve(shell->pipes->cmds[0], shell->pipes->cmds, envp) == -1)
+			exit(ft_error("execve", 1));
 	}
-	if (pipes->fd[OUT] != shell->std_out)
-		redirect_stdout(pipes->fd[OUT]);
-	if (pipes->redir_out != NULL)
+
+	pid_2 = fork();
+	if (pid_2 == -1)
+		exit(ft_error("fork", 1));
+	if (pid_2 == 0)
 	{
-		out_fd = pipes->out;
-		if (out_fd == -1)
-			exit (handle_error("open"));
-		if (dup2(out_fd, STDOUT_FILENO) == -1)
-			exit (handle_error("dup2"));
-		close(out_fd);
+		if (dup2(fd[0], STDIN_FILENO) == -1)
+			exit(ft_error("dup2", 1));
+		close(fd[0]);
+		close(fd[1]);
+		if (execve(shell->pipes->next->cmds[0], shell->pipes->next->cmds, envp) == -1)
+			exit(ft_error("execve", 1));
 	}
-}
-
-void ft_access(char **cmd, t_shell *shell)
-{
-	int		i;
-	char	*path;
-	char	**path_array;
-	char	*full_path;
-
-	if (ft_strchr(cmd[0], '/'))
-		return ;
-	path = get_env_value(shell->env, "PATH");
-	path_array = ft_split(path, ':');
-	i = -1;
-	full_path = NULL;
-	while (path_array[++i])
-	{
-		free(full_path);
-		full_path = ft_strjoin(path_array[i], "/");
-		full_path = ft_strjoin(full_path, cmd[0]);
-		if (access(full_path, F_OK) == 0)
-		{
-			free(cmd[0]);
-			cmd[0] = full_path;
-			break ;
-		}
-	}
-	ft_free_array(path_array);
-	free(path);
-}
-
-void child_process(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
-{
-	char **envpp;
-	envpp = create_envpp(shell);
-
-	setup_redirection(pipes, prev_pipe, shell);
-	ft_access(&pipes->cmds[0], shell);
-	if (pipes->cmds[0][0] == '/')
-		if (execve(pipes->cmds[0], pipes->cmds, envpp) == -1)
-			exit (handle_error("execve"));
-	ft_free_array(envpp);
-}
-
-void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
-{
-	pid_t	pid;
-	int		status;
-	char	**envpp;
-
-	pid = fork();
-	if (pid == -1)
-		exit (handle_error("fork"));
-	if (pid == 0)
-		child_process(shell, pipes, prev_pipe);
-	else
-	{
-		if (waitpid(pid, &status, 0) == -1)
-			exit (handle_error("waitpid"));
-		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
-	}
-}
-
-
-void execute_pipeline(t_shell *shell)
-{
-	t_pipes		*pipes;
-	const char	*builtin[7];
-	int			is_builtin;
-	int			prev_pipe[2];
-
-	pipes = shell->pipes;
-	init_builtin(builtin);
-	prev_pipe[0] = -1;
-	prev_pipe[1] = -1;
-	while (pipes)
-	{
-		if (pipes->fd[OUT] == -1)
-			pipes->fd[OUT] = shell->std_out;
-		if (pipes->next)
-		{
-			if (pipe(pipes->fd) == -1)
-				exit (handle_error("pipe"));
-		}
-		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
-		if (is_builtin != -1)
-			shell->builtin[is_builtin](shell, pipes);
-		else
-			execute_cmd(shell, pipes, prev_pipe);
-		if (pipes->next)
-		{
-			close(pipes->fd[OUT]);
-			prev_pipe[0] = pipes->fd[IN];
-			prev_pipe[1] = pipes->fd[OUT];
-		}
-		pipes = pipes->next;
-	}
-	if (prev_pipe[1] != -1)
-		close(prev_pipe[1]);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid_1, NULL, 0);
+	waitpid(pid_2, NULL, 0);
 }

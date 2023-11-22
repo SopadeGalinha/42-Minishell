@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static int	pipes_counter(t_token *tokens)
+int	count_pipes(t_token *tokens)
 {
 	int		i;
 	t_token	*current;
@@ -86,18 +86,17 @@ bool	create_pipeline_node(t_shell *shell)
 	head = NULL;
 	new_pipe = NULL;
 	current = shell->tokens;
-	aux[1] = pipes_counter(shell->tokens) + 1;
+	aux[1] = count_pipes(shell->tokens) + 1;
 	while (aux[1]-- > 0)
 	{
 		new_pipe = copy_tokens_to_pipeline(&current, shell);
 		if (new_pipe == NULL)
 			return (false);
 		new_pipe->next = NULL;
-		new_pipe->id = ++aux[0];
-		new_pipe->fd[IN] = -1;
-		new_pipe->fd[OUT] = -1;
-		new_pipe->in = -1;
-		new_pipe->out = -1;
+		new_pipe->redir_fd[IN] = -1;
+		new_pipe->redir_fd[OUT] = -1;
+		new_pipe->pipe_fd[IN] = -1;
+		new_pipe->pipe_fd[OUT] = -1;
 		add_node_to_pipeline(&head, new_pipe);
 		if (current != NULL && current->type == PIPELINE)
 			current = current->next;

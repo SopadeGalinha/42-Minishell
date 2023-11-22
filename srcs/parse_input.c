@@ -71,8 +71,14 @@ static bool	validate_tokens(t_shell *shell)
 	return (true);
 }
 
+
 bool	parse_input(t_shell *shell)
 {
+	t_pipes	*pipes;
+	const char *builtin[7];
+	int		is_builtin;
+
+	init_builtin(builtin);
 	if (!lexical_analyzer(shell->input, &shell->tokens))
 		return (false);
 	if (!process_tokens(shell))
@@ -82,5 +88,15 @@ bool	parse_input(t_shell *shell)
 	if (!create_pipeline_node(shell))
 		return (false);
 	process_pipeline(shell);
+	pipes = shell->pipes;
+	while (pipes)
+	{
+		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
+		if (is_builtin != -1)
+			;
+		else
+			ft_access(&pipes->cmds[0], shell);
+		pipes = pipes->next;
+	}
 	return (true);
 }

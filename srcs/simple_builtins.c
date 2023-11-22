@@ -57,7 +57,7 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 	(void)shell;
 	(void)pipes;
 	pwd = getcwd(NULL, 0);
-	ft_printf_fd(pipes->fd[OUT], "%s\n", pwd);
+	ft_printf_fd(shell->std_out, "%s\n", pwd);
 	free(pwd);
 }
 
@@ -110,9 +110,9 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	{
 		ft_printf_fd(shell->std_out, "%s", pipes->cmds[i]);
 		if (pipes->cmds[i + 1])
-			ft_printf_fd(pipes->fd[OUT], " ");
+			ft_printf_fd(shell->std_out, " ");
 		i++;
 	}
 	if (!n_flag)
-		ft_printf_fd(pipes->fd[OUT], "\n");
+		ft_printf_fd(shell->std_out, "\n");
 }

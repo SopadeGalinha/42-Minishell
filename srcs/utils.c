@@ -33,7 +33,6 @@ void	init_shell(t_shell *shell, char **env)
 	shell->error = NO_ERROR;
 	shell->env = init_env(env);
 	shell->exp = init_export(shell->env);
-	shell->std_in = dup(STDIN_FILENO);
 	shell->std_out = dup(STDOUT_FILENO);
 	shell->input = NULL;
 	shell->builtin[0] = ft_pwd;
