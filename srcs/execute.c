@@ -1,50 +1,39 @@
 #include "../includes/minishell.h"
 
-/* void	process(t_shell *shell, int process, const char *builtin[7], int pid)
-{
-	t_pipes	*pipes;
-	int		is_builtin;
-	char	**envp;
+// CODE VAULT
 
-	envp = get_envp_array(shell);
-	pipes = shell->pipes;
-	if (pid != 0)
+void	child_process(t_shell *shell, t_pipes *pipes_lst, int pipes[][2], int process_num, int i)
+{
+	int	j;
+	// Child process
+	if (i != 0)
 	{
-		while (process-- > 0)
-			wait(NULL);
+		// Redirect input for all processes except the first one
+		dup2(pipes[i - 1][0], STDIN_FILENO);
+		close(pipes[i - 1][0]);
+		close(pipes[i - 1][1]);
+	}
+	// Redirect output for all processes except the last one
+	if (pipes_lst->next)
+	{
+		dup2(pipes[i][1], STDOUT_FILENO);
+		close(pipes[i][0]);
+		close(pipes[i][1]);
+	}
+	// Close all pipes in the child process
+	j = -1;
+	while (++j < process_num)
+	{
+		close(pipes[j][0]);
+		close(pipes[j][1]);
+	}
+	// Execute the command
+	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, NULL) == -1)
+	{
+		perror("Error executing command");
 		return ;
 	}
-	while ( pipes)
-	{
-		if (pipe(pipes->pipe_fd) == -1)
-		{
-			perror("minishell");
-			exit(1);
-		}
-		is_builtin = ft_is_builtin(pipes->cmds[0], builtin);
-		if (is_builtin)
-			ft_is_builtin(pipes->cmds[0], builtin);
-		else
-		{
-			if (execve(pipes->cmds[0], pipes->cmds, envp) == -1)
-			{
-				perror("minishell");
-				exit(1);
-			}
-		}
-	}
 }
-	/* const char	*builtin[7];
-	int			process_num;
-	int			pid;
-
-	init_builtin(builtin);
-	process_num = count_pipes(shell->tokens) + 1;
-	pid = fork();
-	process(shell, process_num, builtin, pid);
-
-	*/
-// CODE VAULT START
 
 int ft_error(char *str, int exit_code)
 {
@@ -53,15 +42,19 @@ int ft_error(char *str, int exit_code)
 }
 void	execute(t_shell *shell)
 {
-	t_pipes *pipes_lst;
-	int i;
-	int process_num;
-	int	is_builtin;
+	int			i;
+	int			is_builtin;
+	int 		process_num;
+	t_pipes		*pipes_lst;
+	const char	*builtin[7];
+	pid_t		pid;
+
+	// create a function that will initialize the pipes later
+	process_num = count_pipes(shell->tokens) + 1;
+	int			pipes[process_num][2];
 
 	i = 0;
-	process_num = count_pipes(shell->tokens) + 1;
-
-	int pipes[process_num][2];
+	init_builtin(builtin);
 	pipes_lst = shell->pipes;
 	// Create all pipes
 	while (i < process_num)
@@ -76,76 +69,33 @@ void	execute(t_shell *shell)
 	i = 0;
 	while (pipes_lst)
 	{
-		is_builtin = ft_is_builtin(pipes_lst->cmds[0], shell->builtin);
-		pid_t pid = fork();
-
-		if (pid == -1)
+		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
+		if (is_builtin != -1)
+			shell->builtin[is_builtin](shell, pipes_lst);
+		else
 		{
-			perror("Error with creating process");
-			return;
-		}
-
-		if (pid == 0)
-		{
-			// Child process
-			if (i != 0)
+			pid = fork();
+			if (pid == -1)
 			{
-				// Redirect input for all processes except the first one
-				dup2(pipes[i - 1][0], STDIN_FILENO);
-				close(pipes[i - 1][0]);
-				close(pipes[i - 1][1]);
-			}
-
-			// Redirect output for all processes except the last one
-			if (pipes_lst->next)
-			{
-				dup2(pipes[i][1], STDOUT_FILENO);
-				close(pipes[i][0]);
-				close(pipes[i][1]);
-			}
-
-			// Close all pipes in the child process
-			int j;
-			for (j = 0; j < process_num; j++)
-			{
-				close(pipes[j][0]);
-				close(pipes[j][1]);
-			}
-			if (is_builtin)
-				ft_is_builtin(pipes_lst->cmds[0], shell->builtin);
-			else
-			{
-				// Execute the command
-				if (execve("/bin/sh", args, NULL) == -1)
-				{
-					perror("Error executing command");
-					return ;
-				}
-			}
-
-			// Execute the command
-			if (execve(pipes_lst->cmds[0], pipes_lst->cmds, NULL) == -1)
-			{
-				perror("Error executing command");
+				perror("Error with creating process");
 				return ;
 			}
 		}
-		i++;
+		if (is_builtin == -1)
+		{
+			if (pid == 0)
+				child_process(shell, pipes_lst, pipes, process_num, i);
+			i++;
+		}
 		pipes_lst = pipes_lst->next;
 	}
-
-	// Close all pipes in the parent process
-	for (i = 0; i < process_num; i++)
+	i = -1;
+	while (++i < process_num)
 	{
 		close(pipes[i][0]);
 		close(pipes[i][1]);
 	}
-
-	// Wait for all child processes to finish
-	i = 0;
-	while (i < process_num)
-	{
+	i = -1;
+	while (++i < process_num)
 		wait(NULL);
-		i++;
-	}
 }
