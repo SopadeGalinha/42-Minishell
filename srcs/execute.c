@@ -56,6 +56,7 @@ void	execute(t_shell *shell)
 	t_pipes *pipes_lst;
 	int i;
 	int process_num;
+	int	is_builtin;
 
 	i = 0;
 	process_num = count_pipes(shell->tokens) + 1;
@@ -72,10 +73,10 @@ void	execute(t_shell *shell)
 		}
 		i++;
 	}
-
 	i = 0;
 	while (pipes_lst)
 	{
+		is_builtin = ft_is_builtin(pipes_lst->cmds[0], shell->builtin);
 		pid_t pid = fork();
 
 		if (pid == -1)
@@ -109,6 +110,17 @@ void	execute(t_shell *shell)
 			{
 				close(pipes[j][0]);
 				close(pipes[j][1]);
+			}
+			if (is_builtin)
+				ft_is_builtin(pipes_lst->cmds[0], shell->builtin);
+			else
+			{
+				// Execute the command
+				if (execve("/bin/sh", args, NULL) == -1)
+				{
+					perror("Error executing command");
+					return ;
+				}
 			}
 
 			// Execute the command
