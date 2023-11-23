@@ -25,3 +25,4 @@
       echo $? must display 0
 » pwd with option should return an error
 » invalid command after a pipe leads to an error - infinite loop
+» unexpected behavior with signals (cat | ls - ctrl-C)
