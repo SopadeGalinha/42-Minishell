@@ -51,43 +51,89 @@ int ft_error(char *str, int exit_code)
 	perror(str);
 	return (exit_code);
 }
-void execute(t_shell *shell)
+void	execute(t_shell *shell)
 {
-	int fd[2];
-	int pid_1;
-	int pid_2;
-	char **envp;
+	t_pipes *pipes_lst;
+	int i;
+	int process_num;
 
-	envp = get_envp_array(shell);
-	if (pipe(fd) == -1)
-		exit(ft_error("pipe", 1));
-	pid_1 = fork();
-	if (pid_1 == -1)
-		exit(ft_error("fork", 1));
-	if (pid_1 == 0)
+	i = 0;
+	process_num = count_pipes(shell->tokens) + 1;
+
+	int pipes[process_num][2];
+	pipes_lst = shell->pipes;
+	// Create all pipes
+	while (i < process_num)
 	{
-		if (dup2(fd[1], STDOUT_FILENO) == -1)
-			exit(ft_error("dup2", 1));
-		close(fd[0]);
-		close(fd[1]);
-		if (execve(shell->pipes->cmds[0], shell->pipes->cmds, envp) == -1)
-			exit(ft_error("execve", 1));
+		if (pipe(pipes[i]) == -1)
+		{
+			perror("Error with creating pipe");
+			return;
+		}
+		i++;
 	}
 
-	pid_2 = fork();
-	if (pid_2 == -1)
-		exit(ft_error("fork", 1));
-	if (pid_2 == 0)
+	i = 0;
+	while (pipes_lst)
 	{
-		if (dup2(fd[0], STDIN_FILENO) == -1)
-			exit(ft_error("dup2", 1));
-		close(fd[0]);
-		close(fd[1]);
-		if (execve(shell->pipes->next->cmds[0], shell->pipes->next->cmds, envp) == -1)
-			exit(ft_error("execve", 1));
+		pid_t pid = fork();
+
+		if (pid == -1)
+		{
+			perror("Error with creating process");
+			return;
+		}
+
+		if (pid == 0)
+		{
+			// Child process
+			if (i != 0)
+			{
+				// Redirect input for all processes except the first one
+				dup2(pipes[i - 1][0], STDIN_FILENO);
+				close(pipes[i - 1][0]);
+				close(pipes[i - 1][1]);
+			}
+
+			// Redirect output for all processes except the last one
+			if (pipes_lst->next)
+			{
+				dup2(pipes[i][1], STDOUT_FILENO);
+				close(pipes[i][0]);
+				close(pipes[i][1]);
+			}
+
+			// Close all pipes in the child process
+			int j;
+			for (j = 0; j < process_num; j++)
+			{
+				close(pipes[j][0]);
+				close(pipes[j][1]);
+			}
+
+			// Execute the command
+			if (execve(pipes_lst->cmds[0], pipes_lst->cmds, NULL) == -1)
+			{
+				perror("Error executing command");
+				return ;
+			}
+		}
+		i++;
+		pipes_lst = pipes_lst->next;
 	}
-	close(fd[0]);
-	close(fd[1]);
-	waitpid(pid_1, NULL, 0);
-	waitpid(pid_2, NULL, 0);
+
+	// Close all pipes in the parent process
+	for (i = 0; i < process_num; i++)
+	{
+		close(pipes[i][0]);
+		close(pipes[i][1]);
+	}
+
+	// Wait for all child processes to finish
+	i = 0;
+	while (i < process_num)
+	{
+		wait(NULL);
+		i++;
+	}
 }
