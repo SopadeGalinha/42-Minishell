@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/21 23:37:40 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/24 16:36:55 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ int	main(int ac, char **av, char **envp)
 				if (parse_input(&shell))
 					execute(&shell);
 		}
-		if (ft_strncmp(shell.input, "exit", 3) == 0 && ft_strlen(shell.input) == 3)
-			break ;
 		free_struct(&shell, 0);
 	}
 	free_struct(&shell, 1);
