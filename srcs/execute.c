@@ -40,6 +40,22 @@ int ft_error(char *str, int exit_code)
 	perror(str);
 	return (exit_code);
 }
+
+void	signal_hdl(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_printf_fd(STDOUT_FILENO, "\n");
+		return ;
+	}
+}
+
+void	exec_signal_handler(void)
+{
+	signal(SIGINT, signal_hdl);
+	signal(SIGQUIT, SIG_IGN);
+}
+
 void	execute(t_shell *shell)
 {
 	int			i;
@@ -69,6 +85,7 @@ void	execute(t_shell *shell)
 	i = 0;
 	while (pipes_lst)
 	{
+		exec_signal_handler();
 		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
 		if (is_builtin != -1)
 			shell->builtin[is_builtin](shell, pipes_lst);
