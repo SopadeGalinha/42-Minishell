@@ -94,9 +94,7 @@ bool	create_pipeline_node(t_shell *shell)
 			return (false);
 		new_pipe->next = NULL;
 		new_pipe->redir_fd[IN] = -1;
-		new_pipe->redir_fd[OUT] = -1;
-		new_pipe->pipe_fd[IN] = -1;
-		new_pipe->pipe_fd[OUT] = -1;
+		new_pipe->redir_fd[OUT] = -1;	
 		add_node_to_pipeline(&head, new_pipe);
 		if (current != NULL && current->type == PIPELINE)
 			current = current->next;
