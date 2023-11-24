@@ -50,6 +50,7 @@ void	ft_unset(t_shell *shell, t_pipes *pipes)
 	}
 }
 
+// shell->std_out is a dup of STDOUT_FILENO -> shell->std_out = dup(STDOUT_FILENO);
 void	ft_pwd(t_shell *shell, t_pipes *pipes)
 {
 	char	*pwd;
