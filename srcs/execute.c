@@ -51,6 +51,9 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst)
 
 void	child_process(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
 {
+	char	**envp;
+
+	envp = get_envp_array(shell);
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, NULL) == -1)
 	{
 		perror("Error executing command");
@@ -106,11 +109,8 @@ void	execute(t_shell *shell)
 		exec_signal_handler();
 		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
 		
-	
 		if (is_builtin != -1)
-		{
 			shell->builtin[is_builtin](shell, pipes_lst);
-		}
 		else
 		{
 			shell->pid = fork();
