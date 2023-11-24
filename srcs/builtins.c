@@ -33,8 +33,8 @@ int	arg_checker(t_shell *shell, char *str)
 	(void)shell;
 	if (ft_isdigit(str[0]))
 	{
-		ft_printf_fd(2, "minishell: export: ");
-		ft_printf_fd(2, "'%s': not a valid identifier\n", str);
+		ft_printf_fd(STDERR_FILENO, "minishell: export: ");
+		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
 		g_exit_status = 1;
 		return (-1);
 	}
@@ -42,8 +42,8 @@ int	arg_checker(t_shell *shell, char *str)
 	{
 		if (!ft_isalnum(str[1]) && str_isalpha_isequal_isunder(str, 1) == 0)
 		{
-			ft_printf_fd(2, "minishell: export: ");
-			ft_printf_fd(2, "'%s': not a valid identifier\n", str);
+			ft_printf_fd(STDERR_FILENO, "minishell: export: ");
+			ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
 			g_exit_status = 1;
 			return (-1);
 		}
@@ -56,8 +56,8 @@ int	arg_checker(t_shell *shell, char *str)
 		|| (str_isalpha_isequal_isunder(str, 0) == 0
 			&& ft_strchr(str, '=') == NULL))
 	{
-		ft_printf_fd(2, "minishell: export: ");
-		ft_printf_fd(2, "'%s': not a valid identifier\n", str);
+		ft_printf_fd(STDERR_FILENO, "minishell: export: ");
+		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
 		g_exit_status = 1;
 		return (-1);
 	}
@@ -91,8 +91,8 @@ void	ft_env(t_shell *shell, t_pipes *pipes)
 {
 	if (pipes->cmds[1])
 	{
-		ft_printf_fd(2, "env: ");
-		ft_printf_fd(2, "‘%s’: No such file or directory\n",
+		ft_printf_fd(STDERR_FILENO, "env: ");
+		ft_printf_fd(STDERR_FILENO, "‘%s’: No such file or directory\n",
 			pipes->cmds[1]);
 		g_exit_status = 127;
 	}
