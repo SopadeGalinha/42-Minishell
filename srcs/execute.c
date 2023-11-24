@@ -54,7 +54,7 @@ void	child_process(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_
 	char	**envp;
 
 	envp = get_envp_array(shell);
-	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, NULL) == -1)
+	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
 		perror("Error executing command");
 		exit(1);
