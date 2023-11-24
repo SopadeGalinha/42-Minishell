@@ -26,30 +26,32 @@ void	init_builtin(const char *builtin[7])
 void ft_access(char **cmd, t_shell *shell)
 {
 	int		i;
-	char	*path;
 	char	**path_array;
 	char	*full_path;
+	char	*cmd_path;
 
 	if (ft_strchr(cmd[0], '/'))
 		return ;
-	path = get_env_value(shell->env, "PATH");
-	path_array = ft_split(path, ':');
 	i = -1;
-	full_path = NULL;
+	full_path = get_env_value(shell->env, "PATH");
+	path_array = ft_split(full_path, ':');
+	cmd_path = NULL;
 	while (path_array[++i])
 	{
 		free(full_path);
+		free(cmd_path);
 		full_path = ft_strjoin(path_array[i], "/");
-		full_path = ft_strjoin(full_path, cmd[0]);
-		if (access(full_path, F_OK) == 0)
+		cmd_path = ft_strjoin(full_path, cmd[0]);
+		if (access(cmd_path, F_OK) == 0)
 		{
 			free(cmd[0]);
-			cmd[0] = full_path;
+			cmd[0] = ft_strdup(cmd_path);
 			break ;
 		}
 	}
+	free(cmd_path);
+	free(full_path);
 	ft_free_array(path_array);
-	free(path);
 }
 
 static int	ft_list_envsize(t_env *lst)

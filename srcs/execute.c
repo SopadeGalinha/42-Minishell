@@ -1,119 +1,118 @@
 #include "../includes/minishell.h"
 
-void redirect_stdin(int source_fd)
+// CODE VAULT
+
+void	child_process(t_shell *shell, t_pipes *pipes_lst, int pipes[][2], int process_num, int i)
 {
-	if (dup2(source_fd, STDIN_FILENO) == -1)
+	int	j;
+	// Child process
+	if (i != 0)
 	{
-		perror("minishell");
-		exit(EXIT_FAILURE);
+		// Redirect input for all processes except the first one
+		dup2(pipes[i - 1][0], STDIN_FILENO);
+		close(pipes[i - 1][0]);
+		close(pipes[i - 1][1]);
 	}
-	close(source_fd);
-}
-
-void redirect_stdout(int dest_fd)
-{
-	if (dup2(dest_fd, STDOUT_FILENO) == -1)
+	// Redirect output for all processes except the last one
+	if (pipes_lst->next)
 	{
-		perror("minishell");
-		exit(EXIT_FAILURE);
+		dup2(pipes[i][1], STDOUT_FILENO);
+		close(pipes[i][0]);
+		close(pipes[i][1]);
 	}
-	close(dest_fd);
+	// Close all pipes in the child process
+	j = -1;
+	while (++j < process_num)
+	{
+		close(pipes[j][0]);
+		close(pipes[j][1]);
+	}
+	// Execute the command
+	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, NULL) == -1)
+	{
+		perror("Error executing command");
+		exit(1);
+	}
 }
 
-void setup_redirection(t_pipes *pipes, int prev_pipe[2], t_shell *shell)
+int ft_error(char *str, int exit_code)
 {
-    if (prev_pipe[0] != -1)
-        redirect_stdin(prev_pipe[0]);
-
-    if (pipes->redir_in != NULL)
-    {
-        if (pipes->fd[IN] == -1)
-        {
-            perror("minishell");
-            exit(EXIT_FAILURE);
-        }
-        if (dup2(pipes->fd[IN], STDIN_FILENO) == -1)
-        {
-            perror("minishell");
-            exit(EXIT_FAILURE);
-        }
-        close(pipes->fd[IN]);
-    }
-
-    if (pipes->fd[OUT] != shell->std_out)
-        redirect_stdout(shell->std_out);  // Use shell->std_out instead of pipes->fd[OUT]
-
-    if (pipes->redir_out != NULL)
-    {
-        if (pipes->fd[OUT] == -1)
-        {
-            perror("minishell");
-            exit(EXIT_FAILURE);
-        }
-        if (dup2(pipes->fd[OUT], STDOUT_FILENO) == -1)
-        {
-            perror("minishell");
-            exit(EXIT_FAILURE);
-        }
-        close(pipes->fd[OUT]);
-    }
+	perror(str);
+	return (exit_code);
 }
 
-void execute_cmd(t_shell *shell, t_pipes *pipes, int prev_pipe[2])
+void	signal_hdl(int sig)
 {
-    char **envpp;
-    envpp = get_envp_array(shell);
-
-    setup_redirection(pipes, prev_pipe, shell);
-    if (pipes->cmds[0][0] == '/')
-        if (execve(pipes->cmds[0], pipes->cmds, envpp) == -1)
-        {
-            perror("minishell");
-            exit(EXIT_FAILURE);
-        }
-    ft_free_array(envpp);
+	if (sig == SIGINT)
+	{
+		ft_printf_fd(STDOUT_FILENO, "\n");
+		return ;
+	}
 }
 
-void execute_pipeline(t_shell *shell)
+void	exec_signal_handler(void)
 {
-    t_pipes *pipes;
-    const char *builtin[7];
-    int is_builtin;
-    int prev_pipe[2] = { -1, -1 };
-	int	fd[2];
+	signal(SIGINT, signal_hdl);
+	signal(SIGQUIT, SIG_IGN);
+}
 
-    pipes = shell->pipes;
-    init_builtin(builtin);
-    while (pipes)
-    {
-        if (pipes->next)
-        {
-            if (pipe(fd) == -1)  // Use shell->std_in for the pipe
-            {
-                perror("pipe");
-                exit(EXIT_FAILURE);
-            }
-        }
-		shell->std_in = fd[1];
-		shell->std_in = fd[0];
+void	execute(t_shell *shell)
+{
+	int			i;
+	int			is_builtin;
+	int 		process_num;
+	t_pipes		*pipes_lst;
+	const char	*builtin[7];
+	pid_t		pid;
 
-        is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
-        if (is_builtin != -1)
-            shell->builtin[is_builtin](shell, pipes);
-        else
-            execute_cmd(shell, pipes, prev_pipe);
+	// create a function that will initialize the pipes later
+	process_num = count_pipes(shell->tokens) + 1;
+	int			pipes[process_num][2];
 
-        if (pipes->next)
-        {
-            // Close the previous pipe after the command has been executed
-            close(prev_pipe[0]);
-            close(prev_pipe[1]);
-
-            // Set the current pipe as the previous pipe for the next iteration
-            prev_pipe[0] = shell->std_in;
-            prev_pipe[1] = shell->std_out;
-        }
-
-        pipes = pipes->next;
-    }
+	i = 0;
+	init_builtin(builtin);
+	pipes_lst = shell->pipes;
+	// Create all pipes
+	while (i < process_num)
+	{
+		if (pipe(pipes[i]) == -1)
+		{
+			perror("Error with creating pipe");
+			return;
+		}
+		i++;
+	}
+	i = 0;
+	while (pipes_lst)
+	{
+		exec_signal_handler();
+		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
+		if (is_builtin != -1)
+			shell->builtin[is_builtin](shell, pipes_lst);
+		else
+		{
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("Error with creating process");
+				return ;
+			}
+		}
+		if (is_builtin == -1)
+		{
+			if (pid == 0)
+				child_process(shell, pipes_lst, pipes, process_num, i);
+			i++;
+		}
+		pipes_lst = pipes_lst->next;
+	}
+	i = -1;
+	while (++i < process_num)
+	{
+		close(pipes[i][0]);
+		close(pipes[i][1]);
+	}
+	i = -1;
+	while (++i < process_num)
+		wait(NULL);
 }

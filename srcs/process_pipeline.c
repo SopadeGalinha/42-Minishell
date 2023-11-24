@@ -99,24 +99,23 @@ static void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 	{
 		if (redir->type == REDIR_IN)
 			if (!redir_in(&last_valid_fd, redir->file, &heredoc))
-				current->fd[IN] = -2;
+				current->redir_fd[IN] = -2;
 		if (redir->type == HEREDOC)
 		{
 			if (!redir_heredoc(&last_valid_fd, redir->file, &heredoc, shell))
-				current->fd[IN] = -2;
+				current->redir_fd[IN] = -2;
 			else
 			{
 				free(redir->file);
 				redir->file = ft_strdup(".heredoc");
-				current->fd[IN] = last_valid_fd;
+				current->redir_fd[IN] = last_valid_fd;
 			}	
 		}
-		if (current->fd[IN] == -2)
+		if (current->redir_fd[IN] == -2)
 			return ;
 		redir = redir->next;
 	}
-	current->fd[IN] = last_valid_fd;
-	current->in = last_valid_fd;
+	current->redir_fd[IN] = last_valid_fd;
 }
 
 static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
@@ -139,7 +138,7 @@ static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
 		}
 		redir = redir->next;
 	}
-	current->fd[OUT] = val_fd;
+	current->redir_fd[OUT] = val_fd;
 	return (true);
 }
 
