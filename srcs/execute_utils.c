@@ -95,7 +95,8 @@ int	ft_is_builtin(const char *builtin[7], char *cmd)
 
 	i = -1;
 	while (cmd && ++i < 7)
-		if (ft_strncmp(builtin[i], cmd, ft_strlen(builtin[i])) == 0)
+		if (ft_strncmp(builtin[i], cmd, ft_strlen(builtin[i])) == 0
+			&& ft_strlen(builtin[i]) == ft_strlen(cmd))
 			return (i);
 	return (-1);
 }

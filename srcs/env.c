@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:08:16 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/20 21:43:14 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/24 16:40:13 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	create_add_node_to_list(t_env **head, char *line)
 	new = (t_env *)malloc(sizeof(t_env));
 	if (!new)
 	{
-		ft_printf_fd(1, "Failed to allocate memory for t_env");
+		ft_printf_fd(STDOUT_FILENO, "Failed to allocate memory for t_env");
 		return (0);
 	}
 	new->key = ft_strdup_equal_key(line);
