@@ -190,7 +190,7 @@ void	update_exp(t_shell *shell, char *line);
 
 //MAIN
 void	ft_handle_signals(void);
-void	execute(t_shell *shell);
+int	execute(t_shell *shell);
 
 //---------------------------- PARSER PART -----------------------------------//
 
@@ -234,8 +234,6 @@ void	ft_unset(t_shell *shell, t_pipes *pipes);
 void	ft_export(t_shell *shell, t_pipes *pipes);
 void	ft_env(t_shell *shell, t_pipes *pipes);
 void	ft_exit(t_shell *shell, t_pipes *pipes);
-
-void execute(t_shell *shell);
 
 // EXECUTE_UTILS
 void	ft_access(char **cmd, t_shell *shell);

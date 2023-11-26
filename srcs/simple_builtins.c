@@ -58,7 +58,7 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 	(void)shell;
 	(void)pipes;
 	pwd = getcwd(NULL, 0);
-	ft_printf_fd(shell->std_out, "%s\n", pwd);
+	printf("%s\n", pwd);
 	free(pwd);
 }
 
