@@ -1,0 +1,6 @@
+signals
+heredoc com segfault export a aa aaa
+ls|cat
+export a=1 | export a
+>a
+exit ""

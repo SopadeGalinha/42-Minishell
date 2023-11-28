@@ -29,7 +29,6 @@ char	*get_env_value(t_env *env, char *key)
 
 void	init_shell(t_shell *shell, char **env)
 {
-	ft_handle_signals();
 	shell->error = NO_ERROR;
 	shell->env = init_env(env);
 	shell->exp = init_export(shell->env);

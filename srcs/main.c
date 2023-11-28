@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/24 16:36:55 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/28 20:17:47 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,13 @@ int	main(int ac, char **av, char **envp)
 	init_shell(&shell, envp);
 	while (true)
 	{
+		ft_handle_signals();
 		get_input(&shell);
 		if (shell.input == NULL)
-			continue ;
+		{
+			ft_printf_fd(1, "exit\n");
+			break ;
+		}
 		if (shell.input[0])
 		{
 			if (shell.input && input_is_valid(shell.input))
@@ -36,7 +40,5 @@ int	main(int ac, char **av, char **envp)
 		free_struct(&shell, 0);
 	}
 	free_struct(&shell, 1);
-	rl_clear_history();
-	ft_printf_fd(1, "Bye!\n");
 	return (0);
 }
