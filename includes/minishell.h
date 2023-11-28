@@ -163,6 +163,9 @@ typedef struct s_shell
 # define OUT 1
 # define READ 0
 # define WRITE 1
+# define MAIN 0
+# define CHILD 1
+# define PARENT 2
 //------------------------------ END MACROS ----------------------------------//
 
 /*_______________________________ FUNCTIONS __________________________________*/
@@ -189,7 +192,7 @@ void	update_exp(t_shell *shell, char *line);
 
 
 //MAIN
-void	ft_handle_signals(void);
+void	ft_handle_signals(int flag);
 int	execute(t_shell *shell);
 
 //---------------------------- PARSER PART -----------------------------------//

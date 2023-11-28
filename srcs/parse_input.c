@@ -28,8 +28,6 @@ bool	parse_input(t_shell *shell)
 	if (process_pipeline(shell))
 		return (false);
 	pipes = shell->pipes;
-	print_tokens(shell->tokens);
-	exit(0);
 	while (pipes)
 	{
 		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);

@@ -12,29 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static void	signal_hdl(int sig)
-{
-	if (sig == SIGINT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "\n");
-		return ;
-	}
-	else if (sig == SIGQUIT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "Quit: 3\n");
-		return ;
-	}
-}
-
-// handle sigint and sigquit signals
-void	exec_signal_handler(void)
-{
-	signal(SIGINT, signal_hdl);
-	signal(SIGQUIT, signal_hdl);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-}
-
 void	init_builtin(const char *builtin[7])
 {
 	builtin[0] = "pwd";
