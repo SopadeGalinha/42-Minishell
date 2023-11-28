@@ -8,22 +8,6 @@ int ft_error(char *str, int exit_code)
 	return (exit_code);
 }
 
-void	signal_hdl(int sig)
-{
-	if (sig == SIGINT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "\n");
-		return ;
-	}
-}
-
-// handle sigint and sigquit signals
-void	exec_signal_handler(void)
-{
-	signal(SIGINT, signal_hdl);
-	signal(SIGQUIT, SIG_IGN);
-}
-
 static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst)
 {
 	int	i;
@@ -51,8 +35,7 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst)
 	}
 }
 
-// Execute the child process with execve
-void	child_process(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
+void	ft_execve(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
 {
 	char	**envp;
 
@@ -64,7 +47,7 @@ void	child_process(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_
 	}
 }
 // Return an array of pipes for all processes
-int	**get_pipes(int process_num)
+int	**create_pipes(int process_num)
 {
 	int	**pipes;
 	int	i;
@@ -88,7 +71,22 @@ int	**get_pipes(int process_num)
 	return (pipes);
 }
 
-void	execute(t_shell *shell)
+void	close_pipes(int **pipes, int process_num)
+{
+	int	i;
+
+	i = -1;
+	while (++i < process_num)
+	{
+		close(pipes[i][0]);
+		close(pipes[i][1]);
+	}
+	i = -1;
+	while (++i < process_num)
+		wait(NULL);
+}
+
+int	execute(t_shell *shell)
 {
 	int			i;
 	int			is_builtin;
@@ -98,64 +96,38 @@ void	execute(t_shell *shell)
 
 	i = 0;
 	pipes_lst = shell->pipes;
-	
-	// Count the number of processes in the pipeline
 	process_num = count_pipes(shell->tokens) + 1;
 
-	// Initialize the builtin array
 	init_builtin(builtin);
-
-	// Create pipes for all processes in the pipeline
-	// ex: ls | cat | wc -l -> 2 pipes
-	shell->pipes_fd = get_pipes(process_num);
-	
+	shell->pipes_fd = create_pipes(process_num);
 	if (!shell->pipes_fd)
+		return (ft_error("Error creating pipes", 1));
+	i = -1;
+	while (pipes_lst && ++i != -2)
 	{
-		perror("Error with creating pipes");
-		return ;
-	}
-	i = 0;
-	while (pipes_lst)
-	{
-		// handle signals
 		exec_signal_handler();
 		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
-		
-		// îf it's a builtin, execute it - no need to fork
 		if (is_builtin != -1)
 			shell->builtin[is_builtin](shell, pipes_lst);
 		else
 		{
-			// fork a child process
 			shell->pid = fork();
 			if (shell->pid == -1)
 			{
 				perror("Error with creating process");
-				return ;
+				return (1);
 			}
 		}
-		// if it's not a builtin, execute it - forked process
 		if (is_builtin == -1)
 		{
-			// if it's a child process, execute it
 			if (shell->pid == 0)
 			{
 				get_redirections(i, shell->pipes_fd, pipes_lst);
-				child_process(shell, pipes_lst, shell->pipes_fd, process_num, i);
+				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
 			}
-			i++;
 		}
 		pipes_lst = pipes_lst->next;
 	}
-	i = -1;
-	// Close all pipes in the parent process
-	while (++i < process_num)
-	{
-		close(shell->pipes_fd[i][0]);
-		close(shell->pipes_fd[i][1]);
-	}
-	i = -1;
-	// Wait for all child processes to finish
-	while (++i < process_num)
-		wait(NULL);
+	close_pipes(shell->pipes_fd, process_num);
+	return (0);
 }

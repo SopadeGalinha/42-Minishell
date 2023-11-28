@@ -190,7 +190,7 @@ void	update_exp(t_shell *shell, char *line);
 
 //MAIN
 void	ft_handle_signals(void);
-void	execute(t_shell *shell);
+int	execute(t_shell *shell);
 
 //---------------------------- PARSER PART -----------------------------------//
 
@@ -215,6 +215,7 @@ bool	print_error(char *error, int exit_code);
 void	init_shell(t_shell *shell, char **env);
 void	get_input(t_shell *shell);
 char	*get_env_value(t_env *env, char *key);
+void	exec_signal_handler(void);
 
 // FREE
 bool	free_pipes(t_pipes **pipes);
@@ -234,8 +235,6 @@ void	ft_unset(t_shell *shell, t_pipes *pipes);
 void	ft_export(t_shell *shell, t_pipes *pipes);
 void	ft_env(t_shell *shell, t_pipes *pipes);
 void	ft_exit(t_shell *shell, t_pipes *pipes);
-
-void execute(t_shell *shell);
 
 // EXECUTE_UTILS
 void	ft_access(char **cmd, t_shell *shell);
