@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+// code vault studies
+
 #define PROCESS_NUM 3  // Adjust the number of processes based on your needs
 
 void execute_commands(int argc, char* argv[])

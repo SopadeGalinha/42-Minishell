@@ -8,22 +8,6 @@ int ft_error(char *str, int exit_code)
 	return (exit_code);
 }
 
-void	signal_hdl(int sig)
-{
-	if (sig == SIGINT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "\n");
-		return ;
-	}
-}
-
-// handle sigint and sigquit signals
-void	exec_signal_handler(void)
-{
-	signal(SIGINT, signal_hdl);
-	signal(SIGQUIT, SIG_IGN);
-}
-
 static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst)
 {
 	int	i;
@@ -51,8 +35,7 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst)
 	}
 }
 
-// Execute the child process with execve
-void	child_process(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
+void	ft_execve(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
 {
 	char	**envp;
 
@@ -64,7 +47,7 @@ void	child_process(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_
 	}
 }
 // Return an array of pipes for all processes
-int	**get_pipes(int process_num)
+int	**create_pipes(int process_num)
 {
 	int	**pipes;
 	int	i;
@@ -116,7 +99,7 @@ int	execute(t_shell *shell)
 	process_num = count_pipes(shell->tokens) + 1;
 
 	init_builtin(builtin);
-	shell->pipes_fd = get_pipes(process_num);
+	shell->pipes_fd = create_pipes(process_num);
 	if (!shell->pipes_fd)
 		return (ft_error("Error creating pipes", 1));
 	i = -1;
@@ -132,7 +115,7 @@ int	execute(t_shell *shell)
 			if (shell->pid == -1)
 			{
 				perror("Error with creating process");
-				return ;
+				return (1);
 			}
 		}
 		if (is_builtin == -1)
@@ -140,10 +123,11 @@ int	execute(t_shell *shell)
 			if (shell->pid == 0)
 			{
 				get_redirections(i, shell->pipes_fd, pipes_lst);
-				child_process(shell, pipes_lst, shell->pipes_fd, process_num, i);
+				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
 			}
 		}
 		pipes_lst = pipes_lst->next;
 	}
 	close_pipes(shell->pipes_fd, process_num);
+	return (0);
 }

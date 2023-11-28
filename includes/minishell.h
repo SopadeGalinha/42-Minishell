@@ -215,6 +215,7 @@ bool	print_error(char *error, int exit_code);
 void	init_shell(t_shell *shell, char **env);
 void	get_input(t_shell *shell);
 char	*get_env_value(t_env *env, char *key);
+void	exec_signal_handler(void);
 
 // FREE
 bool	free_pipes(t_pipes **pipes);
