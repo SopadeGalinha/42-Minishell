@@ -45,7 +45,7 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num,
 	envp = get_envp_array(shell);
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
-		ft_error("Minishell", 1);
+		ft_printf_fd(2, "minishell: %s: %s\n", pipes_lst->cmds[0], strerror(errno));
 		exit(1);
 	}
 	g_exit_status = WEXITSTATUS(g_exit_status);

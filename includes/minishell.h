@@ -89,11 +89,11 @@ typedef struct s_redir
 
 typedef struct s_pipes
 {
-	char						**cmds;	// array of commands
-	int							redir_fd[2];	// redirections file descriptors (0 = input (< | <<), 1 = output (> | >>))
-	struct	s_redir				*redir_in; // list of input redirections
-	pid_t	pid;
-	struct	s_redir				*redir_out; // list of output redirections
+	char						**cmds;	
+	pid_t						pid;
+	int							redir_fd[2];
+	struct	s_redir				*redir_in;
+	struct	s_redir				*redir_out;
 	struct s_pipes				*next;
 }					t_pipes;
 
