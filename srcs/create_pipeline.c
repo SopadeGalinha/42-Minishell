@@ -91,7 +91,7 @@ bool	create_pipeline_node(t_shell *shell)
 	{
 		new_pipe = copy_tokens_to_pipeline(&current, shell);
 		if (new_pipe == NULL)
-			return (false);
+			return (print_error("minishell: malloc error", 1));
 		new_pipe->next = NULL;
 		new_pipe->redir_fd[IN] = -1;
 		new_pipe->redir_fd[OUT] = -1;	

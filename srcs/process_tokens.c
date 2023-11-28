@@ -103,12 +103,12 @@ static bool	process_aux(t_shell *shell, t_token *current)
 			free(current->data);
 			current->data = ft_itoa(g_exit_status);
 			if (current->data == NULL)
-				return (false);
+				return (print_error("minishell: malloc error", 1));
 		}
 		else
 			current->data = expand_env(shell->env, current->data);
 		if (current->data == NULL)
-			return (false);
+			return (print_error("minishell: malloc error", 1));
 		if ((ft_strncmp(current->data, "~", 1) == 0
 				&& ft_strlen(current->data) == 1)
 			&& current->quote != DOUBLE)
@@ -132,7 +132,7 @@ bool	process_tokens(t_shell *shell)
 			return (false);
 		if ((current->type == OR || current->type == SEMICOLON
 				|| current->type == AND) && current->quote == NONE)
-			return (print_error(UNSUP_MCMDS, 258));
+			return (print_error(UNSUP_MCMDS, 1));
 		current = current->next;
 	}
 	return (true);

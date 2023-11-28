@@ -92,6 +92,7 @@ typedef struct s_pipes
 	char						**cmds;	// array of commands
 	int							redir_fd[2];	// redirections file descriptors (0 = input (< | <<), 1 = output (> | >>))
 	struct	s_redir				*redir_in; // list of input redirections
+	pid_t	pid;
 	struct	s_redir				*redir_out; // list of output redirections
 	struct s_pipes				*next;
 }					t_pipes;
@@ -124,7 +125,6 @@ typedef struct s_shell
 	char	*oldpwd;
 	int		error;
 	int		std_out;
-	pid_t	pid;
 	int		**pipes_fd;
 	void	(*builtin[7])(struct s_shell *shell, t_pipes *pipes);	// array of builtins functions
 }				t_shell;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 22:04:37 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/21 11:54:33 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/28 19:26:54 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static bool	cd_validation(t_shell *shell, t_pipes *pipes)
 	}
 	oldpwd = getcwd(NULL, 0);
 	ft_chdir(shell, home, oldpwd);
-	ft_printf_fd(shell->std_out, "%s\n", home);
+	ft_printf_fd(STDOUT_FILENO, "%s\n", home);
 	free(home);
 	free(oldpwd);
 	return (false);
@@ -107,7 +107,8 @@ void	ft_cd(t_shell *shell, t_pipes *pipes)
 	ft_chdir(shell, param, oldpwd);
 	free(oldpwd);
 	if (key && ft_strncmp(key, "OLDPWD", 6) == 0 && param)
-		ft_printf_fd(shell->std_out, "%s\n", param);
+		ft_printf_fd(STDOUT_FILENO, "%s\n", param);
 	free(param);
 	free(key);
+	g_exit_status = 0;
 }

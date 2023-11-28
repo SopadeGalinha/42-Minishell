@@ -106,6 +106,6 @@ void	free_struct(t_shell *shell, int running)
 	free_env(&shell->env);
 	free_env(&shell->exp);
 	free(shell->oldpwd);
-	ft_printf_fd(shell->std_out, "Bye bye!\n");
+	rl_clear_history();
 	exit(g_exit_status);
 }

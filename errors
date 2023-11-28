@@ -1,4 +1,3 @@
-» exit 42scholl - too many errors printed
 » exit status NOK:
   -  ctrl-C on empty prompt
       display a new line with a new prompt
