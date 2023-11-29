@@ -21,7 +21,7 @@ static void	delete_node(t_env **lst, char *key)
 	current = *lst;
 	while (current != NULL)
 	{
-		if (ft_strncmp(current->key, key, strlen(current->key)) == 0)
+		if (ft_strcmp(current->key, key) == 0)
 		{
 			if (prev == NULL)
 				*lst = current->next;
