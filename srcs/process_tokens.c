@@ -76,6 +76,11 @@ char	*expand_env(t_env *env, char *new_token)
 	si[INDEX] = -1;
 	if (!new_token)
 		return (NULL);
+	if (new_token[0] == '$' && new_token[1] == '\0')
+	{
+		free(new_token);
+		return (ft_strdup("$"));
+	}
 	while (new_token[++si[INDEX]] != '\0')
 	{
 		if (new_token[si[INDEX]] == '$')

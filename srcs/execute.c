@@ -43,6 +43,7 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num,
 	char	**envp;
 
 	envp = get_envp_array(shell);
+	ft_handle_signals(CHILD);
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
 		ft_printf_fd(2, "minishell: %s: %s\n", pipes_lst->cmds[0], strerror(errno));
@@ -124,9 +125,9 @@ int	execute(t_shell *shell)
 			}
 			else
 			{
+				ft_handle_signals(PARENT);
 				waitpid(pipes_lst->pid, &g_exit_status, 0);
 				g_exit_status = WEXITSTATUS(g_exit_status);
-
 			}
 			close_pipes(shell->pipes_fd, process_num);
 		}
@@ -135,7 +136,7 @@ int	execute(t_shell *shell)
 	while (pipes_lst && ++i != -2)
 	{
 		pipes_lst->pid = fork();
-		exec_signal_handler();
+		ft_handle_signals(PARENT);
 		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
 		if (pipes_lst->pid == -1)
 		{

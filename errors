@@ -1,16 +1,9 @@
 » exit status NOK:
-  -  ctrl-C on empty prompt
-      display a new line with a new prompt
-      echo $? must display 130
-  -  ctrl-D on empty prompt
-      display a new line with a new prompt
-      echo $? must display 0
-  -  ctrl-C on non empty prompt
-      display a new line with a new prompt
-      echo $? must display 130
+  
   -  ctrl-C in cat without arguments
       display a new line with a new prompt
       echo $? must display 130
+
   - ctrl-\ in cat without arguments
       ^\Quit
       display a new line with a new prompt
@@ -22,9 +15,6 @@
       display a new line with a new prompt
       echo $? must display 0
 
-» pwd with option should return an error
-» invalid command after a pipe leads to an error - infinite loop
 » unexpected behavior with signals (cat | ls - ctrl-C)
-» Expand error - echo $ should print "$"
 » "ls | | wc" should return syntax error
 » leaks at pipes array - shell->pipes (missing frees)

@@ -22,13 +22,35 @@ static void	sig_handler(int signum)
 	g_exit_status = 130;
 }
 
-void	ft_handle_signals(void)
+static void	signal_hdl(int sig)
 {
-	struct sigaction	sig_actions;
+	if (sig == SIGINT)
+	{
+		ft_printf_fd(STDOUT_FILENO, "\n");
+		return ;
+	}
+	else if (sig == SIGQUIT)
+	{
+		ft_printf_fd(STDOUT_FILENO, "Quit: 3\n");
+		return ;
+	}
+}
 
-	signal(SIGQUIT, SIG_IGN);
-	sig_actions.sa_handler = sig_handler;
-	sigemptyset(&sig_actions.sa_mask);
-	sig_actions.sa_flags = 0;
-	sigaction(SIGINT, &sig_actions, NULL);
+void	ft_handle_signals(int flag)
+{
+	if (flag == PARENT)
+	{
+		signal(SIGQUIT, signal_hdl);
+		signal(SIGINT, signal_hdl);
+	}
+	if (flag == MAIN)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, sig_handler);
+	}
+	if (flag == CHILD)
+	{
+		signal(SIGQUIT, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
+	}
 }
