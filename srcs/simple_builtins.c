@@ -58,8 +58,17 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 
 	(void)shell;
 	(void)pipes;
+	if (pipes->cmds[1] && pipes->cmds[1][0] == '-')
+	{
+		if (pipes->cmds[1][1])
+		{
+			ft_printf_fd(STDOUT_FILENO, "pwd does not support options\n");
+			g_exit_status = 1;
+			return ;
+		}
+	}
 	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
+	ft_printf_fd(STDOUT_FILENO, BOLD_WHITE"%s\n"RESET, pwd);
 	free(pwd);
 	g_exit_status = 0;
 }
