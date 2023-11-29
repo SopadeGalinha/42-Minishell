@@ -87,6 +87,64 @@ void close_pipes(int **pipes, int process_num)
     }
 }
 
+int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
+{
+	char	**envp;
+	int		is_builtin;
+	const char	*builtin[7];
+
+	init_builtin(builtin);
+	envp = get_envp_array(shell);
+	is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
+	if (is_builtin != -1)
+		shell->builtin[is_builtin](shell, pipes_lst);
+	else
+	{
+		pipes_lst->pid = fork();
+		if (pipes_lst->pid == -1)
+		{
+			perror("Error with creating process");
+			return ;
+		}
+		if (pipes_lst->pid == 0)
+			ft_execve(shell, pipes_lst, shell->pipes_fd, 1, 0);
+		else
+		{
+			ft_handle_signals(PARENT);
+			waitpid(pipes_lst->pid, &g_exit_status, 0);
+			g_exit_status = WEXITSTATUS(g_exit_status);
+		}
+	}
+}
+
+int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const char **builtin)
+{
+	int	i;
+	int	is_builtin;
+
+	i = -1;
+	while (pipes_lst && ++i != -2)
+	{
+		pipes_lst->pid = fork();
+		ft_handle_signals(PARENT);
+		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
+		if (pipes_lst->pid == -1)
+			return (ft_error("Error creating process", 1));
+		if (pipes_lst->pid == 0)
+		{
+			get_redirections(i, shell->pipes_fd, pipes_lst, process_num);
+			if (is_builtin != -1)
+			{
+				shell->builtin[is_builtin](shell, pipes_lst);
+				exit(g_exit_status);
+			}
+			else
+				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
+		}
+		pipes_lst = pipes_lst->next;
+	}
+	return (0);
+}
 
 int	execute(t_shell *shell)
 {
@@ -107,55 +165,11 @@ int	execute(t_shell *shell)
 	i = -1;
 	if (!pipes_lst->next)
 	{
-		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
-		if (is_builtin != -1)
-		{
-			shell->builtin[is_builtin](shell, pipes_lst);
-			close_pipes(shell->pipes_fd, process_num);
-		}
-		else
-		{
-			pipes_lst->pid = fork();
-			if (pipes_lst->pid == -1)
-				return (ft_error("Error with creating process", 1));
-			if (pipes_lst->pid == 0)
-			{
-				// get_redirections(i, shell->pipes_fd, pipes_lst);
-				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
-			}
-			else
-			{
-				ft_handle_signals(PARENT);
-				waitpid(pipes_lst->pid, &g_exit_status, 0);
-				g_exit_status = WEXITSTATUS(g_exit_status);
-			}
-			close_pipes(shell->pipes_fd, process_num);
-		}
-		return (0);
+		ft_single_cmd(shell, pipes_lst);
+		return (g_exit_status);
 	}
-	while (pipes_lst && ++i != -2)
-	{
-		pipes_lst->pid = fork();
-		ft_handle_signals(PARENT);
-		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
-		if (pipes_lst->pid == -1)
-		{
-			perror("Error with creating process");
-			return (1);
-		}
-		if (pipes_lst->pid == 0)
-		{
-			get_redirections(i, shell->pipes_fd, pipes_lst, process_num);
-			if (is_builtin != -1)
-			{
-				shell->builtin[is_builtin](shell, pipes_lst);
-				exit(g_exit_status);
-			}
-			else
-				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
-		}
-		pipes_lst = pipes_lst->next;
-	}
+	else
+		ft_multiple_cmds(shell, pipes_lst, process_num, builtin);
 	close_pipes(shell->pipes_fd, process_num);
 	i = -1;
 	while (++i < process_num)
