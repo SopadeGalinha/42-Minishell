@@ -3,3 +3,4 @@ heredoc com segfault export a aa aaa
 ls|cat
 >a
 exit "" -- Numeric argument required
+export | grep A 
