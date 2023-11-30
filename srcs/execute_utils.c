@@ -30,6 +30,8 @@ void ft_access(char **cmd, t_shell *shell)
 	char	*full_path;
 	char	*cmd_path;
 
+	if (!cmd || !cmd[0])
+		return ;
 	if (ft_strchr(cmd[0], '/'))
 		return ;
 	i = -1;
@@ -93,6 +95,8 @@ int	ft_is_builtin(const char *builtin[7], char *cmd)
 {
 	int	i;
 
+	if (!cmd)
+		return (-1);
 	i = -1;
 	while (cmd && ++i < 7)
 		if (ft_strncmp(builtin[i], cmd, ft_strlen(builtin[i])) == 0

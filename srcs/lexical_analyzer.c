@@ -104,14 +104,20 @@ bool	lexical_analyzer(char *input, t_token **tokens)
 	while (si[INDEX] < (int)strlen(input))
 	{
 		si[QT] = 0;
-		si[START] = si[INDEX];
 		si[QT_TYPE] = 0;
+		while (input[si[INDEX]] == ' ')
+			si[INDEX]++;
+		if (si[INDEX] >= (int)strlen(input))
+			break ;
+		si[START] = si[INDEX];
 		if (is_special_char(input[si[INDEX]]))
+		{
 			si[INDEX] = cmds_data(input, si[INDEX], si[START], tokens);
+			si[INDEX]++;
+		}
 		else
 			if (!lexical_aux(input, tokens, si, data))
 				return (false);
-		si[INDEX]++;
 	}
 	return (true);
 }

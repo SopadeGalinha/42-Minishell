@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static bool	redir_in(int *last_valid_fd, char *file)
+static bool	redir_in(int *last_valid_fd, char *file, t_shell *shell)
 {
 	int	fd;
 
@@ -24,30 +24,32 @@ static bool	redir_in(int *last_valid_fd, char *file)
 		*last_valid_fd = fd;
 		if (fd == -1)
 		{
-			ft_printf_fd(2, "minishell: %s: %s\n", file, strerror(errno));
+			if (shell->error == 0)
+				ft_printf_fd(2, "minishell: %s: %s\n", file, strerror(errno));
+			g_exit_status = 1;
 			return (false);
 		}
 	}
 	else
 	{
-		ft_printf_fd(2, "minishell: %s: No such file or directory\n", file);
+		if (shell->error == 0)
+			ft_printf_fd(2, "minishell> %s %s\n", file, strerror(errno));
+		g_exit_status = 1;
 		return (false);
 	}
 	return (true);
 }
 
-
-static void	read_heredoc_lines(int fd, char *file, t_shell *shell)
+static void	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp)
 {
-	char	*line;
-
 	while (true)
 	{
-		line = readline("heredoc> ");
-		if (line == NULL)
+		free(line);
+		line = readline(BOLD_ORANGE"> "RESET);
+		if (!line)
 		{
-			ft_printf_fd(2, "minishell: warning: here-document delimited");
-			ft_printf_fd(2, " by end-of-file (wanted `%s')\n", file);
+			ft_printf_fd(2, MS_ERR"heredoc: warning: here-document was delimited");
+			ft_printf_fd(2, " by end-of-file (wanted `%s')\n"RESET, file);
 			break ;
 		}
 		if (ft_strncmp(line, file, ft_strlen(file)) == 0
@@ -56,58 +58,46 @@ static void	read_heredoc_lines(int fd, char *file, t_shell *shell)
 			free(line);
 			break ;
 		}
-		line = expand_env(shell->env, line);
-		ft_putendl_fd(line, fd);
-		free(line);
+		tmp = ft_strjoin(line, "\n");
+		shell->heredoc = ft_strjoin(shell->heredoc, tmp);
+		free(tmp);
 	}
 }
 
-static bool	redir_heredoc(int *last_valid_fd, char *file, t_shell *sh)
+static void	redir_heredoc(char *file, t_shell *shell)
 {
-	int	fd;
+	char	*line;
+	char	*tmp;
 
-	if (*last_valid_fd != -1)
-		close(*last_valid_fd);
-	if (access(".heredoc", F_OK) != -1)
-		unlink(".heredoc");
-	fd = open(".heredoc", O_CREAT | O_RDWR | O_TRUNC, PERMISSIONS);
-	if (fd == -1)
-		return (print_error("minishell: here-document error", 1));
-	read_heredoc_lines(fd, file, sh);
-	close(fd);
-	fd = open(".heredoc", O_RDONLY);
-	*last_valid_fd = fd;
-	return (true);
+	line = NULL;
+	if (shell->heredoc)
+		free(shell->heredoc);
+	shell->heredoc = ft_strdup("");
+	ft_handle_signals(HEREDOC);
+	read_heredoc_lines(line, file, shell, tmp);
 }
 
-static bool	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
+void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 {
-	int		last_valid_fd;
-	bool	heredoc;
-
-	last_valid_fd = -1;
+	current->redir_fd[IN] = -1;
 	while (redir)
 	{
 		if (redir->type == REDIR_IN)
-			if (!redir_in(&last_valid_fd, redir->file))
-				current->redir_fd[IN] = -2;
+			if (!redir_in(&current->redir_fd[IN], redir->file, shell))
+				shell->error = 1;
 		if (redir->type == HEREDOC)
+			redir_heredoc(redir->file, shell);
+		if (!redir->next)
 		{
-			if (!redir_heredoc(&last_valid_fd, redir->file, shell))
-				current->redir_fd[IN] = -2;
-			else
-			{
-				free(redir->file);
-				redir->file = ft_strdup(".heredoc");
-				current->redir_fd[IN] = last_valid_fd;
-			}	
+			if (redir->type == HEREDOC)
+				if (current->redir_fd[IN] != -1)
+					close(current->redir_fd[IN]);
+			if (redir->type == REDIR_IN)
+				if (shell->heredoc)
+					free(shell->heredoc);
 		}
-		if (current->redir_fd[IN] == -2)
-			return (false);
 		redir = redir->next;
 	}
-	current->redir_fd[IN] = last_valid_fd;
-	return (true);
 }
 
 static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
@@ -131,17 +121,17 @@ static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
 	return (true);
 }
 
-bool	process_pipeline(t_shell *shell)
+bool	process_redirections(t_shell *shell)
 {
 	t_pipes	*current;
 	bool	error;
 
 	error = false;
 	current = shell->pipes;
+	shell->error = 0;
 	while (current)
 	{
-		if (process_redir_in(shell, current->redir_in, current))
-			error = true;
+		process_redir_in(shell, current->redir_in, current);
 		if (!process_redir_out(shell, current->redir_out, current))
 			return (false);
 		current = current->next;
