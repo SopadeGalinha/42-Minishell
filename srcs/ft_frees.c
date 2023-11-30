@@ -92,8 +92,14 @@ static void	free_env(t_env **env)
 
 void	free_struct(t_shell *shell, int running)
 {
-	if (shell->pipes_fd)
-		ft_free_2d_array((void **)shell->pipes_fd, count_pipes(shell->tokens) + 1);
+	int process;
+
+	process = count_pipes(shell->tokens) + 1;
+
+	if (process == 1)
+		process = 0;
+	/* if (shell->pipes_fd)
+		ft_free_2d_array((void **)shell->pipes_fd, process); */
 	if (shell->input != NULL)
 		free(shell->input);
 	if (shell->pipes != NULL)
