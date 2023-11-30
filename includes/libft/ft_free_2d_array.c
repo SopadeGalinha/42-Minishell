@@ -22,7 +22,7 @@ void ft_free_2d_array(void **array_ptr, int size)
 	while (++i < size)
 		if (array_ptr[i])
 			free(array_ptr[i]);
-	while (array_ptr[i] && size != 0)
+	while (size != 0 && array_ptr[i])
 		free(array_ptr[i++]);
     free(array_ptr);
 }

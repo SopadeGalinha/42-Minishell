@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:08:16 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/28 20:29:25 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/30 21:23:26 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,14 +104,14 @@ void	print_list(t_shell *shell, int flag, t_pipes *pipes)
 	while (current != NULL)
 	{
 		if (flag)
-			ft_printf_fd(2, "%s\n", current->line);
+			ft_printf_fd(STDOUT_FILENO, "%s\n", current->line);
 		else
 		{
-			ft_printf_fd(2, "declare -x %s", current->key);
+			ft_printf_fd(STDOUT_FILENO, "declare -x %s", current->key);
 			if (current->value)
 			{
-				ft_printf_fd(2, "=");
-				ft_printf_fd(2, "\"%s\"\n", current->value);
+				ft_printf_fd(STDOUT_FILENO, "=");
+				ft_printf_fd(STDOUT_FILENO, "\"%s\"\n", current->value);
 			}
 			else
 				ft_printf_fd(2, "\n");
