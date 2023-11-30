@@ -53,4 +53,9 @@ void	ft_handle_signals(int flag)
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
 	}
+	if (flag == HEREDOC)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, sig_handler);
+	}
 }

@@ -92,6 +92,8 @@ bool	lexical_aux(char *input, t_token **tokens, int *si, char *data)
 	while (input[si[INDEX]] && (!ft_isspace(input[si[INDEX]]) \
 		|| si[QT] != 0))
 	{
+		if (is_special_char(input[si[INDEX]]) && si[QT] == 0)
+			break ;
 		if (input[si[INDEX]] == '"' || input[si[INDEX]] == '\'')
 		{
 			si[QT_TYPE] = input[si[INDEX]];

@@ -1,6 +1,4 @@
 signals
-heredoc com segfault export a aa aaa
-ls|cat
+export a aa aaa
 export a=1 | export a
->a
 exit "" -- Numeric argument required

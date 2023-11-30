@@ -1,8 +1,7 @@
 » exit status NOK:
-  
   -  ctrl-C in cat without arguments
       display a new line with a new prompt
-      echo $? must display 130
+      $? must display 130
 
   - ctrl-\ in cat without arguments
       ^\Quit
@@ -15,6 +14,4 @@
       display a new line with a new prompt
       echo $? must display 0
 
-» unexpected behavior with signals (cat | ls - ctrl-C)
-» "ls | | wc" should return syntax error
 » leaks at pipes array - shell->pipes (missing frees)

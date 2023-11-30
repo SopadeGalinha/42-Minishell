@@ -122,6 +122,7 @@ typedef struct s_shell
 	t_token	*tokens;
 	t_env	*env;	// list of environment variables
 	t_env	*exp;
+	char						*heredoc;
 	char	*oldpwd;
 	int		error;
 	int		std_out;
@@ -207,7 +208,7 @@ void	redirects(t_token **data, t_redir **r_in, t_redir **r_out, t_shell *sh);
 bool	lexical_aux(char *input, t_token **tokens, int *si, char *data);
 bool	is_special_char(char c);
 void	addtoken(t_token **tokens, char *data, int *quo_err);
-bool	process_pipeline(t_shell *shell);
+bool	process_redirections(t_shell *shell);
 int		count_pipes(t_token *tokens);
 
 //UTILS

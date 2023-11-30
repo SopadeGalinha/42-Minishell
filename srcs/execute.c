@@ -104,7 +104,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 		if (pipes_lst->pid == -1)
 		{
 			perror("Error with creating process");
-			return ;
+			return 1;
 		}
 		if (pipes_lst->pid == 0)
 			ft_execve(shell, pipes_lst, shell->pipes_fd, 1, 0);
@@ -115,6 +115,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 			g_exit_status = WEXITSTATUS(g_exit_status);
 		}
 	}
+	return (0);
 }
 
 int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const char **builtin)
@@ -156,6 +157,11 @@ int	execute(t_shell *shell)
 
 	i = 0;
 	pipes_lst = shell->pipes;
+	if (!pipes_lst->cmds || !pipes_lst->cmds[0])
+	{
+		g_exit_status = 0;
+		return (ft_printf_fd(STDOUT_FILENO, "\n")); 
+	}
 	process_num = count_pipes(shell->tokens) + 1;
 
 	init_builtin(builtin);

@@ -98,14 +98,12 @@ void	free_struct(t_shell *shell, int running)
 		free_pipes(&(shell->pipes));
 	if (shell->tokens != NULL)
 		free_tokens(&(shell->tokens));
-	shell->error = NO_ERROR;
-	if (access(".heredoc", F_OK) != -1)
-		unlink(".heredoc");
+	if (shell->heredoc)
+		free(shell->heredoc);
 	if (running == 0)
 		return ;
 	free_env(&shell->env);
 	free_env(&shell->exp);
-	free(shell->oldpwd);
 	rl_clear_history();
 	exit(g_exit_status);
 }
