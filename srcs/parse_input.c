@@ -32,7 +32,7 @@ static bool	validate_tokens(t_shell *shell)
 			return (print_error(SYNTAX BOLD_WHITE " `<<'" RESET, 2));
 		token = token->next;
 	}
-	if (is_special_char(token->data[0]))
+	if (is_special_char(token->data[0]) && token->data[0] != '$')
 	{
 		ft_printf_fd(2, SYNTAX BOLD_WHITE" `%c'"RESET, token->data[0]); 
 		return (print_error("", 2));
@@ -52,7 +52,7 @@ static void	get_cmd_path(t_shell *shell)
 	while (pipes)
 	{
 		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
-		if (is_builtin != -1)
+		if (is_builtin != -1 || ft_strcmp(pipes->cmds[0], "") == 0)
 			;
 		else if (pipes->cmds && pipes->cmds[0])
 			ft_access(&pipes->cmds[0], shell);

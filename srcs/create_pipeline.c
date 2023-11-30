@@ -55,6 +55,7 @@ static void	*copy_tokens_to_pipeline(t_token **current, t_shell *shell)
 			redirects(current, &pipes->redir_in, &pipes->redir_out, shell);
 		else
 			pipes->cmds[i++] = ft_strdup((*current)->data);
+		pipes->type = (*current)->type;
 		*current = (*current)->next;
 	}
 	return (pipes);

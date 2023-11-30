@@ -42,7 +42,7 @@ bool	free_pipes(t_pipes **pipes)
 	{
 		ft_free_redirect(&current_pipeline->redir_in);
 		ft_free_redirect(&current_pipeline->redir_out);
-		ft_free_array(current_pipeline->cmds);
+		ft_free_2d_array((void **)current_pipeline->cmds, 0);
 		next_pipeline = current_pipeline->next;
 		free(current_pipeline);
 		current_pipeline = next_pipeline;
@@ -92,6 +92,8 @@ static void	free_env(t_env **env)
 
 void	free_struct(t_shell *shell, int running)
 {
+	if (shell->pipes_fd)
+		ft_free_2d_array((void **)shell->pipes_fd, count_pipes(shell->tokens) + 1);
 	if (shell->input != NULL)
 		free(shell->input);
 	if (shell->pipes != NULL)

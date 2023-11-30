@@ -76,7 +76,12 @@ char	*expand_env(t_env *env, char *new_token)
 	si[INDEX] = -1;
 	if (!new_token)
 		return (NULL);
-	if (new_token[0] == '$' && new_token[1] == '\0')
+	if (ft_strcmp(new_token, "$$") == 0)
+	{
+		free(new_token);
+		return (ft_itoa(getpid()));
+	}
+	if (ft_strcmp(new_token, "$") == 0)
 	{
 		free(new_token);
 		return (ft_strdup("$"));
@@ -97,6 +102,29 @@ char	*expand_env(t_env *env, char *new_token)
 	return (new_token);
 }
 
+char	*ft_expand_tilde(t_shell *shell, t_token *current)
+{
+	int		ref;
+	char	*home;
+	char	*new_token;
+
+	if (ft_strncmp(current->data, "~/", 2) == 0)
+		ref = 2;
+	else
+		ref = 1;
+	home = get_env_value(shell->env, "HOME");
+	if (home == NULL)
+		return (current->data);
+	new_token = ft_strjoin(home, "/");
+	free(home);
+	home = ft_substr(current->data, ref, ft_strlen(current->data) - ref);
+	free(current->data);
+	current->data = ft_strjoin(new_token, home);
+	free(home);
+	free(new_token);
+	return (current->data);
+}
+
 static bool	process_aux(t_shell *shell, t_token *current)
 {
 	if (current->quote != SINGLE)
@@ -114,13 +142,8 @@ static bool	process_aux(t_shell *shell, t_token *current)
 			current->data = expand_env(shell->env, current->data);
 		if (current->data == NULL)
 			return (print_error("minishell: malloc error", 1));
-		if ((ft_strncmp(current->data, "~", 1) == 0
-				&& ft_strlen(current->data) == 1)
-			&& current->quote != DOUBLE)
-		{
-			free(current->data);
-			current->data = get_env_value(shell->env, "HOME");
-		}
+		if (ft_strncmp(current->data, "~", 1) == 0)
+			current->data = ft_expand_tilde(shell, current);
 	}
 	return (true);
 }

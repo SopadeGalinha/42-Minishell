@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 22:04:37 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/28 19:26:54 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/30 13:52:10 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,12 @@ static bool	cd_validation(t_shell *shell, t_pipes *pipes)
 	char	*oldpwd;
 
 	if (ft_count_words(pipes->cmds) == 2)
-		return (true);
+	{
+		if (ft_strcmp(pipes->cmds[1] , "" ) == 0 && pipes->type != ENV)
+			return (print_error("\n", 0));
+		else
+			return (true);	
+	}
 	if (ft_count_words(pipes->cmds) > 2)
 		return (print_error("minishell: cd: too many arguments", 1));
 	home = get_env_value(shell->env, "HOME");
@@ -67,7 +72,6 @@ static bool	cd_validation(t_shell *shell, t_pipes *pipes)
 	}
 	oldpwd = getcwd(NULL, 0);
 	ft_chdir(shell, home, oldpwd);
-	ft_printf_fd(STDOUT_FILENO, "%s\n", home);
 	free(home);
 	free(oldpwd);
 	return (false);

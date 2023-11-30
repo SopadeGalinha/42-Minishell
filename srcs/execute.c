@@ -57,6 +57,8 @@ int	**create_pipes(int process_num)
 	int	**pipes;
 	int	i;
 
+	if (process_num <= 1)
+		return (NULL);
 	pipes = malloc(sizeof(int *) * process_num);
 	if (!pipes)
 		return (NULL);
@@ -80,6 +82,7 @@ void close_pipes(int **pipes, int process_num)
 {
     int i;
 
+	
     for (i = 0; i < process_num - 1; ++i)
     {
         close(pipes[i][0]);
@@ -89,12 +92,10 @@ void close_pipes(int **pipes, int process_num)
 
 int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 {
-	char	**envp;
-	int		is_builtin;
+	int			is_builtin;
 	const char	*builtin[7];
 
 	init_builtin(builtin);
-	envp = get_envp_array(shell);
 	is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
 	if (is_builtin != -1)
 		shell->builtin[is_builtin](shell, pipes_lst);
@@ -104,7 +105,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 		if (pipes_lst->pid == -1)
 		{
 			perror("Error with creating process");
-			return 1;
+			return (EXIT_FAILURE);
 		}
 		if (pipes_lst->pid == 0)
 			ft_execve(shell, pipes_lst, shell->pipes_fd, 1, 0);
@@ -115,7 +116,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 			g_exit_status = WEXITSTATUS(g_exit_status);
 		}
 	}
-	return (0);
+	return (g_exit_status);
 }
 
 int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const char **builtin)
@@ -157,23 +158,19 @@ int	execute(t_shell *shell)
 
 	i = 0;
 	pipes_lst = shell->pipes;
+	init_builtin(builtin);
 	if (!pipes_lst->cmds || !pipes_lst->cmds[0])
 	{
 		g_exit_status = 0;
 		return (ft_printf_fd(STDOUT_FILENO, "\n")); 
 	}
 	process_num = count_pipes(shell->tokens) + 1;
-
-	init_builtin(builtin);
 	shell->pipes_fd = create_pipes(process_num);
-	if (!shell->pipes_fd)
+	if (!shell->pipes_fd && process_num > 1)
 		return (ft_error("Error creating pipes", 1));
 	i = -1;
 	if (!pipes_lst->next)
-	{
-		ft_single_cmd(shell, pipes_lst);
-		return (g_exit_status);
-	}
+		return (ft_single_cmd(shell, pipes_lst));
 	else
 		ft_multiple_cmds(shell, pipes_lst, process_num, builtin);
 	close_pipes(shell->pipes_fd, process_num);

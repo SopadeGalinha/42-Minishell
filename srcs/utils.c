@@ -29,11 +29,8 @@ char	*get_env_value(t_env *env, char *key)
 
 void	init_shell(t_shell *shell, char **env)
 {
-	shell->error = NO_ERROR;
 	shell->env = init_env(env);
 	shell->exp = init_export(shell->env);
-	shell->std_out = dup(STDOUT_FILENO);
-	shell->input = NULL;
 	shell->builtin[0] = ft_pwd;
 	shell->builtin[1] = ft_cd;
 	shell->builtin[2] = ft_echo;
@@ -52,6 +49,9 @@ bool	print_error(char *error, int exit_code)
 
 void	get_input(t_shell *shell)
 {
+	shell->input = NULL;
+	shell->error = NO_ERROR;
+	shell->pipes_fd = NULL;
 	shell->input = readline(MINISHELL);
 	if (shell->input && !ft_isspace_str(shell->input))
 		add_history(shell->input);
