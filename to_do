@@ -1,4 +1,11 @@
 signals
+<<<<<<< HEAD
 export a aa aaa
 export a=1 | export a
+=======
+heredoc com segfault export a aa aaa
+ls|cat
+>a
+>>>>>>> 0608ff075cab82a4769cb8364012d32084bca495
 exit "" -- Numeric argument required
+export | grep A 
