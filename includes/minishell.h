@@ -18,7 +18,6 @@
 # include <math.h>
 # include <errno.h>
 # include <signal.h>
-# include <string.h>
 # include <dirent.h>
 # include <stdarg.h>
 # include <sys/stat.h>
@@ -89,7 +88,8 @@ typedef struct s_redir
 
 typedef struct s_pipes
 {
-	char						**cmds;	
+	char						**cmds;
+	int							type;
 	pid_t						pid;
 	int							redir_fd[2];
 	struct	s_redir				*redir_in;

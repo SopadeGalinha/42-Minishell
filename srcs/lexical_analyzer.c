@@ -70,7 +70,7 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
 
-	if ((input[i] == '>' || input[i] == '<')
+	if ((input[i] == '>' || input[i] == '<' || input[i] == '$')
 		|| (input[i] == '|' || input[i] == '&') || input[i] == ';')
 	{
 		if (input[i] == input[i + 1])

@@ -15,3 +15,4 @@
       echo $? must display 0
 
 » leaks at pipes array - shell->pipes (missing frees)
+clear

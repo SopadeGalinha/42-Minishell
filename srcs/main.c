@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/30 00:09:03 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/11/30 14:28:40 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	main(int ac, char **av, char **envp)
 		if (shell.input[0])
 		{
 			if (shell.input && input_is_valid(shell.input))
-				if (parse_input(&shell));
+				if (parse_input(&shell))
 					execute(&shell);
 		}
 		free_struct(&shell, 0);

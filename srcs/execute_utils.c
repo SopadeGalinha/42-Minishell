@@ -53,7 +53,7 @@ void ft_access(char **cmd, t_shell *shell)
 	}
 	free(cmd_path);
 	free(full_path);
-	ft_free_array(path_array);
+	ft_free_2d_array((void **)path_array, 0);
 }
 
 static int	ft_list_envsize(t_env *lst)
