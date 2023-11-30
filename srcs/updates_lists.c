@@ -46,7 +46,7 @@ int	find_node(t_env *lst, char *key)
 	current = lst;
 	while (current != NULL)
 	{
-		if (ft_strncmp(current->key, key, ft_strlen(current->key)) == 0)
+		if (ft_strcmp(current->key, key) == 0)
 			return (1);
 		current = current->next;
 	}
@@ -60,17 +60,20 @@ void	update_node(t_env *lst, char *key, char *line)
 	current = lst;
 	while (current != NULL)
 	{
-		if (ft_strncmp(current->key, key, ft_strlen(current->key)) == 0)
+		if (ft_strcmp(current->key, key) == 0)
 		{
-			if (current->key)
-				free(current->key);
-			if (current->value)
-				free(current->value);
-			if (current->line)
-				free(current->line);
-			current->key = ft_strdup_equal_key(line);
-			current->value = ft_strdup_equal_value(line);
-			current->line = ft_strdup(line);
+			if (ft_strdup_equal_value(line))
+			{
+				if (current->key)
+					free(current->key);
+				if (current->value)
+					free(current->value);
+				if (current->line)
+					free(current->line);
+				current->key = ft_strdup_equal_key(line);
+				current->value = ft_strdup_equal_value(line);
+				current->line = ft_strdup(line);
+			}
 			return ;
 		}
 		current = current->next;
