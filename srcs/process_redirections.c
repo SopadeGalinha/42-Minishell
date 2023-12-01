@@ -68,7 +68,8 @@ static void	redir_heredoc(char *file, t_shell *shell)
 {
 	char	*line;
 	char	*tmp;
-
+	
+	tmp = NULL;
 	line = NULL;
 	if (shell->heredoc)
 		free(shell->heredoc);
@@ -100,7 +101,7 @@ void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 	}
 }
 
-static bool	process_redir_out(t_shell *shell, t_redir *redir, t_pipes *current)
+static bool	process_redir_out(t_redir *redir, t_pipes *current)
 {
 	int	val_fd;
 
@@ -132,7 +133,7 @@ bool	process_redirections(t_shell *shell)
 	while (current)
 	{
 		process_redir_in(shell, current->redir_in, current);
-		if (!process_redir_out(shell, current->redir_out, current))
+		if (!process_redir_out(current->redir_out, current))
 			return (false);
 		current = current->next;
 	}

@@ -84,7 +84,7 @@ void	ft_export(t_shell *shell, t_pipes *pipes)
 		}
 	}
 	else
-		print_list(shell, 0, pipes);
+		print_list(shell, 0);
 }
 
 void	ft_env(t_shell *shell, t_pipes *pipes)
@@ -97,5 +97,5 @@ void	ft_env(t_shell *shell, t_pipes *pipes)
 		g_exit_status = 127;
 	}
 	else
-		print_list(shell, 1, pipes);
+		print_list(shell, 1);
 }

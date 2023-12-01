@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "${workspaceFolder}",
-		  "program": "${workspaceFolder}/minishell",
+      "cwd": "/nfs/homes/heolivei/sgoinfre/Projetos/42-Minishell",
+      "program": "/nfs/homes/heolivei/sgoinfre/Projetos/42-Minishell/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

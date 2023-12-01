@@ -110,6 +110,7 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	int		i;
 	int		j;
 	int		n_flag;
+	(void)shell;
 
 	i = 0;
 	n_flag = 0;

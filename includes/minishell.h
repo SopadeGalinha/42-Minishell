@@ -176,7 +176,7 @@ typedef struct s_shell
 char		*ft_strdup_equal_value(const char *src);
 char		*ft_strdup_equal_key(const char *src);
 int			create_add_node_to_list(t_env **head, char *line);
-void 		print_list(t_shell *shell, int flag, t_pipes *pipes);
+void 		print_list(t_shell *shell, int flag);
 t_env		*init_env(char **envp);
 
 void		insert_sorted(t_env **export_list, t_env *env);
@@ -204,7 +204,7 @@ bool	lexical_analyzer(char *input, t_token **tokens);
 bool	process_tokens(t_shell *shell);
 char	*expand_env(t_env *env, char *new_token);
 bool	create_pipeline_node(t_shell *shell);
-void	redirects(t_token **data, t_redir **r_in, t_redir **r_out, t_shell *sh);
+void	redirects(t_token **data, t_redir **r_in, t_redir **r_out);
 bool	lexical_aux(char *input, t_token **tokens, int *si, char *data);
 bool	is_special_char(char c);
 void	addtoken(t_token **tokens, char *data, int *quo_err);
@@ -244,7 +244,7 @@ void	ft_exit(t_shell *shell, t_pipes *pipes);
 // EXECUTE_UTILS
 void	ft_access(char **cmd, t_shell *shell);
 char	**get_envp_array(t_shell *shell);
-int	ft_is_builtin(const char *builtin[7], char *cmd);
+int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	init_builtin(const char *builtin[7]);
 //---------------------------------END FUNCTIONS---------------------------------//
 

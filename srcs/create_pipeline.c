@@ -34,7 +34,7 @@ static int	is_redirect(t_token *current)
 		|| current->type == REDIR_IN || current->type == HEREDOC);
 }
 
-static void	*copy_tokens_to_pipeline(t_token **current, t_shell *shell)
+static void	*copy_tokens_to_pipeline(t_token **current)
 {
 	int		i;
 	t_token	*tmp;
@@ -52,7 +52,7 @@ static void	*copy_tokens_to_pipeline(t_token **current, t_shell *shell)
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
 		if (is_redirect(*current))
-			redirects(current, &pipes->redir_in, &pipes->redir_out, shell);
+			redirects(current, &pipes->redir_in, &pipes->redir_out);
 		else
 			pipes->cmds[i++] = ft_strdup((*current)->data);
 		pipes->type = (*current)->type;
@@ -90,7 +90,7 @@ bool	create_pipeline_node(t_shell *shell)
 	aux[1] = count_pipes(shell->tokens) + 1;
 	while (aux[1]-- > 0)
 	{
-		new_pipe = copy_tokens_to_pipeline(&current, shell);
+		new_pipe = copy_tokens_to_pipeline(&current);
 		if (new_pipe == NULL)
 			return (print_error("minishell: malloc error", 1));
 		new_pipe->next = NULL;

@@ -38,7 +38,7 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, int proce
 	}
 }
 
-void	ft_execve(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
+static void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 {
 	char	**envp;
 
@@ -108,7 +108,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 			return (EXIT_FAILURE);
 		}
 		if (pipes_lst->pid == 0)
-			ft_execve(shell, pipes_lst, shell->pipes_fd, 1, 0);
+			ft_execve(shell, pipes_lst);
 		else
 		{
 			ft_handle_signals(PARENT);
@@ -141,7 +141,7 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 				exit(g_exit_status);
 			}
 			else
-				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
+				ft_execve(shell, pipes_lst);
 		}
 		pipes_lst = pipes_lst->next;
 	}
@@ -151,7 +151,6 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 int	execute(t_shell *shell)
 {
 	int			i;
-	int			is_builtin;
 	int 		process_num;
 	t_pipes		*pipes_lst;
 	const char	*builtin[7];

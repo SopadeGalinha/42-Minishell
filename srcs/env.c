@@ -93,7 +93,7 @@ t_env	*init_env(char **envp)
 	return (env_list);
 }
 
-void	print_list(t_shell *shell, int flag, t_pipes *pipes)
+void	print_list(t_shell *shell, int flag)
 {
 	t_env	*current;
 

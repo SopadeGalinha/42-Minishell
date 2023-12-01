@@ -16,7 +16,7 @@ NAME		= minishell
 
 CC			= cc
 RM			= /bin/rm -rf
-FLAGS		= -g #-Wall -Wextra -Werror #-fsanitize=address
+FLAGS		= -g -Wall -Wextra -Werror #-fsanitize=address
 
 LIBFT_A		= libft.a
 SRCS_DIR	= srcs/
