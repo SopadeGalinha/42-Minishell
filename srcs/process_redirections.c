@@ -63,6 +63,7 @@ static bool	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp
 		shell->heredoc = ft_strjoin(shell->heredoc, tmp);
 		free(tmp);
 	}
+	return (0);
 }
 
 static void	redir_heredoc(char *file, t_shell *shell)

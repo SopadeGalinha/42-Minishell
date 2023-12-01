@@ -1,2 +1,5 @@
 put redirections to work - (>, >>, < and <<)
 heredoc with seg fault and signals wrong - needs to be re-build
+
+Verificar status de erro $? apos bin/ls e apos /bin/ls
+Verificar funcionamento do expr $? + $?

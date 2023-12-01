@@ -98,8 +98,8 @@ void	free_struct(t_shell *shell, int running)
 
 	if (process == 1)
 		process = 0;
-	/* if (shell->pipes_fd)
-		ft_free_2d_array((void **)shell->pipes_fd, process); */
+	if (shell->pipes_fd)
+		ft_free_2d_array((void **)shell->pipes_fd, process);
 	if (shell->input != NULL)
 		free(shell->input);
 	if (shell->pipes != NULL)
