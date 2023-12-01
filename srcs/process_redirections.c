@@ -68,7 +68,7 @@ static bool	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp
 
 static void	redir_heredoc(char *file, t_shell *shell)
 {
-	char	*line;
+	/* char	*line;
 	char	*tmp;
 
 	line = NULL;
@@ -77,7 +77,7 @@ static void	redir_heredoc(char *file, t_shell *shell)
 		free(shell->heredoc);
 	shell->heredoc = ft_strdup("");
 	ft_handle_signals(HEREDOC);
-	read_heredoc_lines(line, file, shell, tmp);
+	read_heredoc_lines(line, file, shell, tmp); */
 }
 
 void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
@@ -88,21 +88,6 @@ void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 		if (redir->type == REDIR_IN)
 			if (!redir_in(&current->redir_fd[IN], redir->file, shell))
 				shell->error = 1;
-		if (redir->type == HEREDOC)
-			redir_heredoc(redir->file, shell);
-		if (!redir->next)
-		{
-			if (redir->type == HEREDOC)
-				if (current->redir_fd[IN] != -1)
-				{
-					close(current->redir_fd[IN]);
-					current->redir_fd[IN] = -2;
-
-				}
-			if (redir->type == REDIR_IN)
-				if (shell->heredoc)
-					free(shell->heredoc);
-		}
 		redir = redir->next;
 	}
 }

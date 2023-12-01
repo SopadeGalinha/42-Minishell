@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/30 14:28:40 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/01 21:43:11 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	main(int ac, char **av, char **envp)
 	init_shell(&shell, envp);
 	while (true)
 	{
-		ft_handle_signals(MAIN);
+		signals_main();
 		get_input(&shell);
 		if (shell.input == NULL)
 		{
