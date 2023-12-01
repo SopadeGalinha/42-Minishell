@@ -26,7 +26,7 @@ static bool	validate_tokens(t_shell *shell)
 			return (print_error(SYNTAX BOLD_WHITE " `<'" RESET, 2));
 		if (token->type == REDIR_OUT && token->next->type != WORD)
 			return (print_error(SYNTAX BOLD_WHITE " `>'" RESET, 2));
-		if (token->type == D_REDIR_OUT && token->next->type != WORD)
+		if (token->type == APPEND && token->next->type != WORD)
 			return (print_error(SYNTAX BOLD_WHITE " `>>'" RESET, 2));
 		if (token->type == HEREDOC && token->next->type != WORD)
 			return (print_error(SYNTAX BOLD_WHITE " `<<'" RESET, 2));

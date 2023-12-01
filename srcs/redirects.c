@@ -36,7 +36,7 @@ static void	insert_redir(t_redir **head, char *data, int type)
 
 void	redirects(t_token **data, t_redir **r_in, t_redir **r_out)
 {
-	if ((*data)->type == REDIR_OUT || (*data)->type == D_REDIR_OUT)
+	if ((*data)->type == REDIR_OUT || (*data)->type == APPEND)
 	{
 		insert_redir(r_out, (*data)->next->data, (*data)->type);
 		*data = (*data)->next;
