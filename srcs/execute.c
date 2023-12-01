@@ -47,8 +47,11 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
 		ft_printf_fd(2, MS_ERR"%s: %s\n", pipes_lst->cmds[0], strerror(errno));
-		exit(EXIT_FAILURE);
+		ft_free_2d_array((void **)envp, 0);
+		g_exit_status = 127;
+		exit(g_exit_status);
 	}
+	ft_free_2d_array((void **)envp, 0);
 	g_exit_status = WEXITSTATUS(g_exit_status);
 }
 // Return an array of pipes for all processes
