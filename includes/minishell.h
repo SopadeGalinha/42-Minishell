@@ -190,6 +190,8 @@ void	update_exp(t_shell *shell, char *line);
 
 //MAIN
 void	signals_main(void);
+void	signals_child(void);
+void	signals_wait(void);
 int		execute(t_shell *shell);
 
 //---------------------------- PARSER PART -----------------------------------//

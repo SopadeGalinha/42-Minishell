@@ -146,6 +146,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 		}
 		if (pipes_lst->pid == 0)
 		{
+			signals_child();
 			if (pipes_lst->redir_out)
 			{
 				dup2(pipes_lst->redir_fd[OUT], STDOUT_FILENO);
@@ -166,16 +167,12 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 			}
 			ft_execve(shell, pipes_lst);
 		}
-		else
-		{
-			if (waitpid(pipes_lst->pid, &g_exit_status, 0) == -1)
-				ft_error("Error waiting for process", 1);
-			if (WIFEXITED(g_exit_status))
-				g_exit_status = WEXITSTATUS(g_exit_status);
-			else if (WIFSIGNALED(g_exit_status))
-				g_exit_status = WTERMSIG(g_exit_status) + 128;
+		signals_main();
+		waitpid(pipes_lst->pid, &g_exit_status, 0);
+		if (WIFEXITED(g_exit_status))
 			g_exit_status = WEXITSTATUS(g_exit_status);
-		}
+		else if (WIFSIGNALED(g_exit_status))
+			g_exit_status = WTERMSIG(g_exit_status) + 128;
 	}
 	return (g_exit_status);
 }
@@ -218,10 +215,6 @@ void	waiting(int process_num, t_shell *shell)
 	{
 		if (waitpid(-1, &g_exit_status, 0) == -1)
 			ft_error("Error waiting for process", 1);
-		if (WIFEXITED(g_exit_status))
-			g_exit_status = WEXITSTATUS(g_exit_status);
-		else if (WIFSIGNALED(g_exit_status))
-			g_exit_status = WTERMSIG(g_exit_status) + 128;
 		g_exit_status = WEXITSTATUS(g_exit_status);
 	}
 }
