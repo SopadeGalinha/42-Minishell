@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:08:16 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/30 21:23:26 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/01 12:49:13 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void	print_list(t_shell *shell, int flag, t_pipes *pipes)
 {
 	t_env	*current;
 
+	(void)pipes;
 	if (flag)
 		current = shell->env;
 	else

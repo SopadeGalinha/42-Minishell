@@ -38,7 +38,7 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, int proce
 	}
 }
 
-void	ft_execve(t_shell *shell, t_pipes *pipes_lst, int **pipes, int process_num, int i)
+void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 {
 	char	**envp;
 
@@ -105,14 +105,10 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 		if (pipes_lst->pid == -1)
 		{
 			perror("Error with creating process");
-<<<<<<< HEAD
 			return (EXIT_FAILURE);
-=======
-			return (0);
->>>>>>> 0608ff075cab82a4769cb8364012d32084bca495
 		}
 		if (pipes_lst->pid == 0)
-			ft_execve(shell, pipes_lst, shell->pipes_fd, 1, 0);
+			ft_execve(shell, pipes_lst);
 		else
 		{
 			ft_handle_signals(PARENT);
@@ -120,11 +116,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 			g_exit_status = WEXITSTATUS(g_exit_status);
 		}
 	}
-<<<<<<< HEAD
 	return (g_exit_status);
-=======
-	return (0);
->>>>>>> 0608ff075cab82a4769cb8364012d32084bca495
 }
 
 int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const char **builtin)
@@ -149,7 +141,7 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 				exit(g_exit_status);
 			}
 			else
-				ft_execve(shell, pipes_lst, shell->pipes_fd, process_num, i);
+				ft_execve(shell, pipes_lst);
 		}
 		pipes_lst = pipes_lst->next;
 	}
@@ -159,7 +151,6 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 int	execute(t_shell *shell)
 {
 	int			i;
-	int			is_builtin;
 	int 		process_num;
 	t_pipes		*pipes_lst;
 	const char	*builtin[7];

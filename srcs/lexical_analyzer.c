@@ -70,7 +70,15 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
 
-	if ((input[i] == '>' || input[i] == '<' || input[i] == '$')
+	if (input[i] == '$')
+	{
+		while (input[++i] != '\0' && (!is_special_char(input[i] && input[i] != '$'))
+			&& input[i] != '"' && input[i] != '\''
+			&& input[i] != ' ' && input[i])
+			;
+		data = ft_substr(input, start, (i-- - start));
+	}
+	else if ((input[i] == '>' || input[i] == '<')
 		|| (input[i] == '|' || input[i] == '&') || input[i] == ';')
 	{
 		if (input[i] == input[i + 1])
