@@ -38,8 +38,8 @@ void	print_tokens(t_token *head)
         case REDIR_OUT:
             typeStr = "redir_out";
             break;
-        case D_REDIR_OUT:
-            typeStr = "D_REDIREC_OUT";
+        case APPEND:
+            typeStr = "APPEND";
             break;
         case REDIR_IN:
             typeStr = "REDIR_IN";
@@ -61,9 +61,6 @@ void	print_tokens(t_token *head)
 			break;
 		case SEMICOLON:
 			typeStr = "SEMICOLON";
-			break;
-		case OPTION:
-			typeStr = "OPTION";
 			break;
         default:
             typeStr = "unknown";
@@ -126,7 +123,7 @@ void	print_redir(t_redir *head)
 	{
 		if (current->type == REDIR_OUT)
 			printf(BOLD_WHITE"> "RESET);
-		if (current->type == D_REDIR_OUT)
+		if (current->type == APPEND)
 			printf(BOLD_WHITE">> "RESET);
 		if (current->type == REDIR_IN)
 			printf(BOLD_WHITE"< "RESET);

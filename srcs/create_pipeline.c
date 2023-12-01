@@ -30,7 +30,7 @@ int	count_pipes(t_token *tokens)
 
 static int	is_redirect(t_token *current)
 {
-	return (current->type == REDIR_OUT || current->type == D_REDIR_OUT
+	return (current->type == REDIR_OUT || current->type == APPEND
 		|| current->type == REDIR_IN || current->type == HEREDOC);
 }
 

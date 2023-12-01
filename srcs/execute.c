@@ -16,24 +16,24 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, int proce
 	// Redirect input for all processes except the first one
 	if (pos != 0)
 	{
-		dup2(pipes[pos - 1][0], STDIN_FILENO);
-		close(pipes[pos - 1][0]);
-		close(pipes[pos - 1][1]);
+		dup2(pipes[pos - 1][READ_END], STDIN_FILENO);
+		close(pipes[pos - 1][READ_END]);
+		close(pipes[pos - 1][WRITE_END]);
 	}
 	// Redirect output for all processes except the last one
 	if (pipes_lst->next)
 	{
-		dup2(pipes[pos][1], STDOUT_FILENO);
-		close(pipes[pos][0]);
-		close(pipes[pos][1]);
+		dup2(pipes[pos][WRITE_END], STDOUT_FILENO);
+		close(pipes[pos][READ_END]);
+		close(pipes[pos][WRITE_END]);
 	}
 	// Close all pipes in the child process that are not needed
 	for (i = 0; i < process_num - 1; ++i)
 	{
         if (i != pos && i != pos - 1)
         {
-            close(pipes[i][0]);
-            close(pipes[i][1]);
+            close(pipes[i][READ_END]);
+            close(pipes[i][WRITE_END]);
         }
 	}
 }
@@ -46,8 +46,8 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 	ft_handle_signals(CHILD);
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
-		ft_printf_fd(2, "minishell: %s: %s\n", pipes_lst->cmds[0], strerror(errno));
-		exit(1);
+		ft_printf_fd(2, MS_ERR"%s: %s\n", pipes_lst->cmds[0], strerror(errno));
+		exit(EXIT_FAILURE);
 	}
 	g_exit_status = WEXITSTATUS(g_exit_status);
 }
@@ -81,13 +81,13 @@ int	**create_pipes(int process_num)
 
 void close_pipes(int **pipes, int process_num)
 {
-    int i;
+    int pos;
 
 	
-    for (i = 0; i < process_num - 1; ++i)
+    for (pos = 0; pos < process_num - 1; ++pos)
     {
-        close(pipes[i][0]);
-        close(pipes[i][1]);
+        close(pipes[pos][READ_END]);
+        close(pipes[pos][WRITE_END]);
     }
 }
 
@@ -149,14 +149,27 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 	return (0);
 }
 
+void	waiting(int process_num, t_shell *shell)
+{
+	int	i;
+
+	i = -1;
+	close_pipes(shell->pipes_fd, process_num);
+	while (++i < process_num)
+	{
+		waitpid(-1, &g_exit_status, 0);
+		g_exit_status = WEXITSTATUS(g_exit_status);
+	}
+}
+
 int	execute(t_shell *shell)
 {
-	int			i;
+	// int			i;
 	int 		process_num;
 	t_pipes		*pipes_lst;
 	const char	*builtin[7];
 
-	i = 0;
+	// i = 0;
 	pipes_lst = shell->pipes;
 	init_builtin(builtin);
 	if (!pipes_lst->cmds || !pipes_lst->cmds[0])
@@ -166,17 +179,13 @@ int	execute(t_shell *shell)
 	}
 	process_num = count_pipes(shell->tokens) + 1;
 	shell->pipes_fd = create_pipes(process_num);
+	
 	if (!shell->pipes_fd && process_num > 1)
 		return (ft_error("Error creating pipes", 1));
-	i = -1;
 	if (!pipes_lst->next)
 		return (ft_single_cmd(shell, pipes_lst));
 	else
 		ft_multiple_cmds(shell, pipes_lst, process_num, builtin);
-	close_pipes(shell->pipes_fd, process_num);
-	i = -1;
-	while (++i < process_num)
-		waitpid(-1, &g_exit_status, 0);
-	g_exit_status = WEXITSTATUS(g_exit_status);
+	waiting(process_num, shell);
 	return (g_exit_status);
 }

@@ -21,7 +21,7 @@ static int	define_token(const char *token)
 	if (ft_strncmp(token, "<", ft_strlen("<")) == 0 && ft_strlen(token) == 1)
 		return (REDIR_IN);
 	if (ft_strncmp(token, ">>", ft_strlen(">>")) == 0 && ft_strlen(token) == 2)
-		return (D_REDIR_OUT);
+		return (APPEND);
 	if (ft_strncmp(token, "<<", ft_strlen("<<")) == 0 && ft_strlen(token) == 2)
 		return (HEREDOC);
 	if (ft_strncmp(token, "2>", ft_strlen("2>")) == 0 && ft_strlen(token) == 2)
@@ -34,8 +34,6 @@ static int	define_token(const char *token)
 		return (OR);
 	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
 		return (SEMICOLON);
-	if (token[0] == '-' && ft_isalpha(token[1]))
-		return (OPTION);
 	if (token[0] == '$')
 		return (ENV);
 	return (WORD);

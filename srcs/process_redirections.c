@@ -40,7 +40,7 @@ static bool	redir_in(int *last_valid_fd, char *file, t_shell *shell)
 	return (true);
 }
 
-static void	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp)
+static bool	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp)
 {
 	while (true)
 	{
@@ -50,7 +50,7 @@ static void	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp
 		{
 			ft_printf_fd(2, MS_ERR"heredoc: warning: here-document was delimited");
 			ft_printf_fd(2, " by end-of-file (wanted `%s')\n"RESET, file);
-			break ;
+			return (false);
 		}
 		if (ft_strncmp(line, file, ft_strlen(file)) == 0
 			&& ft_strlen(line) == ft_strlen(file))
@@ -58,6 +58,7 @@ static void	read_heredoc_lines(char *line, char *file, t_shell *shell, char *tmp
 			free(line);
 			break ;
 		}
+		rl_on_new_line();
 		tmp = ft_strjoin(line, "\n");
 		shell->heredoc = ft_strjoin(shell->heredoc, tmp);
 		free(tmp);
@@ -92,7 +93,11 @@ void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 		{
 			if (redir->type == HEREDOC)
 				if (current->redir_fd[IN] != -1)
+				{
 					close(current->redir_fd[IN]);
+					current->redir_fd[IN] = -2;
+
+				}
 			if (redir->type == REDIR_IN)
 				if (shell->heredoc)
 					free(shell->heredoc);
@@ -112,7 +117,7 @@ static bool	process_redir_out(t_redir *redir, t_pipes *current)
 			close(val_fd);
 		if (redir->type == REDIR_OUT)
 			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, PERMISSIONS);
-		if (redir->type == D_REDIR_OUT)
+		if (redir->type == APPEND)
 			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, PERMISSIONS);
 		if (val_fd == -1)
 			return (print_error("minishell: ", 1));

@@ -38,7 +38,7 @@ enum TokenType {
 	WORD,
 	PIPELINE,
 	REDIR_OUT,
-	D_REDIR_OUT,
+	APPEND,
 	REDIR_ERR,
 	REDIR_IN,
 	HEREDOC,
@@ -47,7 +47,6 @@ enum TokenType {
 	OR,
 	SEMICOLON,
 	EXIT_STATUS,
-	OPTION,
 };
 
 enum QuoteType {
@@ -76,6 +75,11 @@ enum indexesType {
 	QT,
 	QT_TYPE,
 	ERR_TYPE,
+	MAIN = 0,
+	WRITE_END,
+	READ_END = 0,
+	CHILD,
+	PARENT,
 };
 
 typedef struct s_redir
@@ -118,14 +122,12 @@ typedef struct s_token
 typedef struct s_shell
 {
 	char	*input;
-	t_pipes	*pipes;	// list of pipes
+	t_pipes	*pipes;
 	t_token	*tokens;
-	t_env	*env;	// list of environment variables
+	t_env	*env;
 	t_env	*exp;
-	char						*heredoc;
-	char	*oldpwd;
+	char	*heredoc;
 	int		error;
-	int		std_out;
 	int		**pipes_fd;
 	void	(*builtin[7])(struct s_shell *shell, t_pipes *pipes);	// array of builtins functions
 }				t_shell;
@@ -160,13 +162,6 @@ typedef struct s_shell
 # define T	BOLD_WHITE	"l\001\033[0m\002"
 # define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
 
-# define IN 0
-# define OUT 1
-# define READ 0
-# define WRITE 1
-# define MAIN 0
-# define CHILD 1
-# define PARENT 2
 //------------------------------ END MACROS ----------------------------------//
 
 /*_______________________________ FUNCTIONS __________________________________*/
