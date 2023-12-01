@@ -47,6 +47,7 @@ enum TokenType {
 	OR,
 	SEMICOLON,
 	EXIT_STATUS,
+	DEFAULT,
 };
 
 enum QuoteType {
@@ -188,8 +189,8 @@ void	update_exp(t_shell *shell, char *line);
 
 
 //MAIN
-void	ft_handle_signals(int flag);
-int	execute(t_shell *shell);
+void	signals_main(void);
+int		execute(t_shell *shell);
 
 //---------------------------- PARSER PART -----------------------------------//
 

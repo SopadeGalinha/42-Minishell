@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static void	sig_handler(int signum)
+static void	hdl_signals_main(int signum)
 {
 	(void)signum;
 	rl_replace_line("", 0);
@@ -22,40 +22,14 @@ static void	sig_handler(int signum)
 	g_exit_status = 130;
 }
 
-static void	signal_hdl(int sig)
+void	signals_main(void)
 {
-	if (sig == SIGINT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "\n");
-		return ;
-	}
-	else if (sig == SIGQUIT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "Quit: 3\n");
-		return ;
-	}
+	signal(SIGINT, hdl_signals_main);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-void	ft_handle_signals(int flag)
+void	signals_child(void)
 {
-	if (flag == PARENT)
-	{
-		signal(SIGQUIT, signal_hdl);
-		signal(SIGINT, signal_hdl);
-	}
-	if (flag == MAIN)
-	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, sig_handler);
-	}
-	if (flag == CHILD)
-	{
-		signal(SIGQUIT, SIG_DFL);
-		signal(SIGINT, SIG_DFL);
-	}
-	if (flag == HEREDOC)
-	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, sig_handler);
-	}
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
