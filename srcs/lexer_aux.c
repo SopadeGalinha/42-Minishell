@@ -24,8 +24,7 @@ static void	remove_quotes_aux(char *data, int *si, char **res, int *quote_type)
 	char	*aux;
 	char	*tmp;
 
-	if (!*quote_type && (data[si[INDEX]] == '"'
-			|| data[si[INDEX]] == '\'') || (*quote_type == data[si[INDEX]]))
+	if ((!*quote_type && (data[si[INDEX]] == '\"' || data[si[INDEX]] == '\'')) || (*quote_type == data[si[INDEX]]))
 	{
 		if (*quote_type == data[si[INDEX]])
 			*quote_type = 0;

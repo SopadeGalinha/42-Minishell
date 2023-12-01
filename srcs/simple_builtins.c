@@ -68,7 +68,7 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 		}
 	}
 	pwd = getcwd(NULL, 0);
-	ft_printf_fd(STDOUT_FILENO, BOLD_WHITE"%s\n"RESET, pwd);
+	ft_printf_fd(STDOUT_FILENO, "%s\n", pwd);
 	free(pwd);
 	g_exit_status = 0;
 }
@@ -111,6 +111,7 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	int		j;
 	int		n_flag;
 
+	(void)shell;
 	i = 0;
 	n_flag = 0;
 	while (pipes->cmds[++i]
