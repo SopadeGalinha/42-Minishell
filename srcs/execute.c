@@ -167,7 +167,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 			}
 			ft_execve(shell, pipes_lst);
 		}
-		signals_main();
+		signals_wait();
 		waitpid(pipes_lst->pid, &g_exit_status, 0);
 		if (WIFEXITED(g_exit_status))
 			g_exit_status = WEXITSTATUS(g_exit_status);
@@ -191,6 +191,7 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 			return (ft_error("Error creating process", 1));
 		if (pipes_lst->pid == 0)
 		{
+			signals_child();
 			get_redirections(i, shell->pipes_fd, pipes_lst, process_num, shell);
 			if (is_builtin != -1)
 			{
@@ -200,6 +201,8 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 			else
 				ft_execve(shell, pipes_lst);
 		}
+		else
+			signals_wait();
 		pipes_lst = pipes_lst->next;
 	}
 	return (0);
@@ -215,8 +218,12 @@ void	waiting(int process_num, t_shell *shell)
 	{
 		if (waitpid(-1, &g_exit_status, 0) == -1)
 			ft_error("Error waiting for process", 1);
-		g_exit_status = WEXITSTATUS(g_exit_status);
+		if (WIFEXITED(g_exit_status))
+			g_exit_status = WEXITSTATUS(g_exit_status);
+		else if (WIFSIGNALED(g_exit_status))
+			g_exit_status = WTERMSIG(g_exit_status) + 128;
 	}
+	ft_printf_fd(0, "\n");
 }
 
 int	execute(t_shell *shell)
