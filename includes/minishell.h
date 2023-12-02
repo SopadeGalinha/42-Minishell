@@ -161,7 +161,7 @@ typedef struct s_shell
 # define M	BOLD_ORANGE	"h\001\033[0m\002"
 # define PP	BOLD_RED	"el\001\033[0m\002"
 # define T	BOLD_WHITE	"l\001\033[0m\002"
-# define MINISHELL	P R O M PP T BOLD_GREY"$> "RESETecho 
+# define MINISHELL	P R O M PP T BOLD_GREY"$> "RESET
 
 //------------------------------ END MACROS ----------------------------------//
 
