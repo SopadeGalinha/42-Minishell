@@ -33,31 +33,25 @@ static void	hdl_signals_child(int sig)
 	if (sig == SIGINT)
 	{
 		ft_printf_fd(0, "\n");
-		g_exit_status = 130;
 		exit(130);
 	}
 	else
 	{
 		ft_printf_fd(0, "Quit: (core dumped)\n");
-		g_exit_status = 131;
 		exit(131);
 	}
 }
 
 void	signals_child(void)
 {
-	struct sigaction	sa;
-	sa.sa_handler = hdl_signals_child;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGQUIT, &sa, NULL);
+	signal(SIGINT, hdl_signals_child);
+	signal(SIGQUIT, hdl_signals_child);
 }
 
 static void	hdl_signals_heredoc(int signum)
 {
 	(void)signum;
-	ft_printf_fd(0, "\n");
+	ft_printf_fd(0, "AAA\n");
 	exit(130);
 }
 
