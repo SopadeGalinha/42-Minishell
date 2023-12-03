@@ -66,7 +66,7 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!process_tokens(shell))
 		return (false);
-	print_tokens(shell->tokens); exit(0);
+	//print_tokens(shell->tokens); exit(0);
 	if (!validate_tokens(shell))
 		return (false);
 	if (!create_pipeline_node(shell))
