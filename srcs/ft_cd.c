@@ -40,10 +40,10 @@ static bool	ft_chdir(t_shell *shell, char *param, char *oldpwd)
 	if (!pwd)
 		return (print_error(strerror(errno), 1));
 	join = ft_strjoin("OLDPWD=", oldpwd);
-	update_lists(shell, join, 1);
+	update_lists(shell, join, 1, NULL);
 	free(join);
 	join = ft_strjoin("PWD=", pwd);
-	update_lists(shell, join, 1);
+	update_lists(shell, join, 1, NULL);
 	free(pwd);
 	free(join);
 	return (false);
