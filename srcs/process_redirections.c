@@ -33,7 +33,7 @@ static bool	redir_in(int *last_valid_fd, char *file, t_shell *shell)
 	else
 	{
 		if (shell->error == 0)
-			ft_printf_fd(2, "minishell> %s %s\n", file, strerror(errno));
+			ft_printf_fd(2, MS_ERR"%s: %s\n", file, strerror(errno));
 		g_exit_status = 1;
 		return (false);
 	}
@@ -118,9 +118,7 @@ static bool	process_redir_out(t_redir *redir, t_pipes *current)
 bool	process_redirections(t_shell *shell)
 {
 	t_pipes	*current;
-	bool	error;
 
-	error = false;
 	current = shell->pipes;
 	shell->error = 0;
 	while (current)
@@ -130,7 +128,7 @@ bool	process_redirections(t_shell *shell)
 			return (false);
 		current = current->next;
 	}
-	if (error)
+	if (shell->error)
 		return (false);
 	return (true);
 }

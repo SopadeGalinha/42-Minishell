@@ -61,9 +61,9 @@ fclean: clean
 	$(RM) .nfs*
 	@make -s fclean -C $(LIBFT_DIR)
 
-leak: all
+leak: re
 	@valgrind -q --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression ./$(NAME)
-log: all
+log: re
 	@valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all --suppressions=readline_supression --log-file=log%p.txt ./$(NAME)
 
 git: fclean
