@@ -76,10 +76,10 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 void	ft_exit(t_shell *shell, t_pipes *pipes)
 {
 	int	i;
+	int	flag;
 
 	i = 0;
-	(void)shell;
-	(void)pipes;
+	flag = 0;
 	if (count_pipes(shell->tokens) == 0)
 		ft_printf_fd(STDOUT_FILENO, "exit\n");
 	if (ft_count_words(pipes->cmds) > 2)
@@ -96,11 +96,13 @@ void	ft_exit(t_shell *shell, t_pipes *pipes)
 			if (!ft_isdigit(pipes->cmds[1][i]))
 			{
 				print_error("minishell: exit: numeric argument required", 2);
+				flag = 1;
 				break ;
 			}
 			i++;
 		}
-		g_exit_status = ft_atoi(pipes->cmds[1]);
+		if (!flag)
+			g_exit_status = ft_atoi(pipes->cmds[1]);
 	}
 	free_struct(shell, 1);
 }

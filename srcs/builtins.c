@@ -76,9 +76,12 @@ void	ft_export(t_shell *shell, t_pipes *pipes)
 			if (arg_checker(shell, pipes->cmds[i]) > 0)
 			{
 				if (ft_strchr(pipes->cmds[i], '='))
-					update_lists(shell, pipes->cmds[i], 1);
+				{
+					
+					update_lists(shell, pipes->cmds[i], 1, pipes->cmds[i + 1]);
+				}
 				else if (!ft_strchr(pipes->cmds[i], '='))
-					update_lists(shell, pipes->cmds[i], 0);
+					update_lists(shell, pipes->cmds[i], 0, NULL);
 			}
 			i++;
 		}

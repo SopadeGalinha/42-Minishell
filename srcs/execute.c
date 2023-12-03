@@ -105,6 +105,7 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 		ft_printf_fd(2, MS_ERR"%s: %s\n", pipes_lst->cmds[0], strerror(errno));
 		ft_free_2d_array((void **)envp, 0);
 		g_exit_status = 127;
+		free_struct(shell, 1);
 		exit(g_exit_status);
 	}
 	ft_free_2d_array((void **)envp, 0);
