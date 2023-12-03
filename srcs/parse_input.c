@@ -49,6 +49,8 @@ static void	get_cmd_path(t_shell *shell)
 	is_builtin = -1;
 	init_builtin(builtin);
 	pipes = shell->pipes;
+	if (!pipes->cmds || !pipes->cmds[0])
+		return ;
 	while (pipes)
 	{
 		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
@@ -66,7 +68,6 @@ bool	parse_input(t_shell *shell)
 		return (false);
 	if (!process_tokens(shell))
 		return (false);
-	//print_tokens(shell->tokens); exit(0);
 	if (!validate_tokens(shell))
 		return (false);
 	if (!create_pipeline_node(shell))
