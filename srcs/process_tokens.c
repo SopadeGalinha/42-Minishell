@@ -158,7 +158,7 @@ bool	process_tokens(t_shell *shell)
 			return (false);
 		if ((current->type == OR || current->type == SEMICOLON
 				|| current->type == AND) && current->quote == NONE)
-			return (print_error(UNSUP_MCMDS, 1));
+			return (print_error(MS_ERR UNSUP_MCMDS, 1));
 		current = current->next;
 	}
 	return (true);

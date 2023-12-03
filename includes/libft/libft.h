@@ -115,9 +115,8 @@ bool	ft_contains(const char *haystack, const char *needle);
 size_t	ft_count_char(char *str, char c);
 void	ft_free_2d_array(void **array_ptr, int size);
 char	*ft_str_replace(char *str, char *old, char *new);
-int 	ft_count_words(char **str);
+int		ft_count_words(char **str);
 int		ft_strcmp(const char *s1, const char *s2);
-
 
 //BONUS FUCNTIONS
 

@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:21:24 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/03 17:20:51 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/03 21:38:31 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,8 @@ void	update_node(t_env *lst, char *key, char *line)
 			}
 			return ;
 		}
-		
 		current = current->next;
-	} 	
+	}
 }
 
 int	create_find_add_insert_node(t_env **head, char *line)

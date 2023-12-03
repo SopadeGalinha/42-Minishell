@@ -42,19 +42,6 @@ void	signals_child(void)
 	signal(SIGQUIT, hdl_signals_child);
 }
 
-static void	hdl_signals_heredoc(int signum)
-{
-	(void)signum;
-	ft_printf_fd(0, "AAA\n");
-	exit(130);
-}
-
-void	signals_heredoc(void)
-{
-	signal(SIGINT, hdl_signals_heredoc);
-	signal(SIGQUIT, SIG_IGN);
-}
-
 void	signals_wait(void)
 {
 	signal(SIGINT, hdl_signals_child);

@@ -30,7 +30,7 @@ PARSER_LIST	=	parse_input.c lexical_analyzer.c lexer_aux.c \
 
 SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
 				export.c ft_frees.c execute.c updates_lists.c \
-				inutils.c validations.c builtins.c simple_builtins.c \
+				validations.c builtins.c simple_builtins.c \
 				$(PARSER_LIST) ft_cd.c execute_utils.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))

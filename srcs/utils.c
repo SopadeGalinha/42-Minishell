@@ -52,20 +52,9 @@ void	get_input(t_shell *shell)
 	shell->input = NULL;
 	shell->error = NO_ERROR;
 	shell->pipes_fd = NULL;
-	shell->input = readline(MINISHELL);
+	shell->input = readline(MI NI S H EL L D);
 	if (shell->input && !ft_isspace_str(shell->input))
 		add_history(shell->input);
 	if (shell->input)
 		shell->input = ft_strtrim(shell->input, " \t");
-}
-
-int ft_strcmp(const char *s1, const char *s2)
-{
-    while (*s1 && (*s1 == *s2))
-	{
-        s1++;
-        s2++;
-    }
-	
-    return *(unsigned char *)s1 - *(unsigned char *)s2;
 }
