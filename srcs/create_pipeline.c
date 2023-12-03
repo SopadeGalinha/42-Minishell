@@ -24,10 +24,7 @@ int	count_pipes(t_token *tokens)
 	while (current != NULL)
 	{
 		if (current->type && current->type == PIPELINE)
-		{
-			printf("oi\n");
 			i++;
-		}
 		current = current->next;
 	}
 	return (i);
