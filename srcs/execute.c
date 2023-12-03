@@ -197,6 +197,7 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, int process_num, const 
 			if (is_builtin != -1)
 			{
 				shell->builtin[is_builtin](shell, pipes_lst);
+				free_struct(shell, 1);
 				exit(g_exit_status);
 			}
 			else

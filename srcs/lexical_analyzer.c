@@ -52,6 +52,7 @@ void	addtoken(t_token **tokens, char *data, int *quo_err)
 		last = last->next;
 	last->next = new;
 	new->prev = last;
+	new->type = NONE;
 }
 
 static void	process_special_tokens(char *data, t_token **tokens)

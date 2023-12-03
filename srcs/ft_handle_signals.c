@@ -31,15 +31,9 @@ void	signals_main(void)
 static void	hdl_signals_child(int sig)
 {
 	if (sig == SIGINT)
-	{
 		ft_printf_fd(0, "\n");
-		exit(130);
-	}
 	else
-	{
-		ft_printf_fd(0, "Quit: (core dumped)\n");
-		exit(131);
-	}
+		ft_printf_fd(0, "Quit (core dumped)\n");
 }
 
 void	signals_child(void)
@@ -63,6 +57,6 @@ void	signals_heredoc(void)
 
 void	signals_wait(void)
 {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, hdl_signals_child);
+	signal(SIGQUIT, hdl_signals_child);
 }

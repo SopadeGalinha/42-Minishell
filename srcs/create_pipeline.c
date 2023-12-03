@@ -18,11 +18,16 @@ int	count_pipes(t_token *tokens)
 	t_token	*current;
 
 	i = 0;
+	if (tokens == NULL)
+		return (0);
 	current = tokens;
 	while (current != NULL)
 	{
-		if (current->type == PIPELINE)
+		if (current->type && current->type == PIPELINE)
+		{
+			printf("oi\n");
 			i++;
+		}
 		current = current->next;
 	}
 	return (i);
