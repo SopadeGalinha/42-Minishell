@@ -33,7 +33,7 @@ int	arg_checker(t_shell *shell, char *str)
 	(void)shell;
 	if (ft_isdigit(str[0]))
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: export: ");
+		ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
 		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
 		g_exit_status = 1;
 		return (-1);
@@ -42,7 +42,7 @@ int	arg_checker(t_shell *shell, char *str)
 	{
 		if (!ft_isalnum(str[1]) && str_isalpha_isequal_isunder(str, 1) == 0)
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: export: ");
+			ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
 			ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
 			g_exit_status = 1;
 			return (-1);
@@ -56,7 +56,7 @@ int	arg_checker(t_shell *shell, char *str)
 		|| (str_isalpha_isequal_isunder(str, 0) == 0
 			&& ft_strchr(str, '=') == NULL))
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: export: ");
+		ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
 		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
 		g_exit_status = 1;
 		return (-1);
