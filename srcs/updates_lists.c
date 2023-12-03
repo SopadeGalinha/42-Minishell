@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	create_add_node_to_back(t_env **head, char *line, char *expand_value)
+int	create_add_node_to_back(t_env **head, char *line)
 {
 	t_env	*new;
 	t_env	*temp;
@@ -25,16 +25,8 @@ int	create_add_node_to_back(t_env **head, char *line, char *expand_value)
 		return (0);
 	}
 	new->key = ft_strdup_equal_key(line);
-	if (expand_value)
-	{
-		new->value = ft_strdup(expand_value);
-		new->line = ft_strjoin(line, expand_value);
-	}
-	else
-	{
-		new->value = ft_strdup_equal_value(line);
-		new->line = ft_strdup(line);
-	}
+	new->value = ft_strdup_equal_value(line);
+	new->line = ft_strdup(line);
 	new->next = NULL;
 	if (!*head)
 	{
@@ -61,7 +53,7 @@ int	find_node(t_env *lst, char *key)
 	return (0);
 }
 
-void	update_node(t_env *lst, char *key, char *line, char *expand_value)
+void	update_node(t_env *lst, char *key, char *line)
 {
 	t_env	*current;
 
@@ -72,7 +64,6 @@ void	update_node(t_env *lst, char *key, char *line, char *expand_value)
 		{
 			if (ft_strdup_equal_value(line))
 			{
-				printf("%s\n", expand_value);
 				if (current->key)
 					free(current->key);
 				if (current->value)
@@ -80,17 +71,8 @@ void	update_node(t_env *lst, char *key, char *line, char *expand_value)
 				if (current->line)
 					free(current->line);
 				current->key = ft_strdup_equal_key(line);
-				if (expand_value)
-				{
-					current->value = ft_strdup(expand_value);
-					current->line = ft_strjoin(line, expand_value);
-				}
-				else
-				{
-					current->value = ft_strdup_equal_value(line);
-					current->line = ft_strdup(line);
-				}
-
+				current->value = ft_strdup_equal_value(line);
+				current->line = ft_strdup(line);
 			}
 			return ;
 		}
@@ -99,7 +81,7 @@ void	update_node(t_env *lst, char *key, char *line, char *expand_value)
 	} 	
 }
 
-int	create_find_add_insert_node(t_env **head, char *line, char *expand_value)
+int	create_find_add_insert_node(t_env **head, char *line)
 {
 	t_env	*new;
 
@@ -110,17 +92,8 @@ int	create_find_add_insert_node(t_env **head, char *line, char *expand_value)
 		return (0);
 	}
 	new->key = ft_strdup_equal_key(line);
-
-	if (expand_value)
-	{
-		new->value = ft_strdup(expand_value);
-		new->line = ft_strjoin(line, expand_value);
-	}
-	else
-	{
-		new->value = ft_strdup_equal_value(line);
-		new->line = ft_strdup(line);
-	}
+	new->value = ft_strdup_equal_value(line);
+	new->line = ft_strdup(line);
 	new->next = NULL;
 	if (!*head)
 	{
@@ -131,7 +104,7 @@ int	create_find_add_insert_node(t_env **head, char *line, char *expand_value)
 	return (1);
 }
 
-void	update_lists(t_shell *shell, char *line, int flag, char *expand_value)
+void	update_lists(t_shell *shell, char *line, int flag)
 {
 	char	*key;
 
@@ -139,13 +112,13 @@ void	update_lists(t_shell *shell, char *line, int flag, char *expand_value)
 	if (flag)
 	{
 		if (find_node(shell->env, key))
-			update_node(shell->env, key, line, expand_value);
+			update_node(shell->env, key, line);
 		else
-			create_add_node_to_back(&shell->env, line, expand_value);
+			create_add_node_to_back(&shell->env, line);
 	}
 	if (find_node(shell->exp, key))
-		update_node(shell->exp, key, line, expand_value);
+		update_node(shell->exp, key, line);
 	else
-		create_find_add_insert_node(&shell->exp, line, expand_value);
+		create_find_add_insert_node(&shell->exp, line);
 	free(key);
 }
