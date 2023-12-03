@@ -6,13 +6,13 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 14:21:24 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/18 18:26:22 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/03 17:20:51 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	create_add_node_to_back(t_env **head, char *line, char *expand_value, bool *flag)
+int	create_add_node_to_back(t_env **head, char *line, char *expand_value)
 {
 	t_env	*new;
 	t_env	*temp;
@@ -29,7 +29,6 @@ int	create_add_node_to_back(t_env **head, char *line, char *expand_value, bool *
 	{
 		new->value = ft_strdup(expand_value);
 		new->line = ft_strjoin(line, expand_value);
-		flag = true;
 	}
 	else
 	{
