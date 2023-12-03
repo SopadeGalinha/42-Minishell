@@ -34,7 +34,6 @@ static bool	redir_in(int *last_valid_fd, char *file, t_shell *shell)
 	{
 		if (shell->error == 0)
 			ft_printf_fd(2, MS_ERR RESET" %s %s\n", file, strerror(errno));
-			ft_printf_fd(2, MS_ERR"%s: %s\n", file, strerror(errno));
 		g_exit_status = 1;
 		return (false);
 	}
