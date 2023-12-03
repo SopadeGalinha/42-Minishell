@@ -23,9 +23,33 @@ void	init_builtin(const char *builtin[7])
 	builtin[6] = "env";
 }
 
-void ft_access(char **cmd, t_shell *shell)
+static void	access_aux(char *cmd_path, char **cmd, char **path_array)
 {
+	char	*aux;
 	int		i;
+
+	i = -1;
+	aux = NULL;
+	while (path_array[++i])
+	{
+		free(aux);
+		free(cmd_path);
+		aux = ft_strjoin(path_array[i], "/");
+		cmd_path = ft_strjoin(aux, cmd[0]);
+		if (access(cmd_path, F_OK) == 0)
+		{
+			free(cmd[0]);
+			cmd[0] = ft_strdup(cmd_path);
+			break ;
+		}
+	}
+	free(aux);
+	free(cmd_path);
+	ft_free_2d_array((void **)path_array, 0);
+}
+
+void	ft_access(char **cmd, t_shell *shell)
+{
 	char	**path_array;
 	char	*full_path;
 	char	*cmd_path;
@@ -34,32 +58,17 @@ void ft_access(char **cmd, t_shell *shell)
 		return ;
 	if (ft_strchr(cmd[0], '/'))
 		return ;
-	i = -1;
 	full_path = get_env_value(shell->env, "PATH");
 	path_array = ft_split(full_path, ':');
-	cmd_path = NULL;
-	while (path_array[++i])
-	{
-		free(full_path);
-		free(cmd_path);
-		full_path = ft_strjoin(path_array[i], "/");
-		cmd_path = ft_strjoin(full_path, cmd[0]);
-		if (access(cmd_path, F_OK) == 0)
-		{
-			free(cmd[0]);
-			cmd[0] = ft_strdup(cmd_path);
-			break ;
-		}
-	}
-	free(cmd_path);
 	free(full_path);
-	ft_free_2d_array((void **)path_array, 0);
+	cmd_path = NULL;
+	return (access_aux(cmd_path, cmd, path_array));
 }
 
 static int	ft_list_envsize(t_env *lst)
 {
 	int	i;
-	
+
 	i = 0;
 	while (lst)
 	{
@@ -70,11 +79,11 @@ static int	ft_list_envsize(t_env *lst)
 }
 
 char	**get_envp_array(t_shell *shell)
-{	
+{
 	char	**array;
 	int		i;
 	t_env	*current;
-	
+
 	i = -1;
 	current = shell->env;
 	array = malloc(sizeof(char *) * (ft_list_envsize(shell->env) + 1));

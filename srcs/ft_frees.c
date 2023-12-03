@@ -92,10 +92,9 @@ static void	free_env(t_env **env)
 
 void	free_struct(t_shell *shell, int running)
 {
-	int process;
+	int	process;
 
 	process = count_pipes(shell->tokens) + 1;
-
 	if (process == 1)
 		process = 0;
 	if (shell->pipes_fd)

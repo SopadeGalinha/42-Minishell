@@ -18,21 +18,21 @@ bool	input_is_valid(char *input)
 
 	end = ft_strlen(input) - 1;
 	if (input[0] == ';')
-		return (print_error(SYNTAX BOLD_WHITE" `;'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `;'"RESET, 2));
 	if (input[0] == '|')
-		return (print_error(SYNTAX BOLD_WHITE" `|'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `|'"RESET, 2));
 	if (input[0] == '&')
-		return (print_error(SYNTAX BOLD_WHITE" `&'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `&'"RESET, 2));
 	if (input[end] == ';')
-		return (print_error(SYNTAX BOLD_WHITE" `;'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `;'"RESET, 2));
 	if (input[end] == '|')
-		return (print_error(SYNTAX BOLD_WHITE" `|'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `|'"RESET, 2));
 	if (input[end] == '&')
-		return (print_error(SYNTAX BOLD_WHITE" `&'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `&'"RESET, 2));
 	if (input[end] == '<')
-		return (print_error(SYNTAX BOLD_WHITE" `<'"RESET, 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `<'"RESET, 2));
 	if (input[end] == '>')
-		return (print_error(SYNTAX BOLD_WHITE" `>'", 2));
+		return (print_error(MS_ERR SYNTAX BOLD_WHITE" `>'", 2));
 	return (true);
 }
 

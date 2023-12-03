@@ -77,7 +77,7 @@ static bool	lexical_aux_aux(char *data, t_token **tokens, int *si, char *input)
 		error = UNCLOSED_QUOTE;
 	addtoken(tokens, data, (int []){si[QT_TYPE], error});
 	if (error != NO_ERROR)
-		return (print_error(UNCLOSED_QT, 1));
+		return (print_error(MS_ERR UNCLOSED_QT, 1));
 	return (true);
 }
 

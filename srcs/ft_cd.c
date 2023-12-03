@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 22:04:37 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/30 13:52:10 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/03 21:35:21 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ static bool	cd_validation(t_shell *shell, t_pipes *pipes)
 
 	if (ft_count_words(pipes->cmds) == 2)
 	{
-		if (ft_strcmp(pipes->cmds[1] , "" ) == 0 && pipes->type != ENV)
+		if (ft_strcmp(pipes->cmds[1], "") == 0 && pipes->type != ENV)
 			return (print_error("\n", 0));
 		else
-			return (true);	
+			return (true);
 	}
 	if (ft_count_words(pipes->cmds) > 2)
 		return (print_error("minishell: cd: too many arguments", 1));

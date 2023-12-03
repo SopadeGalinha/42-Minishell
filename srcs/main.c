@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 17:28:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/02 09:05:54 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/03 22:20:36 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	main(int ac, char **av, char **envp)
 	t_shell	shell;
 
 	if (ac != 1 || !av)
-		return (ft_printf_fd(2, ERROR_ARGS));
+		return (ft_printf_fd(2, MS_ERR ERROR_ARGS TRY RESET));
 	shell = (t_shell){0};
 	init_shell(&shell, envp);
 	while (true)

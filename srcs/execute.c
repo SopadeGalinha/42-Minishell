@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/03 21:27:48 by jhogonca          #+#    #+#             */
+/*   Updated: 2023/12/03 22:20:30 by jhogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-int ft_error(char *str, int exit_code)
+int	ft_error(char *str, int exit_code)
 {
 	perror(str);
 	return (exit_code);
@@ -32,7 +44,8 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, int proce
 		}
 		if (pipes_lst->redir_fd[IN] == -2 && shell->heredoc)
 		{
-			write(pipes[pos][WRITE_END], shell->heredoc, strlen(shell->heredoc));
+			write(pipes[pos][WRITE_END], shell->heredoc, \
+				strlen(shell->heredoc));
 			close(pipes[pos][WRITE_END]);
 		}
 		else
@@ -46,7 +59,7 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, int proce
 		dup2(pipes_lst->redir_fd[OUT], STDOUT_FILENO);
 		close(pipes_lst->redir_fd[OUT]);
 	}
-	for (i = 0; i < process_num - 1; ++i)
+	while (++i < process_num - 1)
 	{
 		if (i != pos && i != pos - 1)
 		{
@@ -59,7 +72,6 @@ static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, int proce
 int	**create_pipes(int process_num)
 {
 	int	**pipes;
-
 	int	i;
 
 	if (process_num <= 1)
@@ -83,12 +95,12 @@ int	**create_pipes(int process_num)
 	return (pipes);
 }
 
-void close_pipes(int **pipes, int process_num)
+void	close_pipes(int **pipes, int process_num)
 {
-	int pos;
+	int	pos;
 
-	
-	for (pos = 0; pos < process_num - 1; ++pos)
+	pos = -1;
+	while (++pos < process_num - 1)
 	{
 		close(pipes[pos][READ_END]);
 		close(pipes[pos][WRITE_END]);
@@ -102,7 +114,7 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 	envp = get_envp_array(shell);
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
-		ft_printf_fd(2, MS_ERR"%s: %s\n", pipes_lst->cmds[0], strerror(errno));
+		ft_printf_fd(2, MS_ERR RESET"%s: %s\n", pipes_lst->cmds[0], strerror(errno));
 		ft_free_2d_array((void **)envp, 0);
 		g_exit_status = 127;
 		free_struct(shell, 1);
@@ -230,7 +242,7 @@ void	waiting(int process_num, t_shell *shell)
 
 int	execute(t_shell *shell)
 {
-	int 		process_num;
+	int			process_num;
 	t_pipes		*pipes_lst;
 	const char	*builtin[7];
 
@@ -239,7 +251,7 @@ int	execute(t_shell *shell)
 	if (!pipes_lst->cmds || !pipes_lst->cmds[0])
 	{
 		g_exit_status = 0;
-		return (ft_printf_fd(STDOUT_FILENO, "\n")); 
+		return (ft_printf_fd(STDOUT_FILENO, "\n"));
 	}
 	process_num = count_pipes(shell->tokens) + 1;
 	shell->pipes_fd = create_pipes(process_num);

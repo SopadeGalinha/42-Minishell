@@ -12,11 +12,11 @@
 
 #include "libft.h"
 
-void ft_free_2d_array(void **array_ptr, int size)
+void	ft_free_2d_array(void **array_ptr, int size)
 {
-    int i;
+	int	i;
 
-    i = -1;
+	i = -1;
 	if (!array_ptr)
 		return ;
 	while (++i < size)
@@ -24,5 +24,5 @@ void ft_free_2d_array(void **array_ptr, int size)
 			free(array_ptr[i]);
 	while (size == 0 && array_ptr[i])
 		free(array_ptr[i++]);
-    free(array_ptr);
+	free(array_ptr);
 }

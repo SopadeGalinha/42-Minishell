@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_count_words.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 22:06:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/11/07 22:06:16 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/03 22:10:08 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int ft_count_words(char **str)
+int	ft_count_words(char **str)
 {
 	int	i;
 
