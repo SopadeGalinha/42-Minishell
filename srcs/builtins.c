@@ -21,7 +21,7 @@ static int	str_isalpha_isequal_isunder(char *str, int flag)
 		i = 1;
 	while (str[i])
 	{
-		if (!isalpha(str[i]) || str[i] == '_' || str[i] == '=')
+		if (!isalnum(str[i]) || str[i] == '_' || str[i] == '=')
 			return (0);
 		i++;
 	}
@@ -52,9 +52,7 @@ int	arg_checker(t_shell *shell, char *str)
 	}
 	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
 		return (-2);
-	else if (str[0] == '='
-		|| (str_isalpha_isequal_isunder(str, 0) == 0
-			&& ft_strchr(str, '=') == NULL))
+	else if (str[0] == '=' || (str_isalpha_isequal_isunder(str, 0) == 0 && ((ft_strchr(str, '=') == NULL) || ft_strchr(str, '.'))))
 	{
 		ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
 		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
