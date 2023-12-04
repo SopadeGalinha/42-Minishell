@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 21:27:48 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/04 20:56:35 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/04 22:26:11 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,33 +32,32 @@ process_num, int **pipes, int pos)
 		close(pipes_lst->redir_fd[OUT]);
 }
 
-static void	redirect_input( t_pipes *pipes_lst, int pos, \
-int **pipes, t_shell *shell)
+static void	redirect_input( t_pipes *pipes_lst, \
+int **pipes)
 {
 	int	i;
 
+	(void)pipes;
 	i = -1;
-	if (pipes_lst->redir_fd[IN] == -1)
+	if (!pipes_lst->do_heredoc)
 	{
-		perror("Error opening file for input redirection");
-		exit(EXIT_FAILURE);
-	}
-	if (pipes_lst->redir_fd[IN] == -2 && shell->heredoc)
-	{
-		write(pipes[pos][WRITE_END], shell->heredoc, \
-			strlen(shell->heredoc));
-		close(pipes[pos][WRITE_END]);
-	}
-	else
-	{
-		dup2(pipes_lst->redir_fd[IN], STDIN_FILENO);
-		close(pipes_lst->redir_fd[IN]);
+		if (pipes_lst->redir_fd[IN] == -1)
+		{
+			perror("Error opening file for input redirection");
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			dup2(pipes_lst->redir_fd[IN], STDIN_FILENO);
+			close(pipes_lst->redir_fd[IN]);
+		}		
 	}
 }
 
 static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
 t_shell *shell)
 {
+	(void)shell;
 	if (pos != 0)
 	{
 		dup2(pipes[pos - 1][READ_END], STDIN_FILENO);
@@ -71,8 +70,8 @@ t_shell *shell)
 		close(pipes[pos][READ_END]);
 		close(pipes[pos][WRITE_END]);
 	}
-	if (pipes_lst->redir_in)
-		redirect_input(pipes_lst, pos, pipes, shell);
+	if (pipes_lst->redir_in) 		
+		redirect_input(pipes_lst, 	 pipes);
 	if (pipes_lst->redir_out)
 	{
 		dup2(pipes_lst->redir_fd[OUT], STDOUT_FILENO);
@@ -140,16 +139,23 @@ static void	single_cmd_child(t_shell *shell, t_pipes *pipes_lst)
 	}
 	if (pipes_lst->redir_in)
 	{
-		if (pipes_lst->redir_fd[IN] == -1)
+		if (!pipes_lst->do_heredoc)
 		{
-			perror("Error opening file for input redirection");
-			exit(EXIT_FAILURE);
+			if (pipes_lst->redir_fd[IN] == -1)
+			{
+				perror("Error opening file for input redirection");
+				exit(EXIT_FAILURE);
+			}
+			else
+			{
+				dup2(pipes_lst->redir_fd[IN], STDIN_FILENO);
+				close(pipes_lst->redir_fd[IN]);
+			}
 		}
 		else
 		{
-			dup2(pipes_lst->redir_fd[IN], STDIN_FILENO);
-			close(pipes_lst->redir_fd[IN]);
-		}
+			ft_printf_fd(STDIN_FILENO, "%s", pipes_lst->heredoc);
+		}			
 	}
 	ft_execve(shell, pipes_lst);
 }

@@ -126,6 +126,8 @@ typedef struct s_pipes
 	int				type;
 	pid_t			pid;
 	int				redir_fd[2];
+	char			*heredoc;
+	bool			do_heredoc;
 	struct s_redir	*redir_in;
 	struct s_redir	*redir_out;
 	struct s_pipes	*next;
