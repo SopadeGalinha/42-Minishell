@@ -1,0 +1,10 @@
+cat << EOF | wc -l
+ls | < a
+sreyreareaefhrgeafgda
+sfdgdffdg
+fdgg
+dfg
+asdg
+asg
+rg
+l
