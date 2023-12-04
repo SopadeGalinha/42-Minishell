@@ -12,10 +12,12 @@
 
 #include "../includes/minishell.h"
 
-static bool	redir_in(int *last_valid_fd, char *file, t_shell *shell)
+static bool	redir_in(int *last_valid_fd, char *file,
+t_shell *shell, t_pipes *pipes)
 {
 	int	fd;
 
+	pipes->do_heredoc = false;
 	if (access(file, F_OK) != -1)
 	{
 		if (*last_valid_fd != -1)
@@ -40,14 +42,70 @@ static bool	redir_in(int *last_valid_fd, char *file, t_shell *shell)
 	return (true);
 }
 
+
+void	hdl_sigint_heredoc(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_printf_fd(STDOUT_FILENO, "\n");
+		return ;
+	}
+}
+
+void	signals_heredoc(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
+	return ;
+}
+
+void	heredoc(char *target, t_pipes *current, t_shell *shell)
+{
+	char	*line;
+	char	*aux;
+
+	line = NULL;
+	aux = NULL;
+	current->do_heredoc = true;
+	if (current->heredoc)
+		free(current->heredoc);
+	current->heredoc = ft_strdup("");
+	signals_heredoc();
+	while (true)
+	{
+		line = readline(BOLD_GREEN"heredoc> "RESET);
+		if (!line)
+		{
+			ft_printf_fd(STDERR_FILENO, MS_ERR RESET "warning: here-document delimited by end-of-file (wanted `%s')\n", target);
+			break ;
+		}
+		if (ft_strcmp(line, target) == 0)
+		{
+			free(line);
+			break ;
+		}
+		line = expand_env(shell->env, line);
+		aux = ft_strjoin(line, "\n");
+		free(line);
+		line = ft_strjoin(current->heredoc, aux);
+		free(aux);
+		free(current->heredoc);
+		current->heredoc = line;
+	}
+}
+
 void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 {
 	current->redir_fd[IN] = -1;
 	while (redir)
 	{
 		if (redir->type == REDIR_IN)
-			if (!redir_in(&current->redir_fd[IN], redir->file, shell))
+		{
+			if (!redir_in(&current->redir_fd[IN], redir->file, shell, current))
 				shell->error = 1;
+		}
+		else if (redir->type == HEREDOC)
+			heredoc(redir->file, current, shell);
 		redir = redir->next;
 	}
 }
