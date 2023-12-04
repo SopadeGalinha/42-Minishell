@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 21:27:48 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/04 17:58:20 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/04 18:38:24 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,49 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 	exit (g_exit_status);
 }
 
+static void	single_cmd_child(t_shell *shell, t_pipes *pipes_lst)
+{
+	signals_child();
+	if (pipes_lst->redir_out)
+	{
+		dup2(pipes_lst->redir_fd[OUT], STDOUT_FILENO);
+		close(pipes_lst->redir_fd[OUT]);
+	}
+	if (pipes_lst->redir_in)
+	{
+		if (pipes_lst->redir_fd[IN] == -1)
+		{
+			perror("Error opening file for input redirection");
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			dup2(pipes_lst->redir_fd[IN], STDIN_FILENO);
+			close(pipes_lst->redir_fd[IN]);
+		}
+	}
+	ft_execve(shell, pipes_lst);
+}
+
+static void	single_cmd_aux(t_shell *shell, t_pipes *pipes_lst)
+{
+	pipes_lst->pid = fork();
+	if (pipes_lst->pid == -1)
+	{
+		perror("Error with creating process");
+		g_exit_status = 1;
+		exit(EXIT_FAILURE);
+	}
+	if (pipes_lst->pid == 0)
+		single_cmd_child(shell, pipes_lst);
+	signals_wait();
+	waitpid(pipes_lst->pid, &g_exit_status, 0);
+	if (WIFEXITED(g_exit_status))
+		g_exit_status = WEXITSTATUS(g_exit_status);
+	else if (WIFSIGNALED(g_exit_status))
+		g_exit_status = WTERMSIG(g_exit_status) + 128;
+}
+
 int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 {
 	int			is_builtin;
@@ -151,44 +194,7 @@ int	ft_single_cmd(t_shell *shell, t_pipes *pipes_lst)
 		}
 	}
 	else
-	{
-		pipes_lst->pid = fork();
-		if (pipes_lst->pid == -1)
-		{
-			perror("Error with creating process");
-			g_exit_status = 1;
-			return (EXIT_FAILURE);
-		}
-		if (pipes_lst->pid == 0)
-		{
-			signals_child();
-			if (pipes_lst->redir_out)
-			{
-				dup2(pipes_lst->redir_fd[OUT], STDOUT_FILENO);
-				close(pipes_lst->redir_fd[OUT]);
-			}
-			if (pipes_lst->redir_in)
-			{
-				if (pipes_lst->redir_fd[IN] == -1)
-				{
-					perror("Error opening file for input redirection");
-					exit(EXIT_FAILURE);
-				}
-				else
-				{
-					dup2(pipes_lst->redir_fd[IN], STDIN_FILENO);
-					close(pipes_lst->redir_fd[IN]);
-				}
-			}
-			ft_execve(shell, pipes_lst);
-		}
-		signals_wait();
-		waitpid(pipes_lst->pid, &g_exit_status, 0);
-		if (WIFEXITED(g_exit_status))
-			g_exit_status = WEXITSTATUS(g_exit_status);
-		else if (WIFSIGNALED(g_exit_status))
-			g_exit_status = WTERMSIG(g_exit_status) + 128;
-	}
+		single_cmd_aux(shell, pipes_lst);
 	return (g_exit_status);
 }
 
@@ -247,6 +253,7 @@ int	execute(t_shell *shell)
 	int			process_num;
 	t_pipes		*pipes_lst;
 	const char	*builtin[7];
+
 	pipes_lst = shell->pipes;
 	init_builtin(builtin);
 	if (!pipes_lst->cmds || !pipes_lst->cmds[0])
