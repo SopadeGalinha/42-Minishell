@@ -51,7 +51,6 @@ void	ft_unset(t_shell *shell, t_pipes *pipes)
 	g_exit_status = 0;
 }
 
-// STDOUT_FILENO is a dup of STDOUT_FILENO -> STDOUT_FILENO = dup(STDOUT_FILENO);
 void	ft_pwd(t_shell *shell, t_pipes *pipes)
 {
 	char	*pwd;
@@ -75,11 +74,6 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 
 void	ft_exit(t_shell *shell, t_pipes *pipes)
 {
-	int	i;
-	int	flag;
-
-	i = 0;
-	flag = 0;
 	if (count_pipes(shell->tokens) == 0)
 		ft_printf_fd(STDOUT_FILENO, "exit\n");
 	if (ft_count_words(pipes->cmds) > 2)
@@ -87,23 +81,7 @@ void	ft_exit(t_shell *shell, t_pipes *pipes)
 		print_error("minishell: exit: too many arguments", 1);
 		return ;
 	}
-	if (ft_count_words(pipes->cmds) == 2)
-	{
-		if (pipes->cmds[1][0] == '-' || pipes->cmds[1][0] == '+')
-			i++;
-		while (pipes->cmds[1][i])
-		{
-			if (!ft_isdigit(pipes->cmds[1][i]))
-			{
-				print_error("minishell: exit: numeric argument required", 2);
-				flag = 1;
-				break ;
-			}
-			i++;
-		}
-		if (!flag)
-			g_exit_status = ft_atoi(pipes->cmds[1]);
-	}
+	ft_exit_aux(pipes->cmds);
 	free_struct(shell, 1);
 }
 
@@ -113,7 +91,6 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	int		j;
 	int		n_flag;
 
-	(void)shell;
 	i = 0;
 	n_flag = 0;
 	while (pipes->cmds[++i]
@@ -129,11 +106,10 @@ void	ft_echo(t_shell *shell, t_pipes *pipes)
 	while (pipes->cmds[i])
 	{
 		ft_printf_fd(STDOUT_FILENO, "%s", pipes->cmds[i]);
-		if (pipes->cmds[i + 1])
+		if (pipes->cmds[i++ + 1])
 			ft_printf_fd(STDOUT_FILENO, " ");
-		i++;
 	}
-	if (!n_flag)
+	if (!n_flag && shell)
 		ft_printf_fd(STDOUT_FILENO, "\n");
 	g_exit_status = 0;
 }

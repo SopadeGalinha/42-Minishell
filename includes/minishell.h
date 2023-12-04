@@ -217,8 +217,8 @@ void	get_input(t_shell *shell);
 char	*get_env_value(t_env *env, char *key);
 void	exec_signal_handler(void);
 int		ft_strcmp(const char *s1, const char *s2);
+void	ft_exit_aux(char **cmds);
 void	waiting(int process_num, t_shell *shell);
-
 
 // FREE
 bool	free_pipes(t_pipes **pipes);

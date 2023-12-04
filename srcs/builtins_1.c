@@ -28,37 +28,31 @@ static int	str_isalpha_isequal_isunder(char *str, int flag)
 	return (1);
 }
 
+static int	print_error_arg(const char *str)
+{
+	ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
+	ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
+	g_exit_status = 1;
+	return (-1);
+}
+
 int	arg_checker(t_shell *shell, char *str)
 {
 	(void)shell;
 	if (ft_isdigit(str[0]))
-	{
-		ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
-		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
-		g_exit_status = 1;
-		return (-1);
-	}
+		return (print_error_arg(str));
 	else if (str[0] == '_' && str[1])
 	{
 		if (!ft_isalnum(str[1]) && str_isalpha_isequal_isunder(str, 1) == 0)
-		{
-			ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
-			ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
-			g_exit_status = 1;
-			return (-1);
-		}
+			return (print_error_arg(str));
 		else
 			return (1);
 	}
 	else if (str[0] == '_' && (str[1] == '=' || str[1] == '\0'))
 		return (-2);
-	else if (str[0] == '=' || (str_isalpha_isequal_isunder(str, 0) == 0 && ((ft_strchr(str, '=') == NULL) || ft_strchr(str, '.'))))
-	{
-		ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
-		ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
-		g_exit_status = 1;
-		return (-1);
-	}
+	else if (str[0] == '=' || (str_isalpha_isequal_isunder(str, 0) == 0
+			&& ((ft_strchr(str, '=') == NULL) || ft_strchr(str, '.'))))
+		return (print_error_arg(str));
 	return (1);
 }
 

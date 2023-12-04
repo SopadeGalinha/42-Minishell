@@ -30,8 +30,8 @@ PARSER_LIST	=	parse_input.c lexical_analyzer.c lexer_aux.c \
 
 SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
 				export.c ft_frees.c execute.c updates_lists.c \
-				validations.c builtins.c simple_builtins.c \
-				$(PARSER_LIST) ft_cd.c execute_utils.c
+				validations.c builtins_1.c builtins_2.c \
+				$(PARSER_LIST) ft_cd.c execute_utils.c builtins_2_utils.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
