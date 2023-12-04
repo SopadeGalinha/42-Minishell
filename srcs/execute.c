@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 21:27:48 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/04 22:26:11 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/04 23:40:11 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,15 @@ process_num, int **pipes, int pos)
 		close(pipes_lst->redir_fd[OUT]);
 }
 
+void	ft_heredoc(t_pipes *pipes_lst)
+{
+	pipe(pipes_lst->redir_fd);
+	ft_printf_fd(pipes_lst->redir_fd[WRITE_END], "%s", pipes_lst->heredoc);
+	close(pipes_lst->redir_fd[WRITE_END]);
+	dup2(pipes_lst->redir_fd[READ_END], STDIN_FILENO);
+	close(pipes_lst->redir_fd[READ_END]);
+}
+
 static void	redirect_input( t_pipes *pipes_lst, \
 int **pipes)
 {
@@ -52,6 +61,8 @@ int **pipes)
 			close(pipes_lst->redir_fd[IN]);
 		}		
 	}
+	else
+		ft_heredoc(pipes_lst);
 }
 
 static void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
@@ -153,9 +164,7 @@ static void	single_cmd_child(t_shell *shell, t_pipes *pipes_lst)
 			}
 		}
 		else
-		{
-			ft_printf_fd(STDIN_FILENO, "%s", pipes_lst->heredoc);
-		}			
+			ft_heredoc(pipes_lst);
 	}
 	ft_execve(shell, pipes_lst);
 }
