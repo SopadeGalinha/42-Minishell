@@ -67,3 +67,21 @@ t_env	*init_export(t_env *env)
 	}
 	return (export_list);
 }
+
+void	update_node_values(t_env *current, char *line)
+{
+	char	*tmp;
+
+	if (!current)
+		return ;
+	tmp = ft_strdup_equal_value(line);
+	if (!tmp)
+		return ;
+	free(current->key);
+	free(current->value);
+	free(current->line);
+	current->key = ft_strdup_equal_key(line);
+	current->value = ft_strdup_equal_value(line);
+	current->line = ft_strdup(line);
+	free(tmp);
+}
