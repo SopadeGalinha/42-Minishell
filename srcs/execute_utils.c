@@ -23,6 +23,12 @@ void	init_builtin(const char *builtin[7])
 	builtin[6] = "env";
 }
 
+int	ft_error(char *str, int exit_code)
+{
+	perror(str);
+	return (exit_code);
+}
+
 static void	access_aux(char *cmd_path, char **cmd, char **path_array)
 {
 	char	*aux;
@@ -112,4 +118,34 @@ int	ft_is_builtin(const char *builtin[7], char *cmd)
 			&& ft_strlen(builtin[i]) == ft_strlen(cmd))
 			return (i);
 	return (-1);
+}
+
+void	close_pipes(int **pipes, int process_num)
+{
+	int	pos;
+
+	pos = -1;
+	while (++pos < process_num - 1)
+	{
+		close(pipes[pos][READ_END]);
+		close(pipes[pos][WRITE_END]);
+	}
+}
+
+void	waiting(int process_num, t_shell *shell)
+{
+	int	i;
+
+	i = -1;
+	close_pipes(shell->pipes_fd, process_num);
+	while (++i < process_num)
+	{
+		if (waitpid(-1, &g_exit_status, 0) == -1)
+			ft_error("Error waiting for process", 1);
+		if (WIFEXITED(g_exit_status))
+			g_exit_status = WEXITSTATUS(g_exit_status);
+		else if (WIFSIGNALED(g_exit_status))
+			g_exit_status = WTERMSIG(g_exit_status) + 128;
+	}
+	ft_printf_fd(0, "\n");
 }
