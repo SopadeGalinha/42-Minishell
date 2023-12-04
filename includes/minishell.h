@@ -217,6 +217,8 @@ void	get_input(t_shell *shell);
 char	*get_env_value(t_env *env, char *key);
 void	exec_signal_handler(void);
 int		ft_strcmp(const char *s1, const char *s2);
+void	waiting(int process_num, t_shell *shell);
+
 
 // FREE
 bool	free_pipes(t_pipes **pipes);
@@ -241,6 +243,8 @@ void	ft_access(char **cmd, t_shell *shell);
 char	**get_envp_array(t_shell *shell);
 int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	init_builtin(const char *builtin[7]);
+int	ft_error(char *str, int exit_code);
+
 //--------------------------------END FUNCTIONS-------------------------------//
 
 #endif
