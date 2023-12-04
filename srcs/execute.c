@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 21:27:48 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/03 22:34:43 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/04 17:58:20 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 	char	**envp;
 
 	envp = get_envp_array(shell);
+	if (!pipes_lst->cmds[0] || !pipes_lst->cmds)
+		exit (0);
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
 		ft_printf_fd(2, MS_ERR RESET"%s: %s\n", pipes_lst->cmds[0], strerror(errno));
@@ -245,7 +247,6 @@ int	execute(t_shell *shell)
 	int			process_num;
 	t_pipes		*pipes_lst;
 	const char	*builtin[7];
-
 	pipes_lst = shell->pipes;
 	init_builtin(builtin);
 	if (!pipes_lst->cmds || !pipes_lst->cmds[0])

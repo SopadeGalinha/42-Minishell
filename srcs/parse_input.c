@@ -53,6 +53,8 @@ static void	get_cmd_path(t_shell *shell)
 		return ;
 	while (pipes)
 	{
+		if (!pipes->cmds || !pipes->cmds[0])
+			return ;
 		is_builtin = ft_is_builtin(builtin, pipes->cmds[0]);
 		if (is_builtin != -1 || ft_strcmp(pipes->cmds[0], "") == 0)
 			;
@@ -64,6 +66,9 @@ static void	get_cmd_path(t_shell *shell)
 
 bool	parse_input(t_shell *shell)
 {
+	t_pipes	*pipes;
+
+	pipes = shell->pipes;
 	if (!lexical_analyzer(shell->input, &shell->tokens))
 		return (false);
 	if (!process_tokens(shell))

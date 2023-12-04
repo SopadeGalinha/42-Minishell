@@ -55,7 +55,7 @@ void	ft_access(char **cmd, t_shell *shell)
 	char	*cmd_path;
 
 	if (!cmd || !cmd[0])
-		return ;
+		return ;	
 	if (ft_strchr(cmd[0], '/'))
 		return ;
 	full_path = get_env_value(shell->env, "PATH");
