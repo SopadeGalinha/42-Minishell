@@ -24,7 +24,8 @@ static void	remove_quotes_aux(char *data, int *si, char **res, int *quote_type)
 	char	*aux;
 	char	*tmp;
 
-	if ((!*quote_type && (data[si[INDEX]] == '\"' || data[si[INDEX]] == '\'')) || (*quote_type == data[si[INDEX]]))
+	if ((!*quote_type && (data[si[INDEX]] == '\"' || data[si[INDEX]] == '\''))
+		|| (*quote_type == data[si[INDEX]]))
 	{
 		if (*quote_type == data[si[INDEX]])
 			*quote_type = 0;
@@ -83,15 +84,13 @@ static bool	lexical_aux_aux(char *data, t_token **tokens, int *si, char *input)
 
 bool	lexical_aux(char *input, t_token **tokens, int *si, char *data)
 {
-	while (ft_isspace(input[si[INDEX]]))
-	{
-		si[INDEX]++;
-		si[START]++;
-	}
+	while (ft_isspace(input[si[INDEX]]) && si[INDEX]++ && si[START]++)
+		;
 	while (input[si[INDEX]] && (!ft_isspace(input[si[INDEX]]) \
 		|| si[QT] != 0))
 	{
-		if (input[si[INDEX]] == '=' && input[si[INDEX] + 1] && input[si[INDEX] + 1] == '$')
+		if (input[si[INDEX]] == '=' && input[si[INDEX] + 1]
+			&& input[si[INDEX] + 1] == '$')
 		{
 			si[INDEX] += 2;
 			continue ;
