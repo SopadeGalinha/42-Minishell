@@ -21,20 +21,21 @@ static bool	validate_tokens(t_shell *shell)
 	{
 		if ((token->type == PIPELINE && token->next->type == PIPELINE)
 			|| (token->type == PIPELINE && token->quote != NONE))
-			return (print_error(MS_ERR RESET SYNTAX BOLD_WHITE" `|'"RESET, 2));
+			return (print_error(MS_ERR RESET STX BOLD_WHITE" `|'"RESET, 2));
 		if (token->type == REDIR_IN && token->next->type != WORD)
-			return (print_error(MS_ERR RESET SYNTAX BOLD_WHITE " `<'"RESET, 2));
+			return (print_error(MS_ERR RESET STX BOLD_WHITE " `<'"RESET, 2));
 		if (token->type == REDIR_OUT && token->next->type != WORD)
-			return (print_error(MS_ERR RESET SYNTAX BOLD_WHITE " `>'"RESET, 2));
+			return (print_error(MS_ERR RESET STX BOLD_WHITE " `>'"RESET, 2));
 		if (token->type == APPEND && token->next->type != WORD)
-			return (print_error(MS_ERR RESET SYNTAX BOLD_WHITE " `>>'"RESET, 2));
+			return (print_error(MS_ERR RESET STX BOLD_WHITE " `>>'"RESET, 2));
 		if (token->type == HEREDOC && token->next->type != WORD)
-			return (print_error(MS_ERR RESET SYNTAX BOLD_WHITE " `<<'"RESET, 2));
+			return (print_error(MS_ERR RESET STX BOLD_WHITE " `<<'"RESET, 2));
 		token = token->next;
 	}
 	if (is_special_char(token->data[0]) && token->data[0] != '$')
 	{
-		ft_printf_fd(2, MS_ERR RESET SYNTAX BOLD_WHITE" `%c'"RESET, token->data[0]);
+		ft_printf_fd(2, MS_ERR RESET STX BOLD_WHITE"\
+		`%c'"RESET, token->data[0]);
 		return (print_error("", 2));
 	}
 	return (true);

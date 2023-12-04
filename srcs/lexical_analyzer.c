@@ -74,7 +74,8 @@ static int	cmds_data(char *input, int i, int start, t_token **tokens)
 
 	if (input[i] == '$')
 	{
-		while (input[++i] != '\0' && (!is_special_char(input[i] && input[i] != '$'))
+		while (input[++i] != '\0' && \
+		(!is_special_char(input[i] && input[i] != '$'))
 			&& input[i] != '"' && input[i] != '\''
 			&& input[i] != ' ' && input[i])
 			;
