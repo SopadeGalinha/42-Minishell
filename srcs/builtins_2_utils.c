@@ -37,4 +37,3 @@ void	ft_exit_aux(char **cmds)
 			g_exit_status = ft_atoi(cmds[1]);
 	}
 }
-

@@ -56,32 +56,11 @@ int	find_node(t_env *lst, char *key)
 void	update_node(t_env *lst, char *key, char *line)
 {
 	t_env	*current;
-	char	*tmp;
 
-	tmp = NULL;
 	current = lst;
-	while (current != NULL)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-		{
-			tmp = ft_strdup_equal_value(line);
-			if (tmp)
-			{
-				if (current->key)
-					free(current->key);
-				if (current->value)
-					free(current->value);
-				if (current->line)
-					free(current->line);
-				current->key = ft_strdup_equal_key(line);
-				current->value = ft_strdup_equal_value(line);
-				current->line = ft_strdup(line);
-			}
-			free(tmp);
-			return ;
-		}
+	while (current && ft_strcmp(current->key, key) != 0)
 		current = current->next;
-	}
+	update_node_values(current, line);
 }
 
 int	create_find_add_insert_node(t_env **head, char *line)

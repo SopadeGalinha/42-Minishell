@@ -185,6 +185,7 @@ void	update_node(t_env *lst, char *key, char *line);
 int		create_find_add_insert_node(t_env **head, char *line);
 void	update_lists(t_shell *shell, char *line, int flag);
 void	update_exp(t_shell *shell, char *line);
+void	update_node_values(t_env *current, char *line);
 
 //MAIN
 void	signals_main(void);
@@ -243,7 +244,7 @@ void	ft_access(char **cmd, t_shell *shell);
 char	**get_envp_array(t_shell *shell);
 int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	init_builtin(const char *builtin[7]);
-int	ft_error(char *str, int exit_code);
+int		ft_error(char *str, int exit_code);
 
 //--------------------------------END FUNCTIONS-------------------------------//
 
