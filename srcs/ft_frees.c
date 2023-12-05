@@ -38,6 +38,8 @@ bool	free_pipes(t_pipes **pipes)
 	current_pipeline = *pipes;
 	if (pipes == NULL || *pipes == NULL)
 		return (true);
+	if (current_pipeline->heredoc)
+		free(current_pipeline->heredoc);
 	while (current_pipeline != NULL)
 	{
 		ft_free_redirect(&current_pipeline->redir_in);

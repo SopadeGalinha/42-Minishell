@@ -49,6 +49,8 @@ bool	print_error(char *error, int exit_code)
 
 void	get_input(t_shell *shell)
 {
+	char	*aux;
+
 	shell->input = NULL;
 	shell->error = NO_ERROR;
 	shell->pipes_fd = NULL;
@@ -56,5 +58,9 @@ void	get_input(t_shell *shell)
 	if (shell->input && !ft_isspace_str(shell->input))
 		add_history(shell->input);
 	if (shell->input)
-		shell->input = ft_strtrim(shell->input, " \t");
+	{
+		aux = ft_strtrim(shell->input, " \t");
+		free (shell->input);
+		shell->input = aux;
+	}
 }
