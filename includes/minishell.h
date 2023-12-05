@@ -222,6 +222,7 @@ void	exec_signal_handler(void);
 int		ft_strcmp(const char *s1, const char *s2);
 void	ft_exit_aux(char **cmds);
 void	waiting(int process_num, t_shell *shell);
+int		ft_list_envsize(t_env *lst);
 
 // FREE
 bool	free_pipes(t_pipes **pipes);
@@ -248,6 +249,20 @@ int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	init_builtin(const char *builtin[7]);
 int		ft_error(char *str, int exit_code);
 
+//EXECUTE
+void	ft_execve(t_shell *shell, t_pipes *pipes_lst);
+
+// EXECUTE_2
+void	close_redirections(t_pipes *pipes_lst, int \
+process_num, int **pipes, int pos);
+void	redirect_input(t_pipes *pipes_lst, int **pipes);
+void	get_redirections(int pos, int **pipes, \
+t_pipes *pipes_lst, t_shell *shell);
+void	single_cmd_child(t_shell *shell, t_pipes *pipes_lst);
+void	single_cmd_aux(t_shell *shell, t_pipes *pipes_lst);
+
+// EXECUTE_3
+int		**create_pipes(int process_num);
 //--------------------------------END FUNCTIONS-------------------------------//
 
 #endif

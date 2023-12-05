@@ -71,7 +71,7 @@ void	ft_access(char **cmd, t_shell *shell)
 	return (access_aux(cmd_path, cmd, path_array));
 }
 
-static int	ft_list_envsize(t_env *lst)
+int	ft_list_envsize(t_env *lst)
 {
 	int	i;
 
