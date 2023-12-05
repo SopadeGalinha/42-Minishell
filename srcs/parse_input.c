@@ -12,6 +12,17 @@
 
 #include "../includes/minishell.h"
 
+static int	validate_aux(char data, int quote)
+{
+	if (is_special_char(data) && data != '$' && quote == NONE)
+	{
+		ft_printf_fd(2, MS_ERR RESET STX BOLD_WHITE \
+		"`%c'"RESET, data);
+		g_exit_status = 2;
+	}
+	return (true);
+}
+
 static bool	validate_tokens(t_shell *shell)
 {
 	t_token	*token;
@@ -33,13 +44,7 @@ static bool	validate_tokens(t_shell *shell)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `<<'"RESET, 2));
 		token = token->next;
 	}
-	if (is_special_char(token->data[0]) && token->data[0] != '$')
-	{
-		ft_printf_fd(2, MS_ERR RESET STX BOLD_WHITE"\
-		`%c'"RESET, token->data[0]);
-		return (print_error("", 2));
-	}
-	return (true);
+	return (validate_aux(token->data[0], token->quote));
 }
 
 static void	get_cmd_path(t_shell *shell)
@@ -68,9 +73,6 @@ static void	get_cmd_path(t_shell *shell)
 
 bool	parse_input(t_shell *shell)
 {
-	t_pipes	*pipes;
-
-	pipes = shell->pipes;
 	if (!lexical_analyzer(shell->input, &shell->tokens))
 		return (false);
 	if (!process_tokens(shell))

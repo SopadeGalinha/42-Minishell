@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_2_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 19:49:42 by heolivei          #+#    #+#             */
-/*   Updated: 2023/12/04 19:49:56 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/12/05 20:53:35 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_exit_aux(char **cmds)
 			}
 			i++;
 		}
-		if (!flag) 
+		if (!flag)
 			g_exit_status = ft_atoi(cmds[1]);
 	}
 }
