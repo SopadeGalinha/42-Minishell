@@ -68,25 +68,6 @@ static void	process_special_tokens(char *data, t_token **tokens)
 		addtoken(tokens, data, (int []){NONE, NO_ERROR});
 }
 
-static int	cmd_aux_1(char *input, int i)
-{
-	while (input[++i] != '\0' && \
-	(!is_special_char(input[i] && input[i] != '$'))
-		&& input[i] != '"' && input[i] != '\''
-		&& input[i] != ' ' && input[i])
-		;
-	return (i);
-}
-
-static int	cmd_aux_2(char *input, int i)
-{
-	while (input[++i] != '\0' && !is_special_char(input[i])
-		&& input[i] != '"' && input[i] != '\''
-		&& input[i] != ' ' && input[i])
-		;
-	return (i);
-}
-
 static int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;

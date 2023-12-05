@@ -223,6 +223,8 @@ int		ft_strcmp(const char *s1, const char *s2);
 void	ft_exit_aux(char **cmds);
 void	waiting(int process_num, t_shell *shell);
 int		ft_list_envsize(t_env *lst);
+int		cmd_aux_1(char *input, int i);
+int		cmd_aux_2(char *input, int i);
 
 // FREE
 bool	free_pipes(t_pipes **pipes);

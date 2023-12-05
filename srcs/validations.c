@@ -59,3 +59,22 @@ bool	ft_isspace_str(char *str)
 			return (false);
 	return (true);
 }
+
+int	cmd_aux_1(char *input, int i)
+{
+	while (input[++i] != '\0' && \
+	(!is_special_char(input[i] && input[i] != '$'))
+		&& input[i] != '"' && input[i] != '\''
+		&& input[i] != ' ' && input[i])
+		;
+	return (i);
+}
+
+int	cmd_aux_2(char *input, int i)
+{
+	while (input[++i] != '\0' && !is_special_char(input[i])
+		&& input[i] != '"' && input[i] != '\''
+		&& input[i] != ' ' && input[i])
+		;
+	return (i);
+}
