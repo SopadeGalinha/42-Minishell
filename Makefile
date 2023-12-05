@@ -33,7 +33,7 @@ SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
 				validations.c builtins_1.c builtins_2.c \
 				$(PARSER_LIST) ft_cd.c execute_utils.c \
 				builtins_2_utils.c process_tokens_2.c \
-				execute_utils_2.c
+				execute_utils_2.c execute_2.c execute_3.c
 
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
