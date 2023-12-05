@@ -3,14 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 22:38:18 by heolivei          #+#    #+#             */
-/*   Updated: 2023/12/04 22:38:26 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/12/05 01:05:15 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+bool	heredoc_validate(char *line, char *target)
+{
+	if (!line)
+	{
+		ft_printf_fd(STDERR_FILENO, MS_ERR RESET"warning: here-document");
+		ft_printf_fd(STDERR_FILENO, \
+		" delimited by end-of-file (wanted `%s')\n", target);
+		return (false);
+	}
+	if (ft_strcmp(line, target) == 0)
+	{
+		free(line);
+		return (false);
+	}
+	return (true);
+}
 
 char	**get_envp_array(t_shell *shell)
 {
