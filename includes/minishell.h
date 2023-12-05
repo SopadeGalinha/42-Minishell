@@ -265,6 +265,7 @@ void	single_cmd_aux(t_shell *shell, t_pipes *pipes_lst);
 // EXECUTE_3
 int		**create_pipes(int process_num);
 bool	heredoc_validate(char *line, char *target);
+void	ft_heredoc(t_pipes *pipes_lst);
 
 //--------------------------------END FUNCTIONS-------------------------------//
 
