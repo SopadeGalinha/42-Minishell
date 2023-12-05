@@ -42,33 +42,7 @@ t_shell *shell, t_pipes *pipes)
 	return (true);
 }
 
-void	hdl_sigint_heredoc(int sig)
-{
-	if (sig == SIGINT)
-	{
-		ft_printf_fd(STDOUT_FILENO, "\n");
-		return ;
-	}
-}
-
-static bool	heredoc_validate(char *line, char *target)
-{
-	if (!line)
-	{
-		ft_printf_fd(STDERR_FILENO, MS_ERR RESET"warning: here-document");
-		ft_printf_fd(STDERR_FILENO, \
-		" delimited by end-of-file (wanted `%s')\n", target);
-		return (false);
-	}
-	if (ft_strcmp(line, target) == 0)
-	{
-		free(line);
-		return (false);
-	}
-	return (true);
-}
-
-void	heredoc(char *target, t_pipes *current, t_shell *shell)
+static void	heredoc(char *target, t_pipes *current, t_shell *shell)
 {
 	char	*line;
 	char	*aux;

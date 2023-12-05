@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heolivei <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 00:15:19 by heolivei          #+#    #+#             */
-/*   Updated: 2023/12/05 00:15:21 by heolivei         ###   ########.fr       */
+/*   Updated: 2023/12/05 01:17:07 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ int **pipes)
 			close(pipes_lst->redir_fd[IN]);
 		}
 	}
+	else
+		ft_heredoc(pipes_lst);
 }
 
 void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
@@ -103,7 +105,7 @@ void	single_cmd_child(t_shell *shell, t_pipes *pipes_lst)
 			}
 		}
 		else
-			ft_printf_fd(STDIN_FILENO, "%s", pipes_lst->heredoc);
+			ft_heredoc(pipes_lst);
 	}
 	ft_execve(shell, pipes_lst);
 }
