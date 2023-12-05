@@ -248,6 +248,7 @@ char	**get_envp_array(t_shell *shell);
 int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	init_builtin(const char *builtin[7]);
 int		ft_error(char *str, int exit_code);
+int		ft_list_envsize(t_env *lst);
 
 //EXECUTE
 void	ft_execve(t_shell *shell, t_pipes *pipes_lst);
