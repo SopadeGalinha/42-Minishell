@@ -42,7 +42,6 @@ t_shell *shell, t_pipes *pipes)
 	return (true);
 }
 
-
 void	hdl_sigint_heredoc(int sig)
 {
 	if (sig == SIGINT)
@@ -52,11 +51,21 @@ void	hdl_sigint_heredoc(int sig)
 	}
 }
 
-void	signals_heredoc(void)
+static bool	heredoc_validate(char *line, char *target)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_IGN);
-	return ;
+	if (!line)
+	{
+		ft_printf_fd(STDERR_FILENO, MS_ERR RESET"warning: here-document");
+		ft_printf_fd(STDERR_FILENO, \
+		" delimited by end-of-file (wanted `%s')\n", target);
+		return (false);
+	}
+	if (ft_strcmp(line, target) == 0)
+	{
+		free(line);
+		return (false);
+	}
+	return (true);
 }
 
 void	heredoc(char *target, t_pipes *current, t_shell *shell)
@@ -70,20 +79,11 @@ void	heredoc(char *target, t_pipes *current, t_shell *shell)
 	if (current->heredoc)
 		free(current->heredoc);
 	current->heredoc = ft_strdup("");
-	signals_heredoc();
 	while (true)
 	{
 		line = readline(BOLD_GREEN"heredoc> "RESET);
-		if (!line)
-		{
-			ft_printf_fd(STDERR_FILENO, MS_ERR RESET "warning: here-document delimited by end-of-file (wanted `%s')\n", target);
+		if (heredoc_validate(line, target) == false)
 			break ;
-		}
-		if (ft_strcmp(line, target) == 0)
-		{
-			free(line);
-			break ;
-		}
 		line = expand_env(shell->env, line);
 		aux = ft_strjoin(line, "\n");
 		free(line);
@@ -112,22 +112,22 @@ void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 
 static bool	process_redir_out(t_redir *redir, t_pipes *current)
 {
-	int	val_fd;
+	int	fd;
 
-	val_fd = -1;
+	fd = -1;
 	while (redir)
 	{
-		if (val_fd != -1)
-			close(val_fd);
+		if (fd != -1)
+			close(fd);
 		if (redir->type == REDIR_OUT)
-			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, PERMISSIONS);
+			fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, PERMISSIONS);
 		if (redir->type == APPEND)
-			val_fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, PERMISSIONS);
-		if (val_fd == -1)
+			fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, PERMISSIONS);
+		if (fd == -1)
 			return (print_error("minishell: ", 1));
 		redir = redir->next;
 	}
-	current->redir_fd[OUT] = val_fd;
+	current->redir_fd[OUT] = fd;
 	return (true);
 }
 
