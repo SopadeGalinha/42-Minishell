@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/03 21:27:48 by jhogonca          #+#    #+#             */
-/*   Updated: 2023/12/04 23:40:11 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/05 20:50:13 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,12 @@ int	ft_multiple_cmds(t_shell *shell, t_pipes *pipes_lst, \
 int process_num, const char **builtin)
 {
 	int	i;
-	int	is_builtin;
 
 	i = -1;
+	(void)builtin;
 	while (pipes_lst && ++i != -2)
 	{
 		pipes_lst->pid = fork();
-		is_builtin = ft_is_builtin(builtin, pipes_lst->cmds[0]);
 		if (pipes_lst->pid == -1)
 			return (ft_error("Error creating process", 1));
 		if (pipes_lst->pid == 0)

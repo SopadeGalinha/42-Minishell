@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 00:15:19 by heolivei          #+#    #+#             */
-/*   Updated: 2023/12/05 01:17:07 by jhogonca         ###   ########.fr       */
+/*   Updated: 2023/12/05 20:50:39 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ process_num, int **pipes, int pos)
 void	redirect_input( t_pipes *pipes_lst, \
 int **pipes)
 {
-	int	i;
-
 	(void)pipes;
-	i = -1;
 	if (!pipes_lst->do_heredoc)
 	{
 		if (pipes_lst->redir_fd[IN] == -1)

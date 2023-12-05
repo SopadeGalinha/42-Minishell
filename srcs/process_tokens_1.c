@@ -92,7 +92,10 @@ bool	process_tokens(t_shell *shell)
 	current = shell->tokens;
 	while (current != NULL)
 	{
-		current->type = define_token(current->data);
+		if (current->quote != NONE)
+			current->type = WORD;
+		else
+			current->type = define_token(current->data);
 		if (!process_aux(shell, current))
 			return (false);
 		if ((current->type == OR || current->type == SEMICOLON
