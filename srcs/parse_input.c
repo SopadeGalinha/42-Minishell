@@ -28,7 +28,8 @@ static bool	validate_tokens(t_shell *shell)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `>'"RESET, 2));
 		if (token->type == APPEND && token->next->type != WORD)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `>>'"RESET, 2));
-		if (token->type == HEREDOC && token->next->type != WORD)
+		if (token->type == HEREDOC && token->next->type != WORD
+			&& token->next->type != ENV)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `<<'"RESET, 2));
 		token = token->next;
 	}

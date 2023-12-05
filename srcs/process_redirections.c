@@ -79,7 +79,9 @@ void	process_redir_in(t_shell *shell, t_redir *redir, t_pipes *current)
 				shell->error = 1;
 		}
 		else if (redir->type == HEREDOC)
+		{
 			heredoc(redir->file, current, shell);
+		}
 		redir = redir->next;
 	}
 }

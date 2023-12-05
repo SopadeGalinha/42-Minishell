@@ -18,20 +18,31 @@ static int	str_isalpha_isequal_isunder(char *str, int flag)
 
 	i = 0;
 	if (flag)
-		i = 1;
-	while (str[i])
 	{
-		if (!isalnum(str[i]) || str[i] == '_' || str[i] == '=')
-			return (0);
-		i++;
+		i = 1;
+		while (str[i])
+		{
+			if (!isalnum(str[i]) || str[i] == '_' || str[i] == '=')
+				return (0);
+			i++;
+		}
+	}
+	else
+	{
+		while (str[i])
+		{
+			if ((!isalnum(str[i]) && str[i] != '_') || str[i] == '=')
+				return (0);
+			i++;
+		}
 	}
 	return (1);
 }
 
 static int	print_error_arg(const char *str)
 {
-	ft_printf_fd(STDERR_FILENO, MS_ERR"export: ");
-	ft_printf_fd(STDERR_FILENO, "'%s': not a valid identifier\n", str);
+	ft_printf_fd(STDERR_FILENO, MS_ERR "export: ");
+	ft_printf_fd(STDERR_FILENO, RESET"'%s': not a valid identifier\n", str);
 	g_exit_status = 1;
 	return (-1);
 }
