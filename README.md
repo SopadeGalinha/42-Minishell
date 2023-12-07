@@ -16,4 +16,4 @@ In essence, it plays a central role in processing and structuring the user's inp
 
 How it works:
 
-´"ls" > out_target '-l' > out_target2 < 'in_target' -a | wc -l | cat -e´
+```"ls" > out_target '-l' > out_target2 < 'in_target' -a | wc -l | cat -e```
