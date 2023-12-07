@@ -51,10 +51,8 @@ ${NAME}: ${OBJS}
 	@${CL} ${NAME} ${OBJS}
 	@${RL} ${NAME}
 	@printf "\r[\033[32m100%%\033[0m] \001\033[1;97m\002- Libft compiled successfully! \n \001\033[0m\002"
-	@echo ""
 
 all: ${NAME}
-	echo 
 
 clean:
 	${RM} ${OBJS}

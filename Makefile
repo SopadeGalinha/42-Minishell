@@ -1,17 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/09/14 03:02:21 by jhogonca          #+#    #+#              #
-#    Updated: 2023/09/14 03:02:21 by jhogonca         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 .SILENT:
-.ONE_SHELL:
 
 NAME		= minishell
 
@@ -36,27 +23,36 @@ SRCS_LIST	=	main.c utils.c ft_handle_signals.c env.c \
 				builtins_2_utils.c process_tokens_2.c \
 				execute_utils_2.c execute_2.c execute_3.c
 
+
+COMPILE_COUNT = 0
+
 SRCS 		= $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS 		= $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
 LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))
 
+NUM_SRCS	= $(words $(SRCS_LIST))
+
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(FLAGS) $(OBJS) -L$(LIBFT_DIR) -lft  -lreadline -o $(NAME)
+$(NAME): $(LIBFT) | $(OBJS)
+	@$(CC) $(FLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
+	@printf "\r[\033[32m100%%\033[0m] \001\033[1;97m\002- 42-Minishell compiled successfully! \n \001\033[0m\002"
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c | $(OBJS_DIR)
-	$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@
+	@$(eval COMPILE_COUNT=$(shell echo $$(($(COMPILE_COUNT)+1))))
+	@printf "\r[\033[32m%3d%%\033[0m] Compiling: $<" $$(($(COMPILE_COUNT) * 100 / $(NUM_SRCS)))
 
 $(OBJS_DIR):
 	mkdir $(OBJS_DIR)
 
 $(LIBFT):
-	@make -s -C $(LIBFT_DIR)
+	@make re -s -C $(LIBFT_DIR)
 
 clean:
 	$(RM) $(OBJS_DIR)
-	@make -s clean -C $(LIBFT_DIR)
+	@make clean -s -C $(LIBFT_DIR)
 
 fclean: clean
 	$(RM) $(NAME)
