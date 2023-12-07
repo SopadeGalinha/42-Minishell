@@ -16,4 +16,10 @@ In essence, it plays a central role in processing and structuring the user's inp
 
 How it works:
 
-``"ls" > out_target '-l' > out_target2 < 'in_target' -a | wc -l | cat -e``
+****Input****: `"ls" > out_target '-l' > out_target2 < 'in_target' -a | wc -l | cat -e`
+
+| Token | Type | Header 3 |
+|----------|----------|----------|
+| Row 1, Col 1 | Row 1, Col 2 | Row 1, Col 3 |
+| Row 2, Col 1 | Row 2, Col 2 | Row 2, Col 3 |
+
