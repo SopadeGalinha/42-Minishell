@@ -18,8 +18,8 @@ How it works:
 
 ****Input****: `"ls" > out_target '-l' > out_target2 < 'in_target' -a | wc -l | cat -e`
 
-| Token | Type | Header 3 |
+| Token | Type | Quote |
 |----------|----------|----------|
-| Row 1, Col 1 | Row 1, Col 2 | Row 1, Col 3 |
-| Row 2, Col 1 | Row 2, Col 2 | Row 2, Col 3 |
+| ls | WORD | D_QUOTE |
+|  > | REDIR_IN | Row 2, Col 3 |
 
