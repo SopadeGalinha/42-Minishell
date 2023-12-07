@@ -4,7 +4,7 @@ NAME		= minishell
 
 CC			= cc
 RM			= /bin/rm -rf
-FLAGS		= -g -Wall -Wextra -Werror -fsanitize=address
+FLAGS		= -g -Wall -Wextra -Werror #-fsanitize=address
 
 LIBFT_A		= libft.a
 SRCS_DIR	= srcs/
@@ -37,12 +37,16 @@ all: $(NAME)
 $(NAME): $(LIBFT) | $(OBJS)
 	@$(CC) $(FLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 	@printf "\r[\033[32m100%%\033[0m] \001\033[1;97m\002- 42-Minishell compiled successfully! \n \001\033[0m\002"
+	@printf "\n\e[1;97;3m	Welcome to 42-Minishell! \n\e[0m"
+	@printf "\n\e[1;97;3mA project developed by the skilled hands of \nHellom Oliveira and Jhonata Gonçalves.\n\e[0m"
+	@printf "\nRun \001\033[1;97m\002./minishell\001\033[0m\002 to start the program.\n"
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c | $(OBJS_DIR)
 	@$(CC) $(FLAGS) -c $< -o $@
 	@$(CC) $(FLAGS) -c $< -o $@
 	@$(eval COMPILE_COUNT=$(shell echo $$(($(COMPILE_COUNT)+1))))
 	@printf "\r[\033[32m%3d%%\033[0m] Compiling: $<" $$(($(COMPILE_COUNT) * 100 / $(NUM_SRCS)))
+
 
 $(OBJS_DIR):
 	mkdir $(OBJS_DIR)

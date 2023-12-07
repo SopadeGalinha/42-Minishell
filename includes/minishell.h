@@ -43,6 +43,7 @@ extern int	g_exit_status;
 # define BOLD_BLUE		"\001\033[1;94m\002"
 # define BOLD_CYAN		"\001\033[1;96m\002"
 # define BOLD_WHITE		"\001\033[1;97m\002"
+#define BOLD_YELLOW		"\001\033[1;33m\002"
 
 // ERRORS
 # define MS_ERR			"\001\033[1;31m\002Minishell Error: "
@@ -53,13 +54,13 @@ extern int	g_exit_status;
 # define STX			"syntax error near unexpected token"
 
 // BEAUTIFUL PROMPT
-# define MI	"\001\033[1;31m\002mi\001\033[0m\002"
-# define NI	"\001\033[1;97m\002ni\001\033[0m\002"
-# define S	"\001\033[1;35m\002s\001\033[0m\002"
-# define H	"\001\033[1;92m\002h\001\033[0m\002"
-# define EL	"\001\033[1;94m\002el\001\033[0m\002"
-# define L	"\001\033[1;92m\002l\001\033[0m\002"
-# define D	"\001\033[1;39m\002$> \001\033[0m\002"
+# define MI	BOLD_GREEN	"mi\001\033[0m\002"
+# define NI	BOLD_RED	"ni\001\033[0m\002"
+# define S	BOLD_WHITE "sh\001\033[0m\002"
+# define H	BOLD_RED 	"e\001\033[0m\002"
+# define EL	BOLD_WHITE	"l\001\033[0m\002"
+# define L	BOLD_BLUE 	"l\001\033[0m\002"
+# define D	BOLD_WHITE	"\001\033[1;39m\002$> \001\033[0m\002"
 /*__________________________________STRUCTS___________________________________*/
 
 enum e_TokenType {
