@@ -71,40 +71,72 @@ First things first, execute `make` at the root of the repository to compile the 
 ```bash
 ls -la | sort -r
 ```
-`total 120
-drwxrwxrwx 1 1000 root    512 Dec  8 22:48 .
-drwxrwxrwx 1 1000 root    512 Dec  6 00:42 ..
--rwxrwxrwx 1 1000 root     74 Dec  8 22:12 file
-drwxrwxrwx 1 1000 root    512 Dec  8 22:12 .git
-drwxrwxrwx 1 1000 root    512 Dec  8 22:12 includes
--rwxrwxrwx 1 1000 root   2678 Dec  8 22:15 Makefile
--rwxrwxrwx 1 1000 root 114048 Dec  8 22:15 minishell
--rwxrwxrwx 1 1000 root     83 Nov 25 17:11 readline_supression
--rwxrwxrwx 1 1000 root   4006 Dec  8 22:56 README.md
-drwxrwxrwx 1 1000 root    512 Dec  8 22:15 srcs
-drwxrwxrwx 1 1000 root    512 Dec  1 12:38 .vscode
--rwxrwxrwx 1 1000 root     81 Dec  8 22:24 wc`
+total 120
+drwxrwxrwx 1 1000 root    512 Dec  8 22:48 .  <br>
+drwxrwxrwx 1 1000 root    512 Dec  6 00:42 ..  <br>
+-rwxrwxrwx 1 1000 root     74 Dec  8 22:12 file <br>
+drwxrwxrwx 1 1000 root    512 Dec  8 22:12 .git <br>
+drwxrwxrwx 1 1000 root    512 Dec  8 22:12 includes <br>
+-rwxrwxrwx 1 1000 root   2678 Dec  8 22:15 Makefile <br>
+-rwxrwxrwx 1 1000 root 114048 Dec  8 22:15 minishell <br>
+-rwxrwxrwx 1 1000 root     83 Nov 25 17:11 readline_supression <br>
+-rwxrwxrwx 1 1000 root   4006 Dec  8 22:56 README.md <br>
+drwxrwxrwx 1 1000 root    512 Dec  8 22:15 srcs <br>
+drwxrwxrwx 1 1000 root    512 Dec  1 12:38 .vscode <br>
+-rwxrwxrwx 1 1000 root     81 Dec  8 22:24 wc
+<br>
+<br>
 
 ```bash
 date
 ```
-Fri Dec  8 10:56:18 PM WET 2023
+Fri Dec  8 10:56:18 PM WET 2023  
+<br>
+
 
 ```bash
 wc -w Makefile
 ```
-Pw@42-Minishell#> wc -w Makefile 
 278 Makefile
+<br>
+<br>
 
 ```bash
 mkdir directory_test
 ```
 Create a directory
+<br>
+<br>
 
 ```bash
 rmdir directory_test
 ```
 remove directory
+<br>
+<br>
+
+```bash
+touch file1 file2 file3
+```
+Create empty files file1, file2, and file3.
+<br>
+<br>
+
+```bash
+[TRY WITH WHITESPACES (tab and space)]
+```
+Do nothing
+<br>
+<br>
+
+
+```bash
+[TAB] ls
+```
+`includes`  Makefile  readline_supression  README.md  `srcs`
+<br>
+<br>
+
 
 ### built-in commands
 
