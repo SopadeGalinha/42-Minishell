@@ -16,10 +16,18 @@ In essence, it plays a central role in processing and structuring the user's inp
 
 How it works:
 
-****Input****: `"ls" > out_target '-l' > out_target2 < 'in_target' -a | wc -l | cat -e`
+****Input****: `"ls" > out_target '-l' < 'in_target' -a | cat -e`
 
 | Token | Type | Quote |
 |----------|----------|----------|
 | ls | WORD | D_QUOTE |
-|  > | REDIR_IN | Row 2, Col 3 |
+|  > | REDIR_OUT | NONE |
+| out_target | WORD | NONE |
+| -l | WORD | S_QUOTE |
+| < | REDIR_IN | NONE |
+| in_target | WORD | S_QUOTE |
+| -a | WORD | NONE |
+| | | PIPELINE | NONE |
+| cat | WORD | NONE |
+| -e | WORD | NONE |
 
