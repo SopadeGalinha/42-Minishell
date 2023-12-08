@@ -18,16 +18,17 @@ How it works:
 
 ****Input****: `"ls" > out_target '-l' < 'in_target' -a | cat -e`
 
-| Token | Type | Quote |
-|----------|----------|----------|
-| ls | WORD | D_QUOTE |
-|  > | REDIR_OUT | NONE |
-| out_target | WORD | NONE |
-| -l | WORD | S_QUOTE |
-| < | REDIR_IN | NONE |
+| Token | Type      | Quote  |
+|-------|-----------|--------|
+| ls    | WORD      | D_QUOTE |
+| >     | REDIR_OUT | NONE   |
+| out_target | WORD | NONE   |
+| -l    | WORD      | S_QUOTE |
+| <     | REDIR_IN  | NONE   |
 | in_target | WORD | S_QUOTE |
-| -a | WORD | NONE |
-| '|' | PIPELINE | NONE |
-| cat | WORD | NONE |
-| -e | WORD | NONE |
+| -a    | WORD      | NONE   |
+| '&#124;' | PIPELINE | NONE |
+| cat   | WORD      | NONE   |
+| -e    | WORD      | NONE   |
+
 
