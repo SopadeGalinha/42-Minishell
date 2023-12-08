@@ -64,7 +64,7 @@ Following validation, the linked list proceeds to execution. The execution phase
 ## Tests
 Explore a set of test examples provided here for a comprehensive examination of the Minishell project.
 
-First things first, execute `make` at the root of the repository to compile the code and have fun (:!
+First things first, execute `make` at the root of the repository.
 
 ### Simple commands
 
