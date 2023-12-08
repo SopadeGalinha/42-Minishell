@@ -27,7 +27,7 @@ How it works:
 | < | REDIR_IN | NONE |
 | in_target | WORD | S_QUOTE |
 | -a | WORD | NONE |
-| | | PIPELINE | NONE |
+| '|' | PIPELINE | NONE |
 | cat | WORD | NONE |
 | -e | WORD | NONE |
 
