@@ -1,6 +1,7 @@
-# 42-Minishell - As beautiful as a shell
+# 42-Minishell
 
 **Overview:**
+
 Minishell is a command-line interface (CLI) implementation, enabling users to interact with an operating system through entered commands.
 Developed as part of the 42 curriculum, this project strives to deliver a minimalistic yet functional shell environment written in the C programming language.
 
@@ -16,19 +17,49 @@ In essence, it plays a central role in processing and structuring the user's inp
 
 How it works:
 
-****Input****: `"ls" > out_target '-l' < 'in_target' -a | cat -e`
+**Input exemple:**
 
-| Token | Type      | Quote  |
-|-------|-----------|--------|
-| ls    | WORD      | D_QUOTE |
-| >     | REDIR_OUT | NONE   |
-| out_target | WORD | NONE   |
-| -l    | WORD      | S_QUOTE |
-| <     | REDIR_IN  | NONE   |
-| in_target | WORD | S_QUOTE |
-| -a    | WORD      | NONE   |
-| &#124; | PIPELINE | NONE |
-| cat   | WORD      | NONE   |
-| -e    | WORD      | NONE   |
+`> out_1 "ls" > out_2 '-l' < 'in' -a | grep "keyword" | wc -l`
+
+The input is tokenized and categorized
+
+| Token     | Type      | Quote   |
+|-----------|-----------|---------|
+| >         | REDIR_OUT | NONE    |
+| out_1     | WORD      | NONE    |
+| ls        | WORD      | D_QUOTE |
+| >         | REDIR_OUT | NONE    |
+| out_2     | WORD      | NONE    |
+| -l        | WORD      | S_QUOTE |
+| <         | REDIR_IN  | NONE    |
+| in        | WORD      | S_QUOTE |
+| -a        | WORD      | NONE    |
+| &#124;    | PIPELINE  | NONE    |
+| grep      | WORD      | NONE    |
+| "keyword" | WORD      | D_QUOTE |
+| &#124;    | PIPELINE  | NONE    |
+| wc        | WORD      | NONE    |
+| -l        | WORD      | NONE    |
+
+Then a linkedlist is created where each node represents a stage in the command pipeline:
+the node contains an array with the arguments, a linkedlist for input redirections ("<" or "<<")
+and a linkedlist for output redirections (">", ">>").
+# LinkedList Representation:
+
+| Node | Commands            | Redir_In        | Redir_Out          | 
+|------|---------------------|-----------------|--------------------|
+| 1    | ["ls", "-l", "-a"]  | ["in"]          | ["out_1", "out_2"] |
+| 2    | ["grep", "keyword"] | []              | []                 |
+| 3    | ["wc", "-l"]        | []              | []                 |
+
+
+Execution with `**pipe()**` Function:
+Following validation, the linked list proceeds to execution. The execution phase utilizes the `pipe()` and `fork()` functions to orchestrate the command executions.
+
+| Process | Command             | Input             | Output             | Description      |
+|---------|---------------------|-------------------|-------------------|-------------------|
+| P1      | ls -l -a > out 2    |   NONE            | [pipe1_write_end] | Executes the node and writes to pipe1 |
+| P2      | grep "keyword"      | [pipe1_read_end]  | [pipe2_write_end] | Reads from pipe1 executes the node, and writes to pipe2. |
+| P3      | wc -l               | [pipe2_read_end]  |                   | Reads from pipe2 and executes the last node to the STDOUT. |
 
 
