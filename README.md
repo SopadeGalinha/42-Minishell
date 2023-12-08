@@ -71,7 +71,52 @@ First things first, execute `make` at the root of the repository to compile the 
 ```bash
 ls -la | sort -r
 ```
-Displays a detailed listing of all files and directories in the current directory, including hidden ones, with information such as permissions, owner, group, size, and modification time sorted in reverse order
-####
+`total 120
+drwxrwxrwx 1 1000 root    512 Dec  8 22:48 .
+drwxrwxrwx 1 1000 root    512 Dec  6 00:42 ..
+-rwxrwxrwx 1 1000 root     74 Dec  8 22:12 file
+drwxrwxrwx 1 1000 root    512 Dec  8 22:12 .git
+drwxrwxrwx 1 1000 root    512 Dec  8 22:12 includes
+-rwxrwxrwx 1 1000 root   2678 Dec  8 22:15 Makefile
+-rwxrwxrwx 1 1000 root 114048 Dec  8 22:15 minishell
+-rwxrwxrwx 1 1000 root     83 Nov 25 17:11 readline_supression
+-rwxrwxrwx 1 1000 root   4006 Dec  8 22:56 README.md
+drwxrwxrwx 1 1000 root    512 Dec  8 22:15 srcs
+drwxrwxrwx 1 1000 root    512 Dec  1 12:38 .vscode
+-rwxrwxrwx 1 1000 root     81 Dec  8 22:24 wc`
 
+```bash
 date
+```
+Fri Dec  8 10:56:18 PM WET 2023
+
+```bash
+wc -w Makefile
+```
+Pw@42-Minishell#> wc -w Makefile 
+278 Makefile
+
+```bash
+mkdir directory_test
+```
+Create a directory
+
+```bash
+rmdir directory_test
+```
+remove directory
+
+### built-in commands
+
+### Echo
+
+```bash
+echo
+```
+Nothing is printed
+
+```bash
+echo hello world!
+```
+hello world!
+

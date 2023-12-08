@@ -38,7 +38,7 @@ $(NAME): $(LIBFT) | $(OBJS)
 	@$(CC) $(FLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 	@printf "\r[\033[32m100%%\033[0m] \001\033[1;97m\002- 42-Minishell compiled successfully! \n \001\033[0m\002"
 	@printf "\n\e[1;97;3m	Welcome to 42-Minishell! \n\e[0m"
-	@printf "\n\e[1;97;3mA project developed by the skilled hands of \nHellom Oliveira and Jhonata Gonçalves.\n\e[0m"
+	@printf "\n\e[1;97;3mA project developed by the skilled hands\n of Hellom Oliveira and Jhonata Gonçalves.\n\e[0m"
 	@printf "\nRun \001\033[1;97m\002./minishell\001\033[0m\002 to start the program.\n"
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c | $(OBJS_DIR)
