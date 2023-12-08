@@ -1,6 +1,6 @@
 # 42-Minishell
 
-**Overview:**
+### Overview 
 
 Minishell is a command-line interface (CLI) implementation, enabling users to interact with an operating system through entered commands.
 Developed as part of the 42 curriculum, this project strives to deliver a minimalistic yet functional shell environment written in the C programming language.
@@ -8,17 +8,16 @@ Developed as part of the 42 curriculum, this project strives to deliver a minima
 Emphasizing a seamless experience, Minishell incorporates fundamental built-in commands and advanced features, including signal handling,
 management of complex command sequences, and support for pipelines. By adhering to POSIX standards, Minishell ensures compatibility and consistency across Unix-like operating systems.
 
-**Parser**
+
+### How it works
+
 The parser function serves as the core of the Minishell project, acting as a pivotal component in handling user input.
 Its primary responsibilities encompass tokenizing input, categorizing tokens, expanding environment variables, and
 organizing input/output redirections (such as "<" for input, ">" for output, ">>" for append, and "<<" for heredoc). 
 The parser excels in identifying commands, organizing them, and, for non-built-in commands, determining the execution path.
 In essence, it plays a central role in processing and structuring the user's input for seamless execution within the Minishell environment.
 
-How it works:
-
 **Input exemple:**
-
 `> out_1 "ls" > out_2 '-l' < 'in' -a | grep "keyword" | wc -l`
 
 The input is tokenized and categorized
@@ -53,7 +52,7 @@ and a linkedlist for output redirections (">", ">>").
 | 3    | ["wc", "-l"]        | []              | []                 |
 
 
-Execution with `**pipe()**` Function:
+Execution:
 Following validation, the linked list proceeds to execution. The execution phase utilizes the `pipe()` and `fork()` functions to orchestrate the command executions.
 
 | Process | Command             | Input             | Output             | Description      |
