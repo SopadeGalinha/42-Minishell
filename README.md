@@ -61,4 +61,17 @@ Following validation, the linked list proceeds to execution. The execution phase
 | P2      | grep "keyword"      | [pipe1_read_end]  | [pipe2_write_end] | Reads from pipe1 executes the node, and writes to pipe2. |
 | P3      | wc -l               | [pipe2_read_end]  |                   | Reads from pipe2 and executes the last node to the STDOUT. |
 
+## Tests
+Explore a set of test examples provided here for a comprehensive examination of the Minishell project.
 
+First things first, execute `make` at the root of the repository to compile the code and have fun (:!
+
+### Simple commands
+
+```bash
+ls -la | sort -r
+```
+Displays a detailed listing of all files and directories in the current directory, including hidden ones, with information such as permissions, owner, group, size, and modification time sorted in reverse order
+####
+
+date
