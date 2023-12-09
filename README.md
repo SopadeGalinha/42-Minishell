@@ -66,7 +66,7 @@ Explore a set of test examples provided here for a comprehensive examination of 
 
 First things first, execute `make` at the root of the repository.
 
-### Simple commands
+## Simple commands
 
 ```bash
 ls -la | sort -r
@@ -145,7 +145,7 @@ Does the command work? <br>
 What if you replace the `spaces` by `tab's`? <br>
 Still working? Great
 
-Expected output:
+Expected output: <br>
 total 12$
 drwxrwxrwx 1 1000 root  512 Dec  8 23:01 .$ <br>
 drwxrwxrwx 1 1000 root  512 Dec  6 00:42 ..$ <br> 
@@ -160,17 +160,109 @@ drwxrwxrwx 1 1000 root  512 Dec  1 12:38 .vscode$
 <br>
 <br>
 
-### built-in commands
+## built-in commands
 
 ### Echo
 
 ```bash
 echo
 ```
-Nothing is printed
+A newline is printed
+<br>
 
 ```bash
 echo hello world!
 ```
 hello world!
+<br>
+
+```bash
+echo $USER
+```
+echo [current user]
+<br>
+
+## With `-n` flag
+The -n option in the echo command is used to suppress the trailing newline character.
+<br>
+<br>
+
+```bash
+echo -n Hello World!
+```
+Hello World!
+<br>
+<br>
+
+```bash
+echo -nnnnnnnnnnnnnnnnnnnnnnnnnnn Hello World!
+```
+Hello World!
+<br>
+<br>
+
+```bash
+echo -------n Hello World!
+```
+-------n Hello World!
+<br>
+<br>
+
+```bash
+echo -n -n -n -n -n -n -n -n -n -n -nn -n -n -n  Hello World!
+```
+Hello World!
+<br>
+<br>
+
+```bash
+echo -n- -n -n -n -n -n -n -n -n -n -nn -n -n -n  Hello World!
+```
+-n- -n -n -n -n -n -n -n -n -n -nn -n -n -n  Hello World!
+<br>
+<br>
+
+```bash
+echo -nnnnnnnnnnnnnnn- Hello World!
+```
+-nnnnnnnnnnnnnnn- Hello World!
+<br>
+<br>
+
+```bash
+echo -n
+```
+Does nothing
+<br>
+<br>
+
+```bash
+echo Pipeline symbol "|" inside double quotes, and in single quotes '|' too
+```
+Pipeline symbol "|" inside double quotes, and in single quotes '|' too
+<br>
+<br>
+
+```bash
+echo ">"
+```
+>
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
