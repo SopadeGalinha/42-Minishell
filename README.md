@@ -123,7 +123,7 @@ Create empty files file1, file2, and file3.
 <br>
 
 ```bash
-[TRY WITH WHITESPACES (tab and space)]
+[ONLY WHITESPACES (tab and space)]
 ```
 Do nothing
 <br>
@@ -137,6 +137,28 @@ Do nothing
 <br>
 <br>
 
+```bash
+             	 	ls                      -la|cat -e
+```
+Yes! The `whitespaces` and pipeline without space are intentional. <br>
+Does the command work? <br>
+What if you replace the `spaces` by `tab's`? <br>
+Still working? Great
+
+Expected output:
+total 12$
+drwxrwxrwx 1 1000 root  512 Dec  8 23:01 .$ <br>
+drwxrwxrwx 1 1000 root  512 Dec  6 00:42 ..$ <br> 
+drwxrwxrwx 1 1000 root  512 Dec  8 23:01 .git$ <br>
+drwxrwxrwx 1 1000 root  512 Dec  8 22:12 includes$ <br>
+-rwxrwxrwx 1 1000 root 2678 Dec  8 22:15 Makefile$ <br>
+-rwxrwxrwx 1 1000 root   83 Nov 25 17:11 readline_supression$ <br>
+-rwxrwxrwx 1 1000 root 4622 Dec  8 23:33 README.md$ <br>
+drwxrwxrwx 1 1000 root  512 Dec  8 23:01 srcs$ <br>
+drwxrwxrwx 1 1000 root  512 Dec  1 12:38 .vscode$
+
+<br>
+<br>
 
 ### built-in commands
 
