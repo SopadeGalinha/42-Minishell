@@ -179,7 +179,7 @@ hello world!
 ```bash
 echo $USER
 ```
-echo [current user]
+[the environment variable expanded]
 <br>
 
 ## With `-n` flag
@@ -239,7 +239,7 @@ Does nothing
 ```bash
 echo Pipeline symbol "|" inside double quotes, and in single quotes '|' too
 ```
-Pipeline symbol "|" inside double quotes, and in single quotes '|' too
+Pipeline symbol | inside double quotes, and in single quotes | too
 <br>
 <br>
 
