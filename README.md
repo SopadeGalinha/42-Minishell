@@ -209,16 +209,16 @@ echo -------n Hello World!
 <br>
 
 ```bash
-echo -n -n -n -n -n -n -n -n -n -n -nn -n -n -n  Hello World!
+echo -n -n -n -n -nnn -n -n -n -n -n -nn -n -n -n  Hello World!
 ```
 Hello World!
 <br>
 <br>
 
 ```bash
-echo -n- -n -n -n -n -n -n -n -n -n -nn -n -n -n  Hello World!
+echo -n- -n -n -n -n -n -n -n -n -n -n -n -n  Hello World!
 ```
--n- -n -n -n -n -n -n -n -n -n -nn -n -n -n  Hello World!
+-n- -n -n -n -n -n -n -n -n -n -n -n -n  Hello World!
 <br>
 <br>
 
