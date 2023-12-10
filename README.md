@@ -156,11 +156,10 @@ drwxrwxrwx 1 1000 root  512 Dec  8 22:12 includes$ <br>
 -rwxrwxrwx 1 1000 root 4622 Dec  8 23:33 README.md$ <br>
 drwxrwxrwx 1 1000 root  512 Dec  8 23:01 srcs$ <br>
 drwxrwxrwx 1 1000 root  512 Dec  1 12:38 .vscode$
-
 <br>
 <br>
 
-## built-in commands
+## Built-in commands
 
 ### Echo
 
@@ -237,9 +236,9 @@ Does nothing
 <br>
 
 ```bash
-echo Pipeline symbol "|" inside double quotes, and in single quotes '|' too
+echo Pipeline symbol "|" inside double quotes, and in single quotes too '|'
 ```
-Pipeline symbol | inside double quotes, and in single quotes | too
+Pipeline symbol | inside double quotes, and in single quotes too |
 <br>
 <br>
 
