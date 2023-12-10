@@ -250,8 +250,7 @@ echo ">"
 
 
 
-
-
+![image](https://github.com/SopadeGalinha/42-Minishell/assets/75684404/50e9dbf4-33bb-46c8-bf4c-f803adf822ee)
 
 
 
