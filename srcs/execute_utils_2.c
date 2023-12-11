@@ -79,18 +79,13 @@ void	close_pipes(int **pipes, int process_num)
 
 void	waiting(int process_num, t_shell *shell)
 {
-	int	i;
-
-	i = -1;
 	close_pipes(shell->pipes_fd, process_num);
-	while (++i < process_num)
-	{
-		if (waitpid(-1, &g_exit_status, 0) == -1)
-			ft_error("Error waiting for process", 1);
-		if (WIFEXITED(g_exit_status))
-			g_exit_status = WEXITSTATUS(g_exit_status);
-		else if (WIFSIGNALED(g_exit_status))
-			g_exit_status = WTERMSIG(g_exit_status) + 128;
-	}
+	
+	if (waitpid(-1, &g_exit_status, 0) == -1)
+		ft_error("Error waiting for process", 1);
+	if (WIFEXITED(g_exit_status))
+		g_exit_status = WEXITSTATUS(g_exit_status);
+	else if (WIFSIGNALED(g_exit_status))
+		g_exit_status = WTERMSIG(g_exit_status) + 128;
 	ft_printf_fd(0, "\n");
 }
