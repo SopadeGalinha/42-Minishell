@@ -1,6 +1,6 @@
 # 42-Minishell
 
-### Overview 
+### Overview
 
 Minishell is a command-line interface (CLI) implementation, enabling users to interact with an operating system through entered commands.
 Developed as part of the 42 curriculum, this project strives to deliver a minimalistic yet functional shell environment written in the C programming language.
@@ -13,7 +13,7 @@ management of complex command sequences, and support for pipelines. By adhering 
 
 The parser function serves as the core of the Minishell project, acting as a pivotal component in handling user input.
 Its primary responsibilities encompass tokenizing input, categorizing tokens, expanding environment variables, and
-organizing input/output redirections (such as "<" for input, ">" for output, ">>" for append, and "<<" for heredoc). 
+organizing input/output redirections (such as "<" for input, ">" for output, ">>" for append, and "<<" for heredoc).
 The parser excels in identifying commands, organizing them, and, for non-built-in commands, determining the execution path.
 In essence, it plays a central role in processing and structuring the user's input for seamless execution within the Minishell environment.
 
@@ -45,7 +45,7 @@ the node contains an array with the arguments, a linkedlist for input redirectio
 and a linkedlist for output redirections (">", ">>").
 # LinkedList Representation:
 
-| Node | Commands            | Redir_In        | Redir_Out          | 
+| Node | Commands            | Redir_In        | Redir_Out          |
 |------|---------------------|-----------------|--------------------|
 | 1    | ["ls", "-l", "-a"]  | ["in"]          | ["out_1", "out_2"] |
 | 2    | ["grep", "keyword"] | []              | []                 |
@@ -90,7 +90,7 @@ drwxrwxrwx 1 1000 root    512 Dec  1 12:38 .vscode <br>
 ```bash
 date
 ```
-Fri Dec  8 10:56:18 PM WET 2023  
+Fri Dec  8 10:56:18 PM WET 2023
 <br>
 
 
@@ -148,7 +148,7 @@ Still working? Great
 Expected output: <br>
 total 12$
 drwxrwxrwx 1 1000 root  512 Dec  8 23:01 .$ <br>
-drwxrwxrwx 1 1000 root  512 Dec  6 00:42 ..$ <br> 
+drwxrwxrwx 1 1000 root  512 Dec  6 00:42 ..$ <br>
 drwxrwxrwx 1 1000 root  512 Dec  8 23:01 .git$ <br>
 drwxrwxrwx 1 1000 root  512 Dec  8 22:12 includes$ <br>
 -rwxrwxrwx 1 1000 root 2678 Dec  8 22:15 Makefile$ <br>
@@ -247,8 +247,92 @@ echo ">"
 ```
 >
 <br>
+<br>
 
+```bash
+env
+```
+Print the environment variables
+<br>
+<br>
 
+```bash
+env anything
+```
+env: ‘anything’: No such file or directory
+<br>
+<br>
+
+```bash
+export
+```
+Print the exported environment variables
+<br>
+<br>
+
+```bash
+export NEW_VAR=42
+```
+Add a NEW_VAR in the environment and export list
+<br>
+<br>
+
+```bash
+export NEW_VAR="add test with quotes"
+```
+Modifies the value of the NEW_VAR in the environment and export list
+<br>
+<br>
+
+```bash
+export NEW_VAR=
+```
+Modifies the value of the NEW_VAR in the environment and export list
+<br>
+<br>
+
+```bash
+export NEW_VAR=$USER
+```
+Modifies the NEW_VAR in the env and export list with the value of the USER variable
+<br>
+<br>
+
+```bash
+export NEW_VAR="with unclosed quotes
+```
+Minishell Error: Unclosed quote
+<br>
+<br>
+
+```bash
+export -p NEW_VAR2
+```
+Minishell Error: export: '-p': not a valid identifier<br>
+Create NEW_VAR2 in the export list
+<br>
+<br>
+
+```bash
+export NEW_VAR=" -?42 "
+```
+replace the content of NEW_VAR to '-?42'
+<br>
+<br>
+
+```bash
+unset NEW_VAR
+```
+remove the environment variable
+<br>
+<br>
+
+```bash
+unset -n NEW_VAR2
+```
+Any option is ignored and deletes the environment variable
+<br>
+<br>
 
 ![image](https://github.com/SopadeGalinha/42-Minishell/assets/75684404/50e9dbf4-33bb-46c8-bf4c-f803adf822ee)
 
