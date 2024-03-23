@@ -1,4 +1,11 @@
-# 42-Minishell
+<h1 align="center">
+  <b> 42-Minishell</b>
+</h1>
+
+<h2 align="center">
+  <i>42cursus Project #9</i>
+</h2>
+
 
 ### Overview
 
