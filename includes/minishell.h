@@ -177,6 +177,8 @@ typedef struct s_shell
 t_env	*init_env(char **envp);
 t_env	*init_export(t_env *env);
 void	init_shell(t_shell *shell, char **env);
+void	init_builtin(const char *builtin[7]);
+
 
 // UTILS
 void	u_print_list(t_shell *shell, int flag, t_pipes *pipes);
@@ -186,8 +188,6 @@ void	u_update_lists(t_shell *shell, char *line, int flag);
 char	*u_ft_strdup_equal_key(const char *src);
 void	u_update_node(t_env *lst, char *key, char *line);
 void	u_insert_sorted(t_env **export_list, t_env *env);
-
-// UTILS 2
 char	*get_env_value(t_env *env, char *key);
 bool	print_error(char *error, int exit_code);
 int		count_pipes(t_token *tokens);
@@ -204,6 +204,20 @@ void	ft_export(t_shell *shell, t_pipes *pipes);
 // SOURCES
 void	free_struct(t_shell *shell, int running);
 bool	get_input(t_shell *shell);
+
+// PARSER
+bool	parser(t_shell *shell);
+int		cmds_data(char *input, int i, int start, t_token **tokens);
+bool	lexical(char *input, t_token **tokens);
+void	addtoken(t_token **tokens, char *data, int *quo_err);
+bool	is_special_char(char c);
+bool	process_tokens(t_shell *shell);
+char	*expand_env(t_env *env, char *new_token);
+bool	create_pipeline_node(t_shell *shell);
+bool	process_redirections(t_shell *shell);
+void	heredoc(char *target, t_pipes *current, t_shell *shell);
+int		ft_is_builtin(const char *builtin[7], char *cmd);
+void	ft_access(char **cmd, t_shell *shell);
 
 //--------------------------------END FUNCTIONS-------------------------------//
 
