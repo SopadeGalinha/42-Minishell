@@ -10,6 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
+.SILENT:
+
 NAME	:= libft.a
 		
 SRCS := ft_strtrim.c ft_atoi.c ft_isprint.c ft_strlen.c\
@@ -28,8 +30,6 @@ SRCS := ft_strtrim.c ft_atoi.c ft_isprint.c ft_strlen.c\
 		ft_free_2d_array.c ft_contains.c ft_str_replace.c \
 		ft_count_words.c ft_strcmp.c
 
-OBJS := ${SRCS:.c=.o}
-
 CC := cc
 RM := /bin/rm -f
 CFLAGS := -Wall -Wextra -Werror -I.
@@ -37,12 +37,22 @@ CFLAGS := -Wall -Wextra -Werror -I.
 CL := ar -rc
 RL := ranlib
 
+NUM_SRCS := $(words $(SRCS))
+COMPILE_COUNT := 0
+
+OBJS := ${SRCS:.c=.o}
+
+${OBJS}: %.o: %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(eval COMPILE_COUNT=$(shell echo $$(($(COMPILE_COUNT)+1))))
+	@printf "\r[\033[32m%3d%%\033[0m] Compiling: $<" $$(($(COMPILE_COUNT) * 100 / $(NUM_SRCS)))
+
 ${NAME}: ${OBJS}
-	${CL} ${NAME} ${OBJS}
-	${RL} ${NAME}
+	@${CL} ${NAME} ${OBJS}
+	@${RL} ${NAME}
+	@printf "\r[\033[32m100%%\033[0m] \001\033[1;97m\002- Libft compiled successfully! \n \001\033[0m\002"
 
 all: ${NAME}
-	echo 'libft compiled'
 
 clean:
 	${RM} ${OBJS}
@@ -56,11 +66,6 @@ norm:
 	@norminette -R CheckForbiddenSourceHeader *.c > /dev/null 2>&1
 	@norminette -R CheckDefine *.h > /dev/null 2>&1
 	@printf '\033[3;3;33mlibft OK[✔ ]\n\033[0m'
-
-git: fclean
-	git add .
-	git commit -m "new functions added"
-	git push
 
 author: 
 	echo 'jhogonca'
