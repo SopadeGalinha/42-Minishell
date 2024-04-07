@@ -14,7 +14,7 @@ LIBFT_DIR	= includes/libft/
 LIBFT		= $(addprefix $(LIBFT_DIR), $(LIBFT_A))
 
 # Objects
-OBJS_DIR	= srcs/objs/
+OBJS_DIR	= objs/
 OBJS_DIRS   = $(sort $(dir $(OBJS)))
 
 # Directories containing source files

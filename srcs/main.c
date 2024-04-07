@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:39:55 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/06 16:27:35 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/07 15:56:44 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ int	main(int argc, char **argv, char **env)
 	init_shell(&shell, env);
 	while (true)
 	{
-		if (get_input(&shell))
-			parser(&shell);
+		if (get_input(&shell));
+			// parser(&shell);
 	}
 	return (0);
 }
