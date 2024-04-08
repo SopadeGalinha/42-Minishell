@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:56:22 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/07 17:02:34 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:25:22 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,16 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
 		tmp = tmp->next;
 	pipes->cmds = ft_calloc(i + 2, sizeof(char *));
-	if (pipes->cmds == NULL)
+	if (pipes->cmds == NULL)	
 		return (NULL);
 	i = 0;
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
-		if ((*current)->type == NONE)
-			pipes->cmds[i++] = ft_strdup((*current)->data);
-		else
+		if ((*current)->type == REDIR_OUT || (*current)->type == APPEND
+		|| (*current)->type == REDIR_IN || (*current)->type == HEREDOC)
 			redirects(current, &pipes->redir_in, &pipes->redir_out);
+		else
+			pipes->cmds[i++] = ft_strdup((*current)->data);
 		pipes->type = (*current)->type;
 		*current = (*current)->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:39:55 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/07 17:18:08 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:04:59 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	main(int argc, char **argv, char **env)
 	while (true)
 	{
 		if (get_input(&shell))
-			if (parser(&shell));
-//				execute(&shell);
+			if (parser(&shell))
+				execute(&shell);
 		free_struct(&shell, 0);
 	}
 	return (0);

@@ -219,6 +219,14 @@ void	heredoc(char *target, t_pipes *current, t_shell *shell);
 int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	ft_access(char **cmd, t_shell *shell);
 
+// EXECUTE
+int	execute(t_shell *shell);
+
+
+void	ft_execve(t_shell *shell, t_pipes *pipes_lst);
+
+
+
 //--------------------------------END FUNCTIONS-------------------------------//
 
 #endif
