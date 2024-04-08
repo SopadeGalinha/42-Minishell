@@ -225,7 +225,11 @@ int	execute(t_shell *shell);
 
 void	ft_execve(t_shell *shell, t_pipes *pipes_lst);
 
-
+// REDIRECTIONS
+void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
+t_shell *shell);
+void	close_redirections(t_pipes *pipes_lst, int \
+process_num, int **pipes, int pos);
 
 //--------------------------------END FUNCTIONS-------------------------------//
 

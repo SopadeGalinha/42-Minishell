@@ -102,14 +102,20 @@ bool	create_pipes(t_shell *shell)
 
 void	run(t_shell *shell, t_pipes *process, int index, const char **builtin)
 {
-	int	buitin_index;
-
-	buitin_index = ft_is_builtin(builtin, process->cmds[0]);
+	int	builtin_index;
+	builtin_index = ft_is_builtin(builtin, process->cmds[0]);
 	process->pid = fork();
 	if (process->pid == 0)
 	{
-		if (builtin && buitin_index != -1)
-			shell->builtin[buitin_index](shell, process);
+		get_redirections(index, shell->pipes_fd,process, shell);
+		close_redirections(process, builtin_index, \
+		shell->pipes_fd, index);
+		if (builtin && builtin_index != -1)
+		{
+			shell->builtin[builtin_index](shell, process);
+			free_struct(shell, 1);
+			exit(g_exit_status);
+		}
 		else
 			ft_execve(shell, process);
 	}	
@@ -137,7 +143,7 @@ void	waiting(int process_num, t_shell *shell)
 	close_pipes(shell->pipes_fd, process_num);
 	while (++i < process_num)
 	{
-		if (waitpid(-1, &g_exit_status, 0) == -1)
+		if (/* process_num > 1 &&  */waitpid(-1, &g_exit_status, 0) == -1)
 			ft_error("Error waiting for process", 1);
 		if (WIFEXITED(g_exit_status))
 			g_exit_status = WEXITSTATUS(g_exit_status);
