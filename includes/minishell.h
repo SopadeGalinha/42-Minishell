@@ -179,7 +179,6 @@ t_env	*init_export(t_env *env);
 void	init_shell(t_shell *shell, char **env);
 void	init_builtin(const char *builtin[7]);
 
-
 // UTILS
 void	u_print_list(t_shell *shell, int flag, t_pipes *pipes);
 int		u_error_arg(const char *str);
@@ -220,8 +219,7 @@ int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	ft_access(char **cmd, t_shell *shell);
 
 // EXECUTE
-int	execute(t_shell *shell);
-
+int		execute(t_shell *shell);
 
 void	ft_execve(t_shell *shell, t_pipes *pipes_lst);
 

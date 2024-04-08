@@ -17,6 +17,7 @@ int	ft_error(char *str, int exit_code)
 	perror(str);
 	return (exit_code);
 }
+
 int	ft_list_envsize(t_env *lst)
 {
 	int	i;
@@ -80,10 +81,10 @@ bool	create_pipes(t_shell *shell)
 {
 	int	i;
 	int	process_num;
-	// verificar depois se o count_pipes está correto
+
 	process_num = count_pipes(shell->tokens) + 1;
 	if (process_num < 2)
-		return false;
+		return (false);
 	shell->pipes_fd = malloc(sizeof(int *) * process_num);
 	if (shell->pipes_fd)
 	{
@@ -92,22 +93,23 @@ bool	create_pipes(t_shell *shell)
 		{
 			shell->pipes_fd[i] = malloc(sizeof(int) * 2);
 			if (!shell->pipes_fd[i])
-				return false;
+				return (false);
 			if (pipe(shell->pipes_fd[i]) == -1)
-				return false;
+				return (false);
 		}
 	}
-	return true;
+	return (true);
 }
 
 void	run(t_shell *shell, t_pipes *process, int index, const char **builtin)
 {
 	int	builtin_index;
+
 	builtin_index = ft_is_builtin(builtin, process->cmds[0]);
 	process->pid = fork();
 	if (process->pid == 0)
 	{
-		get_redirections(index, shell->pipes_fd,process, shell);
+		get_redirections(index, shell->pipes_fd, process, shell);
 		close_redirections(process, builtin_index, \
 		shell->pipes_fd, index);
 		if (builtin && builtin_index != -1)
@@ -118,8 +120,8 @@ void	run(t_shell *shell, t_pipes *process, int index, const char **builtin)
 		}
 		else
 			ft_execve(shell, process);
-	}	
-	else if(process->pid == -1)
+	}
+	else if (process->pid == -1)
 		ft_error("Error creating process", 1);
 }
 
@@ -143,7 +145,7 @@ void	waiting(int process_num, t_shell *shell)
 	close_pipes(shell->pipes_fd, process_num);
 	while (++i < process_num)
 	{
-		if (/* process_num > 1 &&  */waitpid(-1, &g_exit_status, 0) == -1)
+		if (waitpid(-1, &g_exit_status, 0) == -1)
 			ft_error("Error waiting for process", 1);
 		if (WIFEXITED(g_exit_status))
 			g_exit_status = WEXITSTATUS(g_exit_status);
@@ -154,8 +156,8 @@ void	waiting(int process_num, t_shell *shell)
 
 int	execute(t_shell *shell)
 {
-	int 	index;
-	t_pipes	*process;
+	int			index;
+	t_pipes		*process;
 	const char	*builtin[7];
 
 	index = -1;
@@ -167,12 +169,12 @@ int	execute(t_shell *shell)
 	{
 		if (ft_is_builtin(builtin, process->cmds[0]) != -1
 			&& count_pipes(shell->tokens) == 0)
-				shell->builtin[ft_is_builtin(builtin, \
+			shell->builtin[ft_is_builtin(builtin, \
 				process->cmds[0])](shell, process);
 		else
 			run(shell, process, index, builtin);
 		process = process->next;
 	}
 	waiting(count_pipes(shell->tokens) + 1, shell);
-	return 0;
+	return (0);
 }
