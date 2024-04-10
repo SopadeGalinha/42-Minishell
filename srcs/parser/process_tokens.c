@@ -55,10 +55,20 @@ static int	define_token(const char *token)
 		return (AND);
 	if (ft_strncmp(token, "||", ft_strlen("||")) == 0 && ft_strlen(token) == 2)
 		return (OR);
+	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 2)
+	{
+		printf("Retornou Parenthesis open\n");
+		return (PARENTHESIS_OPEN);
+	}
+	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 2)
+	{
+		printf("Retornou Parenthesis close\n");
+		return (PARENTHESIS_CLOSE);
+	}
 	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
 		return (SEMICOLON);
 	if (token[0] == '$')
-		return (ENV);
+		return (ENV);	
 	return (WORD);
 }
 
@@ -99,7 +109,9 @@ bool	process_tokens(t_shell *shell)
 		if (!process_aux(shell, current))
 			return (false);
 		if ((current->type == OR || current->type == SEMICOLON
-				|| current->type == AND) && current->quote == NONE)
+				|| current->type == AND || current->type == PARENTHESIS_OPEN\
+				 || current->type == PARENTHESIS_CLOSE) && \
+				 current->quote == NONE)
 			return (print_error(MS_ERR UNSUP_MCMDS, 1));
 		current = current->next;
 	}

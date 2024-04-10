@@ -34,6 +34,10 @@ static bool	input_is_valid(char *input)
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `|'"RESET, 2));
 	if (input[0] == '&')
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `&'"RESET, 2));
+	if (input[0] == '(' || input[end] == '(')
+		return (print_error(MS_ERR RESET STX BOLD_WHITE" `('", 2));
+	if (input[0] == ')' || input[end] == ')')
+		return (print_error(MS_ERR RESET STX BOLD_WHITE" `)'", 2));
 	if (input[end] == ';')
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `;'"RESET, 2));
 	if (input[end] == '|')
