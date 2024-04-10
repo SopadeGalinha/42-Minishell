@@ -12,7 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-
 static bool	redir_in(int *last_valid_fd, char *file,
 t_shell *shell, t_pipes *pipes)
 {

@@ -39,6 +39,7 @@ static t_token	*create_token(char *data, int *quo_err)
 	new->error = NONE;
 	return (new);
 }
+
 void	addtoken(t_token **tokens, char *data, int *quo_err)
 {
 	t_token	*new;

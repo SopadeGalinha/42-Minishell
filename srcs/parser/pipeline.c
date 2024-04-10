@@ -65,12 +65,12 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 	while (tmp != NULL && tmp->type != PIPELINE && ++i != -2)
 		tmp = tmp->next;
 	pipes->cmds = ft_calloc(i + 2, sizeof(char *));
-	if (pipes->cmds == NULL)	
+	if (pipes->cmds == NULL)
 		return (NULL);
 	i = 0;
 	while (*current != NULL && (*current)->type != PIPELINE)
 	{
-		if ((*current)->type == REDIR_OUT || (*current)->type == APPEND
+		if ((*current)->type == REDIR_OUT || (*current)->type == APPEND \
 		|| (*current)->type == REDIR_IN || (*current)->type == HEREDOC)
 			redirects(current, &pipes->redir_in, &pipes->redir_out);
 		else

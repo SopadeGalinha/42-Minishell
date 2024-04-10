@@ -220,8 +220,10 @@ void	ft_access(char **cmd, t_shell *shell);
 
 // EXECUTE
 int		execute(t_shell *shell);
-
-void	ft_execve(t_shell *shell, t_pipes *pipes_lst);
+int		ft_list_envsize(t_env *lst);
+bool	create_pipes(t_shell *shell);
+int		ft_error(char *str, int exit_code);
+void	close_pipes(int **pipes, int process_num);
 
 // REDIRECTIONS
 void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \

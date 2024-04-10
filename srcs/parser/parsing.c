@@ -81,7 +81,7 @@ bool	parser(t_shell *shell)
 		return (false);
 	if (!create_pipeline_node(shell))
 		return (false);
- 	if (!process_redirections(shell))
+	if (!process_redirections(shell))
 		return (false);
 	get_cmd_path(shell);
 	return (true);

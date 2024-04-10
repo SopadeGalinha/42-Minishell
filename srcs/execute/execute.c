@@ -12,26 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	ft_error(char *str, int exit_code)
-{
-	perror(str);
-	return (exit_code);
-}
-
-int	ft_list_envsize(t_env *lst)
-{
-	int	i;
-
-	i = 0;
-	while (lst)
-	{
-		lst = lst->next;
-		i++;
-	}
-	return (i);
-}
-
-char	**get_envp_array(t_shell *shell)
+static char	**get_envp_array(t_shell *shell)
 {
 	char	**array;
 	int		i;
@@ -53,7 +34,7 @@ char	**get_envp_array(t_shell *shell)
 	return (array);
 }
 
-void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
+static void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 {
 	char	**envp;
 
@@ -77,31 +58,8 @@ void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 	exit (g_exit_status);
 }
 
-bool	create_pipes(t_shell *shell)
-{
-	int	i;
-	int	process_num;
-
-	process_num = count_pipes(shell->tokens) + 1;
-	if (process_num < 2)
-		return (false);
-	shell->pipes_fd = malloc(sizeof(int *) * process_num);
-	if (shell->pipes_fd)
-	{
-		i = -1;
-		while (++i < process_num)
-		{
-			shell->pipes_fd[i] = malloc(sizeof(int) * 2);
-			if (!shell->pipes_fd[i])
-				return (false);
-			if (pipe(shell->pipes_fd[i]) == -1)
-				return (false);
-		}
-	}
-	return (true);
-}
-
-void	run(t_shell *shell, t_pipes *process, int index, const char **builtin)
+static void	run(t_shell *shell, t_pipes *process, int index, \
+const char **builtin)
 {
 	int	builtin_index;
 
@@ -125,19 +83,7 @@ void	run(t_shell *shell, t_pipes *process, int index, const char **builtin)
 		ft_error("Error creating process", 1);
 }
 
-void	close_pipes(int **pipes, int process_num)
-{
-	int	pos;
-
-	pos = -1;
-	while (++pos < process_num - 1)
-	{
-		close(pipes[pos][READ_END]);
-		close(pipes[pos][WRITE_END]);
-	}
-}
-
-void	waiting(int process_num, t_shell *shell)
+static void	waiting(int process_num, t_shell *shell)
 {
 	int	i;
 
@@ -156,25 +102,28 @@ void	waiting(int process_num, t_shell *shell)
 
 int	execute(t_shell *shell)
 {
-	int			index;
+	int			i_pipes[2];
 	t_pipes		*process;
 	const char	*builtin[7];
 
-	index = -1;
+	i_pipes[0] = -1;
+	i_pipes[1] = count_pipes(shell->tokens);
 	process = shell->pipes;
 	init_builtin(builtin);
 	if (!create_pipes(shell) && count_pipes(shell->tokens) > 0)
 		return (ft_error("Error creating pipes", 1));
-	while (process && ++index > -1)
+	while (process && ++i_pipes[0] > -1)
 	{
-		if (ft_is_builtin(builtin, process->cmds[0]) != -1
-			&& count_pipes(shell->tokens) == 0)
+		if (ft_is_builtin(builtin, process->cmds[0]) != -1 && i_pipes[1] == 0)
 			shell->builtin[ft_is_builtin(builtin, \
 				process->cmds[0])](shell, process);
 		else
-			run(shell, process, index, builtin);
+			run(shell, process, i_pipes[0], builtin);
 		process = process->next;
 	}
-	waiting(count_pipes(shell->tokens) + 1, shell);
+	if (ft_is_builtin(builtin, shell->pipes->cmds[0]) != -1 && i_pipes[1] == 0)
+		waiting(i_pipes[1], shell);
+	else
+		waiting(i_pipes[1] + 1, shell);
 	return (0);
 }
