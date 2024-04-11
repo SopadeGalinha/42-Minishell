@@ -75,10 +75,20 @@ static bool	validate_tokens(t_shell *shell)
 	return (validate_aux(token->data[0], token->quote));
 }
 
+static void print_token(t_token *token)
+{
+	while (token)
+	{
+		ft_printf_fd(2, "type: %d, data: %s, quote: %d\n", token->type, token->data, token->quote);
+		token = token->next;
+	}
+}
+
 bool	parser(t_shell *shell)
 {
 	if (!lexical(shell->input, &shell->tokens))
 		return (false);
+	//print_token(shell->tokens);
 	if (!process_tokens(shell))
 		return (false);
 	if (!validate_tokens(shell))

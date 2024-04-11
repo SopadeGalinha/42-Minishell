@@ -23,6 +23,19 @@ static bool	ft_isspace_str(char *str)
 	return (true);
 }
 
+static char search_parenthesis(char *input)
+{
+	while (*input)
+	{
+		if (*input == '(')
+			return ('(');
+		if (*input == ')')
+			return (')');
+		input++;
+	}
+	return (0);
+}
+
 static bool	input_is_valid(char *input)
 {
 	int	end;
@@ -34,10 +47,10 @@ static bool	input_is_valid(char *input)
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `|'"RESET, 2));
 	if (input[0] == '&')
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `&'"RESET, 2));
-	if (input[0] == '(' || input[end] == '(')
-		return (print_error(MS_ERR RESET STX BOLD_WHITE" `('", 2));
-	if (input[0] == ')' || input[end] == ')')
-		return (print_error(MS_ERR RESET STX BOLD_WHITE" `)'", 2));
+	if (search_parenthesis(input) == '(')
+		return (print_error(MS_ERR RESET STX BOLD_WHITE" `('"RESET, 2));
+	if (search_parenthesis(input) == ')')
+		return (print_error(MS_ERR RESET STX BOLD_WHITE" `)'"RESET, 2));
 	if (input[end] == ';')
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `;'"RESET, 2));
 	if (input[end] == '|')

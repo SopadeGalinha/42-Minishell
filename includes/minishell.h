@@ -48,7 +48,7 @@ extern int	g_exit_status;
 # define MS_ERR			"\001\033[1;31m\002Minishell Error: "
 # define TRY			"\001\033[1;96m\002Try: ./minishell\n"
 # define ERROR_ARGS		"\001\033[1;31m\002Invalid arguments\n"
-# define UNSUP_MCMDS	"\001\033[1;31m\002Unsupported multiple commands\n"
+# define UNSUP_MCMDS	"\001\033[1;31m\002Unsupported multiple commands"
 # define UNCLOSED_QT	"\001\033[1;31m\002Unclosed quote\n"
 # define STX			"syntax error near unexpected token"
 

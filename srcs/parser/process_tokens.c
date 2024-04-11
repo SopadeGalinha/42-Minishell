@@ -55,9 +55,9 @@ static int	define_token(const char *token)
 		return (AND);
 	if (ft_strncmp(token, "||", ft_strlen("||")) == 0 && ft_strlen(token) == 2)
 		return (OR);
-	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 2)
+	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 1)
 		return (PARENTHESIS_OPEN);
-	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 2)
+	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 1)
 		return (PARENTHESIS_CLOSE);
 	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
 		return (SEMICOLON);
