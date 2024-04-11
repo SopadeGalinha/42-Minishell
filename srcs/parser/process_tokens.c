@@ -56,15 +56,9 @@ static int	define_token(const char *token)
 	if (ft_strncmp(token, "||", ft_strlen("||")) == 0 && ft_strlen(token) == 2)
 		return (OR);
 	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 2)
-	{
-		printf("Retornou Parenthesis open\n");
 		return (PARENTHESIS_OPEN);
-	}
 	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 2)
-	{
-		printf("Retornou Parenthesis close\n");
 		return (PARENTHESIS_CLOSE);
-	}
 	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
 		return (SEMICOLON);
 	if (token[0] == '$')
