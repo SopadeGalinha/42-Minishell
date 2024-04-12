@@ -56,9 +56,8 @@ int	cmds_data(char *input, int i, int start, t_token **tokens)
 		i = cmd_aux_1(input, i);
 		data = ft_substr(input, start, (i-- - start));
 	}
-	else if ((input[i] == '>' || input[i] == '<' || input[i] == '(')
-		|| (input[i] == '|' || input[i] == '&') || input[i] == ';' || \
-		input[i] == ')')
+	else if ((input[i] == '>' || input[i] == '<' || input[i] == '(' || \
+	input[i] == ')' || (input[i] == '|' || input[i] == '&') || input[i] == ';'))
 	{
 		if (input[i] == input[i + 1])
 		{

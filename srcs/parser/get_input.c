@@ -23,7 +23,7 @@ static bool	ft_isspace_str(char *str)
 	return (true);
 }
 
-static char search_parenthesis(char *input)
+static char	search_parenthesis(char *input)
 {
 	while (*input)
 	{

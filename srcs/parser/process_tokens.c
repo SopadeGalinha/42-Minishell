@@ -35,6 +35,19 @@ static char	*expand_tilde(t_shell *shell, t_token *current)
 	return (current->data);
 }
 
+static int	define_token_aux(const char *token)
+{
+	if (ft_strncmp(token, "&&", ft_strlen("&&")) == 0 && ft_strlen(token) == 2)
+		return (AND);
+	if (ft_strncmp(token, "||", ft_strlen("||")) == 0 && ft_strlen(token) == 2)
+		return (OR);
+	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
+		return (SEMICOLON);
+	if (token[0] == '$')
+		return (ENV);
+	return (WORD);
+}
+
 static int	define_token(const char *token)
 {
 	if (ft_strncmp(token, "|", ft_strlen("|")) == 0 && ft_strlen(token) == 1)
@@ -43,6 +56,10 @@ static int	define_token(const char *token)
 		return (REDIR_OUT);
 	if (ft_strncmp(token, "<", ft_strlen("<")) == 0 && ft_strlen(token) == 1)
 		return (REDIR_IN);
+	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 1)
+		return (PARENTHESIS_OPEN);
+	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 1)
+		return (PARENTHESIS_CLOSE);
 	if (ft_strncmp(token, ">>", ft_strlen(">>")) == 0 && ft_strlen(token) == 2)
 		return (APPEND);
 	if (ft_strncmp(token, "<<", ft_strlen("<<")) == 0 && ft_strlen(token) == 2)
@@ -51,19 +68,7 @@ static int	define_token(const char *token)
 		return (REDIR_ERR);
 	if (ft_strncmp(token, "$?", ft_strlen("$?")) == 0 && ft_strlen(token) == 2)
 		return (EXIT_STATUS);
-	if (ft_strncmp(token, "&&", ft_strlen("&&")) == 0 && ft_strlen(token) == 2)
-		return (AND);
-	if (ft_strncmp(token, "||", ft_strlen("||")) == 0 && ft_strlen(token) == 2)
-		return (OR);
-	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 1)
-		return (PARENTHESIS_OPEN);
-	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 1)
-		return (PARENTHESIS_CLOSE);
-	if (ft_strncmp(token, ";", ft_strlen(";")) == 0)
-		return (SEMICOLON);
-	if (token[0] == '$')
-		return (ENV);	
-	return (WORD);
+	return (define_token_aux(token));
 }
 
 static bool	process_aux(t_shell *shell, t_token *current)
@@ -103,9 +108,9 @@ bool	process_tokens(t_shell *shell)
 		if (!process_aux(shell, current))
 			return (false);
 		if ((current->type == OR || current->type == SEMICOLON
-				|| current->type == AND || current->type == PARENTHESIS_OPEN\
-				 || current->type == PARENTHESIS_CLOSE) && \
-				 current->quote == NONE)
+				|| current->type == AND || current->type == PARENTHESIS_OPEN \
+				|| current->type == PARENTHESIS_CLOSE) && \
+				current->quote == NONE)
 			return (print_error(MS_ERR UNSUP_MCMDS, 1));
 		current = current->next;
 	}
