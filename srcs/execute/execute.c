@@ -114,6 +114,12 @@ int	execute(t_shell *shell)
 		return (ft_error("Error creating pipes", 1));
 	while (process && ++i_pipes[0] > -1)
 	{
+		/* 
+		Se parentesis entao
+			enviar para parser
+			armazenar g_exit_status
+			enviar para funcao de tratamente de operadores logicos && || ;
+		*/
 		if (ft_is_builtin(builtin, process->cmds[0]) != -1 && i_pipes[1] == 0)
 			shell->builtin[ft_is_builtin(builtin, \
 				process->cmds[0])](shell, process);

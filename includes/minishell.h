@@ -50,6 +50,7 @@ extern int	g_exit_status;
 # define ERROR_ARGS		"\001\033[1;31m\002Invalid arguments\n"
 # define UNSUP_MCMDS	"\001\033[1;31m\002Unsupported multiple commands"
 # define UNCLOSED_QT	"\001\033[1;31m\002Unclosed quote\n"
+# define INVLD_PAR		"\001\033[1;31m\002Invalid or unclosed parenthesis"
 # define STX			"syntax error near unexpected token"
 
 // BEAUTIFUL PROMPT

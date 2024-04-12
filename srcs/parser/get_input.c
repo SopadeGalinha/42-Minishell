@@ -23,17 +23,25 @@ static bool	ft_isspace_str(char *str)
 	return (true);
 }
 
-static char	search_parenthesis(char *input)
+static bool	search_parenthesis(char *input)
 {
-	while (*input)
+	int	i;
+	int	count;
+
+	i = -1;
+	count = 0;
+	while (input[++i])
 	{
-		if (*input == '(')
-			return ('(');
-		if (*input == ')')
-			return (')');
-		input++;
+		if (input[i] == '(')
+			count++;
+		if (input[i] == ')')
+			count--;
+		if (count < 0)
+			return (true);
 	}
-	return (0);
+	if (count > 0)
+		return (true);
+	return (false);
 }
 
 static bool	input_is_valid(char *input)
@@ -47,10 +55,8 @@ static bool	input_is_valid(char *input)
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `|'"RESET, 2));
 	if (input[0] == '&')
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `&'"RESET, 2));
-	if (search_parenthesis(input) == '(')
-		return (print_error(MS_ERR RESET STX BOLD_WHITE" `('"RESET, 2));
-	if (search_parenthesis(input) == ')')
-		return (print_error(MS_ERR RESET STX BOLD_WHITE" `)'"RESET, 2));
+	if (search_parenthesis(input))
+		return (print_error(MS_ERR RESET INVLD_PAR BOLD_WHITE" `(` or `)'"RESET, 2));
 	if (input[end] == ';')
 		return (print_error(MS_ERR RESET STX BOLD_WHITE" `;'"RESET, 2));
 	if (input[end] == '|')

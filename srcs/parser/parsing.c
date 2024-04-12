@@ -87,8 +87,16 @@ static void	print_token(t_token *token)
 
 bool	parser(t_shell *shell)
 {
+
+	/* 
+	Se parentesis no inicio e no fim do input entao
+		retirar parentesis
+	senao
+		armazenar o valor todo das parentesis (inclusive as parentesis) num token
+	 */
 	if (!lexical(shell->input, &shell->tokens))
 		return (false);
+	//print_token(shell->tokens);
 	if (!process_tokens(shell))
 		return (false);
 	if (!validate_tokens(shell))

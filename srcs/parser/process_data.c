@@ -47,6 +47,14 @@ static int	cmd_aux_2(char *input, int i)
 	return (i);
 }
 
+static int	cmd_process_parentesis(char *input, int i)
+{
+	while (input[++i] != '\0')
+		if (input[i] == ')')
+			break ;
+	return (i);
+}
+
 int	cmds_data(char *input, int i, int start, t_token **tokens)
 {
 	char	*data;
@@ -56,8 +64,8 @@ int	cmds_data(char *input, int i, int start, t_token **tokens)
 		i = cmd_aux_1(input, i);
 		data = ft_substr(input, start, (i-- - start));
 	}
-	else if ((input[i] == '>' || input[i] == '<' || input[i] == '(' || \
-	input[i] == ')' || (input[i] == '|' || input[i] == '&') || input[i] == ';'))
+	else if ((input[i] == '>' || input[i] == '<' || \
+	(input[i] == '|' || input[i] == '&') || input[i] == ';'))
 	{
 		if (input[i] == input[i + 1])
 		{
@@ -66,6 +74,11 @@ int	cmds_data(char *input, int i, int start, t_token **tokens)
 		}
 		else
 			data = ft_substr(input, start, 1);
+	}
+	else if (input[i] == '(')
+	{
+		i = cmd_process_parentesis(input, i);
+		data = ft_substr(input, start, (i-- - start));
 	}
 	else
 	{
