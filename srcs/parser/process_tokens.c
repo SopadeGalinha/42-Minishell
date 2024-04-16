@@ -56,10 +56,10 @@ static int	define_token(const char *token)
 		return (REDIR_OUT);
 	if (ft_strncmp(token, "<", ft_strlen("<")) == 0 && ft_strlen(token) == 1)
 		return (REDIR_IN);
-	if (ft_strncmp(token, "(", ft_strlen("(")) == 0 && ft_strlen(token) == 1)
-		return (PARENTHESIS_OPEN);
-	if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 1)
-		return (PARENTHESIS_CLOSE);
+	if (ft_strncmp(token, "(", ft_strlen("(")) == 0)
+		return (PARENTHESIS);
+	//if (ft_strncmp(token, ")", ft_strlen(")")) == 0 && ft_strlen(token) == 1)
+	//	return (PARENTHESIS_CLOSE);
 	if (ft_strncmp(token, ">>", ft_strlen(">>")) == 0 && ft_strlen(token) == 2)
 		return (APPEND);
 	if (ft_strncmp(token, "<<", ft_strlen("<<")) == 0 && ft_strlen(token) == 2)
@@ -108,8 +108,7 @@ bool	process_tokens(t_shell *shell)
 		if (!process_aux(shell, current))
 			return (false);
 		if ((current->type == OR || current->type == SEMICOLON
-				|| current->type == AND || current->type == PARENTHESIS_OPEN \
-				|| current->type == PARENTHESIS_CLOSE) && \
+				|| current->type == AND) && \
 				current->quote == NONE)
 			return (print_error(MS_ERR UNSUP_MCMDS, 1));
 		current = current->next;

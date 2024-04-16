@@ -53,7 +53,7 @@ static bool	free_pipes(t_pipes **pipes)
 	return (true);
 }
 
-static void	free_tokens(t_token **tokens)
+void	free_tokens(t_token **tokens)
 {
 	t_token	*current;
 	t_token	*tmp;

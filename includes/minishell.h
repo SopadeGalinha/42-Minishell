@@ -50,8 +50,8 @@ extern int	g_exit_status;
 # define ERROR_ARGS		"\001\033[1;31m\002Invalid arguments\n"
 # define UNSUP_MCMDS	"\001\033[1;31m\002Unsupported multiple commands"
 # define UNCLOSED_QT	"\001\033[1;31m\002Unclosed quote\n"
-# define INVLD_PAR		"\001\033[1;31m\002Invalid or unclosed parenthesis"
-# define STX			"syntax error near unexpected token"
+# define INVLD_PAR		"\001\033[1;31m\002Invalid or unclosed parenthesis\n"
+# define STX			"syntax error near unexpected token\n"
 
 // BEAUTIFUL PROMPT
 # define MI	"\001\033[1;31m\002mi\001\033[0m\002"
@@ -77,6 +77,7 @@ enum e_TokenType
 	AND,
 	OR,
 	SEMICOLON,
+	PARENTHESIS,
 	PARENTHESIS_OPEN,
 	PARENTHESIS_CLOSE,
 	EXIT_STATUS,
@@ -221,6 +222,7 @@ bool	process_redirections(t_shell *shell);
 void	heredoc(char *target, t_pipes *current, t_shell *shell);
 int		ft_is_builtin(const char *builtin[7], char *cmd);
 void	ft_access(char **cmd, t_shell *shell);
+void	process_parenthesis(t_shell *shell);
 
 // EXECUTE
 int		execute(t_shell *shell);
@@ -234,6 +236,8 @@ void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
 t_shell *shell);
 void	close_redirections(t_pipes *pipes_lst, int \
 process_num, int **pipes, int pos);
+
+void	free_tokens(t_token **tokens);
 
 //--------------------------------END FUNCTIONS-------------------------------//
 

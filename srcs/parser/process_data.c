@@ -20,12 +20,12 @@ static void	process_special_tokens(char *data, t_token **tokens)
 		addtoken(tokens, data, (int []){NONE, D_PIPELINE_NOT_SUPPORTED});
 	else if (ft_strncmp(data, ";", 1) == 0 && ft_strlen(data) == 1)
 		addtoken(tokens, data, (int []){NONE, SEMICOLON_NOT_SUPPORTED});
-	else if (ft_strncmp(data, "(", 1) == 0 && ft_strlen(data) == 1)
-		addtoken(tokens, data, (int []){NONE, PARENTHESIS_NOT_SUPPORTED});
-	else if (ft_strncmp(data, ")", 1) == 0 && ft_strlen(data) == 1)
-		addtoken(tokens, data, (int []){NONE, PARENTHESIS_NOT_SUPPORTED});
 	else
 		addtoken(tokens, data, (int []){NONE, NO_ERROR});
+	//else if (ft_strncmp(data, "(", 1) == 0 && ft_strlen(data) == 1)
+	//	addtoken(tokens, data, (int []){NONE, PARENTHESIS_NOT_SUPPORTED});
+	//else if (ft_strncmp(data, ")", 1) == 0 && ft_strlen(data) == 1)
+	//	addtoken(tokens, data, (int []){NONE, PARENTHESIS_NOT_SUPPORTED});
 }
 
 static int	cmd_aux_1(char *input, int i)
@@ -50,8 +50,13 @@ static int	cmd_aux_2(char *input, int i)
 static int	cmd_process_parentesis(char *input, int i)
 {
 	while (input[++i] != '\0')
+	{
 		if (input[i] == ')')
+		{
+			i++;
 			break ;
+		}
+	}
 	return (i);
 }
 
