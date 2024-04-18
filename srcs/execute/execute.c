@@ -113,12 +113,6 @@ bool	has_parenthesis(t_pipes *process)
 	return (has_parenthesis);
 }
 
-int	execute_child(t_shell *shell)
-{
-
-	return (0);
-}
-
 int	execute(t_shell *shell)
 {
 	int			i_pipes[2];
@@ -127,12 +121,10 @@ int	execute(t_shell *shell)
 
 	i_pipes[0] = -1;
 	i_pipes[1] = count_pipes(shell->tokens);
-	//printf("i_pipes[1]: %d\n", i_pipes[1]);
 	process = shell->pipes;
 	init_builtin(builtin);
 	if (!create_pipes(shell) && i_pipes[1] > 0)
 		return (ft_error("Error creating pipes", 1));
-	printf("Main Pid: %d\n", shell->pipes->pid);
 	while (process && ++i_pipes[0] > -1)
 	{
 		/*
@@ -145,7 +137,6 @@ int	execute(t_shell *shell)
 		{
 			process->pid = fork();
 			int	builtin_index = ft_is_builtin(builtin, process->cmds[0]);
-			i_pipes[1]--;
 			if (process->pid == 0)
 			{
 				free_tokens(&shell->tokens);
@@ -156,17 +147,13 @@ int	execute(t_shell *shell)
 					get_redirections(i_pipes[0], shell->pipes_fd, process, shell);
 					close_redirections(process, builtin_index, shell->pipes_fd, i_pipes[0]);
 					execute(shell);
-					printf("Execute G_exit_status: %d\n", g_exit_status);
 				}
 				free_struct(shell, 1);
 				exit(g_exit_status);
-				printf("Nao existe processo\n");
 			}
 			else
 			{
-				printf("É aqui\n");
 				waiting(i_pipes[1], shell);
-				printf("Nao é aqui\n");
 			}
 			process = process->next;
 			continue ;
@@ -179,20 +166,10 @@ int	execute(t_shell *shell)
 			run(shell, process, i_pipes[0], builtin);
 		process = process->next;
 	}
-	printf("After run %i\n", i_pipes[1]);
 	if ((ft_is_builtin(builtin, shell->pipes->cmds[0]) != -1  || \
 	shell->pipes->type == PARENTHESIS) && i_pipes[1] == 0)
-	{
-		printf("Primeiro wait\n");
-		printf("Pid: %d\n", shell->pipes->pid);
 		waiting(i_pipes[1], shell);
-	}
 	else
-	{
-		printf("Segundo wait\n");
-		printf("Pid: %d\n", shell->pipes->pid);
 		waiting(i_pipes[1] + 1, shell);
-	}
-	printf("After wait\n");
 	return (0);
 }

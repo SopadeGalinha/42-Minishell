@@ -133,20 +133,16 @@ void	process_parenthesis(t_shell *shell)
 bool	parser(t_shell *shell)
 {
 
-	//printf("PARSER\n");
-
 	/*
 	Se parenteses no inicio e no fim do input entao
 		retirar parentesis
 	senao
 		armazenar o valor todo das parentesis (inclusive as parentesis) num token
-	 */
+
+	*/
 	process_parenthesis(shell);
 	if (!lexical(shell->input, &shell->tokens))
 		return (false);
-	//print_token(shell->tokens);
-	//printf("%s\n", shell->input);
-	//exit(0);
 	if (!process_tokens(shell))
 		return (false);
 	if (!validate_tokens(shell))
@@ -156,5 +152,6 @@ bool	parser(t_shell *shell)
 	if (!process_redirections(shell))
 		return (false);
 	get_cmd_path(shell);
+	//print_token(shell->tokens);
 	return (true);
 }

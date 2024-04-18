@@ -50,6 +50,8 @@ static int	cmd_aux_2(char *input, int i)
 static int	cmd_process_parentesis(char *input, int i)
 {
 	while (input[++i] != '\0')
+		;
+	while (i-- > 0)
 	{
 		if (input[i] == ')')
 		{
