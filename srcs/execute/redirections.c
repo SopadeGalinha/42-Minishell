@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:31:09 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/08 19:31:48 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:12:54 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,26 @@ t_shell *shell)
 	(void)shell;
 	if (pos != 0)
 	{
+	//	printf("Redirecionando entrada\n > processo %d\n", pos);
 		dup2(pipes[pos - 1][READ_END], STDIN_FILENO);
 		close(pipes[pos - 1][READ_END]);
 		close(pipes[pos - 1][WRITE_END]);
 	}
 	if (pipes_lst->next)
 	{
+	//	printf("Redirecionando saida\n > processo %d\n", pos);
 		dup2(pipes[pos][WRITE_END], STDOUT_FILENO);
 		close(pipes[pos][READ_END]);
 		close(pipes[pos][WRITE_END]);
 	}
 	if (pipes_lst->redir_in)
+	{
+	//	printf("Redirecionando input\n > processo %d\n", pos);
 		redirect_input(pipes_lst, pipes);
+	}
 	if (pipes_lst->redir_out)
 	{
+	//	printf("Redirecionando output\n > processo %d\n", pos);
 		dup2(pipes_lst->redir_fd[OUT], STDOUT_FILENO);
 		close(pipes_lst->redir_fd[OUT]);
 	}

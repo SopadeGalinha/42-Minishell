@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frees.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 15:41:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/06 15:41:06 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:13:08 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,23 +96,33 @@ void	free_struct(t_shell *shell, int running)
 {
 	int	process;
 
+	//printf("> Freeing struct\n");
 	process = count_pipes(shell->tokens) + 1;
+	//printf("> Process: %d\n", process);
 	if (process == 1)
 		process = 0;
 	if (shell->pipes_fd)
 		ft_free_2d_array((void **)shell->pipes_fd, process);
+	//printf("> Freed pipes_fd\n");
 	if (shell->input != NULL)
 		free(shell->input);
+	//printf("> Freed input\n");
 	if (shell->pipes != NULL)
 		free_pipes(&(shell->pipes));
+	//printf("> Freed pipes\n");
 	if (shell->tokens != NULL)
 		free_tokens(&(shell->tokens));
+	//printf("> Freed tokens\n");
 	if (shell->heredoc)
 		free(shell->heredoc);
+	//printf("> Freed heredoc\n");
 	if (running == 0)
 		return ;
 	free_env(&shell->env);
+	//printf("> Freed env\n");
 	free_env(&shell->exp);
+	//printf("> Freed exp\n");
 	rl_clear_history();
+	//printf("> Cleared history\n");
 	exit(g_exit_status);
 }
