@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_data.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:23:26 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/07 16:25:33 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 16:06:30 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,6 @@ static void	process_special_tokens(char *data, t_token **tokens)
 		addtoken(tokens, data, (int []){NONE, SEMICOLON_NOT_SUPPORTED});
 	else
 		addtoken(tokens, data, (int []){NONE, NO_ERROR});
-	//else if (ft_strncmp(data, "(", 1) == 0 && ft_strlen(data) == 1)
-	//	addtoken(tokens, data, (int []){NONE, PARENTHESIS_NOT_SUPPORTED});
-	//else if (ft_strncmp(data, ")", 1) == 0 && ft_strlen(data) == 1)
-	//	addtoken(tokens, data, (int []){NONE, PARENTHESIS_NOT_SUPPORTED});
 }
 
 static int	cmd_aux_1(char *input, int i)
@@ -49,16 +45,24 @@ static int	cmd_aux_2(char *input, int i)
 
 static int	cmd_process_parentesis(char *input, int i)
 {
-	while (input[++i] != '\0')
-		;
-	while (i-- > 0)
+	int	count;
+
+	count = 1;
+	while (input[++i] != '\0' && count != 0)
 	{
-		if (input[i] == ')')
+		if (input[i] == '(')
+			count++;
+		else if (input[i] == ')')
 		{
-			i++;
-			break ;
+			count--;
+			if (count == 0)
+			{
+				i++;
+				break ;
+			}
 		}
 	}
+	
 	return (i);
 }
 

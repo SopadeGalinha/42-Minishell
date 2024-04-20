@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:56:22 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/08 19:25:22 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:06:44 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 	if (pipes->cmds == NULL)
 		return (NULL);
 	i = 0;
-	while (*current != NULL && (*current)->type != PIPELINE)
+	while (*current != NULL && (*current)->type != PIPELINE && (*current)->type != AND)
 	{
 		if ((*current)->type == REDIR_OUT || (*current)->type == APPEND \
 		|| (*current)->type == REDIR_IN || (*current)->type == HEREDOC)
@@ -78,6 +78,18 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 		pipes->type = (*current)->type;
 		*current = (*current)->next;
 	}
+	if (*current != NULL && (*current)->type == AND)
+	{
+		pipes->type = AND;
+		printf("Pipes type: AND %d\n", pipes->type);
+	}
+	else if (*current != NULL && (*current)->type == PIPELINE)
+	{
+		pipes->type = PIPELINE;
+		printf("Pipes type: PIPELINE %d\n", pipes->type);
+	}
+	else
+		pipes->type = NONE;
 	return (pipes);
 }
 
@@ -96,6 +108,20 @@ static void	add_node_to_pipeline(t_pipes **head, t_pipes *new)
 	}
 }
 
+static int	count_and(t_token *tokens)
+{
+	int	count;
+
+	count = 0;
+	while (tokens != NULL)
+	{
+		if (tokens->type == AND)
+			count++;
+		tokens = tokens->next;
+	}
+	return (count);
+}
+
 bool	create_pipeline_node(t_shell *shell)
 {
 	int		aux[2];
@@ -107,7 +133,7 @@ bool	create_pipeline_node(t_shell *shell)
 	head = NULL;
 	new_pipe = NULL;
 	current = shell->tokens;
-	aux[1] = count_pipes(shell->tokens) + 1;
+	aux[1] = 1 + count_pipes(shell->tokens) + count_and(shell->tokens);
 	while (aux[1]-- > 0)
 	{
 		new_pipe = copy_tokens_to_pipeline(&current);
@@ -117,7 +143,7 @@ bool	create_pipeline_node(t_shell *shell)
 		new_pipe->redir_fd[IN] = -1;
 		new_pipe->redir_fd[OUT] = -1;
 		add_node_to_pipeline(&head, new_pipe);
-		if (current != NULL && current->type == PIPELINE)
+		if (current != NULL && (current->type == PIPELINE || current->type == AND))
 			current = current->next;
 	}
 	shell->pipes = head;

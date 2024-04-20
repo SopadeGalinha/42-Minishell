@@ -6,7 +6,7 @@
 /*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 15:41:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/19 19:13:08 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:05:57 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	free_struct(t_shell *shell, int running)
 	int	process;
 
 	//printf("> Freeing struct\n");
-	process = count_pipes(shell->tokens) + 1;
+	process = count_pipes(shell->tokens);
 	//printf("> Process: %d\n", process);
 	if (process == 1)
 		process = 0;

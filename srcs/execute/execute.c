@@ -6,7 +6,7 @@
 /*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:41:43 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/19 19:16:30 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:15:38 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ static void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 		exit (0);
 	}
 	envp = get_envp_array(shell);
-	printf("Executando execve\n");
 	if (execve(pipes_lst->cmds[0], pipes_lst->cmds, envp) == -1)
 	{
 		ft_printf_fd(2, MS_ERR RESET"%s: %s\n", \
@@ -54,10 +53,8 @@ static void	ft_execve(t_shell *shell, t_pipes *pipes_lst)
 		free_struct(shell, 1);
 		exit(g_exit_status);
 	}
-	printf("Execve finalizado\n");
 	ft_free_2d_array((void **)envp, 0);
 	g_exit_status = WEXITSTATUS(g_exit_status);
-	printf("Execve finalizado com status %d\n", g_exit_status);
 	exit (g_exit_status);
 }
 
@@ -84,69 +81,46 @@ const char **builtin)
 	process->pid = fork();
 	if (process->pid == 0)
 	{
-		printf("Processo filho %d\n", index);
-		signal(SIGINT, hd1_signal_handler);
-		get_redirections(index, shell->pipes_fd, process, shell);
-		close_redirections(process, builtin_index, \
-		shell->pipes_fd, count_pipes(shell->tokens) + 1);
+		if (process->type == PIPELINE)
+		{
+			printf("Process type: PIPELINE\nGet redirections\n");
+			get_redirections(index, shell->pipes_fd, process);
+			if (!(builtin_index != -1 && count_pipes(shell->tokens) == 0))
+			{
+				ft_printf_fd(2, "Process type: PIPELINE\nClosing redirections\n");
+				close_redirections(process, count_pipes(shell->tokens), \
+				shell->pipes_fd, index);
+			}
+		}
 		if (builtin && builtin_index != -1)
 		{
-			printf("Executando builtin\n");
-			signal(SIGQUIT, hd1_signal_handler);
 			shell->builtin[builtin_index](shell, process);
-			printf("Builtin finalizado\n");
 			free_struct(shell, 1);
-			ft_printf_fd(1 , "Saindo do execve\n");
 			exit(g_exit_status);
-			printf("Execve finalizado (NAO DEVERIA TER PRINTADO)\n");
 		}
 		else
-		{
-			signal(SIGQUIT, hd1_signal_handler);
-			printf("A entrar no execve\n");
 			ft_execve(shell, process);
-			printf("Execve finalizado\n");
-		}
 	}
 	else if (process->pid == -1)
 		ft_error("Error creating process", 1);
-	else
-	{
-		printf("Processo %d criado\n", index);
-		//signals_wait();
-	}
 }
 
-static void	waiting(int process_num, t_shell *shell)
+static void	waiting(int process_num, t_shell *shell, int wait_nbr)
 {
 	int	i;
 
 	i = -1;
 	close_pipes(shell->pipes_fd, process_num);
-	while (++i < process_num)
+	while (++i < process_num - wait_nbr)
 	{
-		printf("Esperando processo %d\n", i);
+		printf("Waiting for process %d\n", i);
 		if (waitpid(-1, &g_exit_status, 0) == -1)
 			ft_error("Error waiting for process", 1);
-		printf("Processo %d finalizado\n", i);
 		if (WIFEXITED(g_exit_status))
-		{
 			g_exit_status = WEXITSTATUS(g_exit_status);
-			printf("Processo %d finalizado com status %d\n", i, g_exit_status);
-		}
 		else if (WIFSIGNALED(g_exit_status))
-		{
 			g_exit_status = WTERMSIG(g_exit_status) + 128;
-			printf("Processo %d finalizado com status %d\n", i, g_exit_status);
-		}
 	}
-	/* if (waitpid(-1, &g_exit_status, 0) == -1)
-			ft_error("Error waiting for process", 1);
-	if (WIFEXITED(g_exit_status))
-		g_exit_status = WEXITSTATUS(g_exit_status);
-	else if (WIFSIGNALED(g_exit_status))
-		g_exit_status = WTERMSIG(g_exit_status) + 128; */
-	printf("Processo finalizado\n");
 }
 
 bool	has_parenthesis(t_pipes *process)
@@ -169,12 +143,12 @@ int	execute(t_shell *shell)
 	const char	*builtin[7];
 
 	i_pipes[0] = -1;
-	i_pipes[1] = count_pipes(shell->tokens) + 1;
+	i_pipes[1] = count_pipes(shell->tokens);
 	process = shell->pipes;
+	printf("i_pipes[1]: %d\n", i_pipes[1]);
 	init_builtin(builtin);
 	if (!create_pipes(shell) && i_pipes[1] > 0)
 		return (ft_error("Error creating pipes", 1));
-	//printf("Num pipes: %d\n", i_pipes[1]);
 	while (process && ++i_pipes[0] > -1)
 	{
 		/*
@@ -183,55 +157,60 @@ int	execute(t_shell *shell)
 			armazenar g_exit_status
 			enviar para funcao de tratamento de operadores logicos && ||
 		*/
+		//process_logical_operators(shell);
 		if (has_parenthesis(process))
 		{
-			printf("Tratamento de parenteses\n");
+			int ***pipes_fd = &shell->pipes_fd;
 			process->pid = fork();
 			int	builtin_index = ft_is_builtin(builtin, process->cmds[0]);
 			if (process->pid == 0)
 			{
+				int temp = dup(STDOUT_FILENO);
 				free_tokens(&shell->tokens);
 				free(shell->input);
 				shell->input = process->cmds[0];
-				if (parser(shell))
+				if (parser(shell, 1))
 				{
-					get_redirections(i_pipes[0], shell->pipes_fd, process, shell);
-					close_redirections(process, builtin_index, shell->pipes_fd, i_pipes[0]);
+					printf("Commands: %s\n", shell->pipes->cmds[0]);
+					if (shell->pipes->cmds[1])
+						printf("Commands: %s\n", shell->pipes->cmds[1]);
+					shell->pipes_fd = *pipes_fd;
+					get_redirections(i_pipes[0], shell->pipes_fd, process);
+					close_redirections(process, i_pipes[1] - 1,\
+					 shell->pipes_fd, i_pipes[0]);
 					execute(shell);
 				}
 				free_struct(shell, 1);
 				exit(g_exit_status);
 			}
-			//else
-			//{
-			//	waiting(i_pipes[1], shell);
-			//}
 			process = process->next;
 			continue ;
-			//process_logical_operators(shell);
 		}
-		if (ft_is_builtin(builtin, process->cmds[0]) != -1 && i_pipes[1] == 0)
+		if (ft_is_builtin(builtin, process->cmds[0]) != -1 && \
+		!process->redir_out && i_pipes[1] == 0)
+		{
+			get_redirections(i_pipes[0], shell->pipes_fd, process);
 			shell->builtin[ft_is_builtin(builtin, \
 				process->cmds[0])](shell, process);
+		}
 		else
-			run(shell, process, i_pipes[0], builtin);
-		if (i_pipes[1] > 0 && process->next)
 		{
-			//sleep(2);
-			//signals_wait();
+			run(shell, process, i_pipes[0], builtin);
+			//if (ft_is_builtin(builtin, process->cmds[0]) != -1 && i_pipes[1] == 0)
+			//	waiting(i_pipes[1], shell, 0);
 		}
 		process = process->next;
+		if (process && process->type == AND)
+			i_pipes[0]--;
 	}
-	if ((ft_is_builtin(builtin, shell->pipes->cmds[0]) != -1  || \
-	shell->pipes->type == PARENTHESIS) && i_pipes[1] == 0)
-	{
-		//printf("Primeiro wait\n");
-		waiting(i_pipes[1], shell);
-	}
+	/* if (i_pipes[1] == 1)
+		i_pipes[1] = 0; */
+	if (i_pipes[1] == 0 && ft_is_builtin(builtin, shell->pipes->cmds[0]) == -1)
+		waiting(i_pipes[1], shell, (-1));
+	else if (i_pipes[1] == 0 && ft_is_builtin(builtin, shell->pipes->cmds[0]) != -1)
+		waiting(i_pipes[1], shell, (1));
 	else
-	{
-		//printf("Segundo wait\n");
-		waiting(i_pipes[1] + 1, shell);
-	}
+		waiting(i_pipes[1], shell, -1);
+	printf("Quitting execute with exit status: %d\n", g_exit_status);
 	return (0);
 }

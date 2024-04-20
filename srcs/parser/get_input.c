@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_input.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 15:52:03 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/06 15:58:59 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 13:46:59 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,14 @@ static bool	ft_isspace_str(char *str)
 	return (true);
 }
 
+int	skip_quotes(char *input, int i, char quote)
+{
+	i++;
+	while (input[i] && input[i] != quote)
+		i++;
+	return (i);
+}
+
 static bool	search_invalid_parenthesis(char *input)
 {
 	int	i;
@@ -32,9 +40,11 @@ static bool	search_invalid_parenthesis(char *input)
 	count = 0;
 	while (input[++i])
 	{
+		if (input[i] == '\"' || input[i] == '\'')
+			i = skip_quotes(input, i, input[i]);
 		if (input[i] == '(')
 			count++;
-		if (input[i] == ')')
+		else if (input[i] == ')')
 			count--;
 		if (count < 0)
 			return (true);

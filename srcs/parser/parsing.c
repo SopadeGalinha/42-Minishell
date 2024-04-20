@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:09:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/08 19:26:08 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 16:28:29 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,37 +100,36 @@ void	process_parenthesis(t_shell *shell)
 	i = -1;
 	count = 0;
 	input = shell->input;
-/* 	while (input[++i])
+	while (input[++i])
 	{
 		if (input[i] == '(')
 		{
-			if (count == 0)
-				j = i + 1;
+			j = i;
 			count++;
 		}
-		if (input[i] == ')')
+		else if (input[i] == ')')
 		{
 			count--;
 			if (count == 0)
 			{
-				tmp = ft_substr(shell->input, j, i - 1);
+				tmp = ft_substr(shell->input, j + 1, i - j - 1);
 				free(shell->input);
 				shell->input = tmp;
+				
 				break ;
 			}
 		}
-	} */
+	}
 
-
-	if (input[0] == '(' && input[ft_strlen(input) - 1] == ')')
+	/* if (input[0] == '(' && input[ft_strlen(input) - 1] == ')')
 	{
 		tmp = ft_substr(input, 1, ft_strlen(input) - 2);
 		free(input);
 		shell->input = tmp;
-	}
+	} */
 }
 
-bool	parser(t_shell *shell)
+bool	parser(t_shell *shell, bool is_parenthesis)
 {
 
 	/*
@@ -140,7 +139,9 @@ bool	parser(t_shell *shell)
 		armazenar o valor todo das parentesis (inclusive as parentesis) num token
 
 	*/
-	process_parenthesis(shell);
+		//printf("input: %s\n", shell->input);
+	if (is_parenthesis)
+		process_parenthesis(shell);
 	if (!lexical(shell->input, &shell->tokens))
 		return (false);
 	if (!process_tokens(shell))
@@ -152,6 +153,5 @@ bool	parser(t_shell *shell)
 	if (!process_redirections(shell))
 		return (false);
 	get_cmd_path(shell);
-	//print_token(shell->tokens);
 	return (true);
 }

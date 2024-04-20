@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:41:43 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/08 19:38:51 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:07:12 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ bool	create_pipes(t_shell *shell)
 	int	i;
 	int	process_num;
 
-	process_num = count_pipes(shell->tokens) + 1;
-	if (process_num < 2)
+	process_num = count_pipes(shell->tokens);
+	if (process_num < 1)
 		return (false);
 	shell->pipes_fd = malloc(sizeof(int *) * process_num);
 	if (shell->pipes_fd)
@@ -26,6 +26,7 @@ bool	create_pipes(t_shell *shell)
 		i = -1;
 		while (++i < process_num)
 		{
+			printf ("Creating pipe %d\n", i);
 			shell->pipes_fd[i] = malloc(sizeof(int) * 2);
 			if (!shell->pipes_fd[i])
 				return (false);
@@ -60,8 +61,9 @@ void	close_pipes(int **pipes, int process_num)
 	int	pos;
 
 	pos = -1;
-	while (++pos < process_num - 1)
+	while (++pos < process_num)
 	{
+		printf("Closing pipe %d\n", pos);
 		close(pipes[pos][READ_END]);
 		close(pipes[pos][WRITE_END]);
 	}

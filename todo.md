@@ -61,3 +61,8 @@ Following validation, the linked list proceeds to execution. The execution phase
 | P1      | ls -l -a > out 2    |   NONE            | [pipe1_write_end] | Executes the node and writes to pipe1 |
 | P2      | grep "keyword"      | [pipe1_read_end]  | [pipe2_write_end] | Reads from pipe1 executes the node, and writes to pipe2. |
 | P3      | wc -l               | [pipe2_read_end]  |                   | Reads from pipe2 and executes the last node to the STDOUT. |
+
+
+
+invalids inputs
+(ls | (grep i | grep s ))

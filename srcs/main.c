@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:39:55 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/08 19:04:59 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 13:17:43 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	main(int argc, char **argv, char **env)
 	while (true)
 	{
 		if (get_input(&shell))
-			if (parser(&shell))
+			if (parser(&shell, 0))
 				execute(&shell);
 		free_struct(&shell, 0);
 	}

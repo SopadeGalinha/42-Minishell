@@ -210,7 +210,7 @@ void	free_struct(t_shell *shell, int running);
 bool	get_input(t_shell *shell);
 
 // PARSER
-bool	parser(t_shell *shell);
+bool	parser(t_shell *shell, bool is_parenthesis);
 int		cmds_data(char *input, int i, int start, t_token **tokens);
 bool	lexical(char *input, t_token **tokens);
 void	addtoken(t_token **tokens, char *data, int *quo_err);
@@ -232,12 +232,15 @@ int		ft_error(char *str, int exit_code);
 void	close_pipes(int **pipes, int process_num);
 
 // REDIRECTIONS
-void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
-t_shell *shell);
+void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst);
 void	close_redirections(t_pipes *pipes_lst, int \
 process_num, int **pipes, int pos);
 
 void	free_tokens(t_token **tokens);
+
+// INUTILS
+void	print_pipes(t_pipes *head);
+void	print_tokens(t_token *head);
 
 //--------------------------------END FUNCTIONS-------------------------------//
 
