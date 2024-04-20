@@ -6,7 +6,7 @@
 /*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:56:22 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/20 18:06:44 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:30:11 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,9 @@ static void	*copy_tokens_to_pipeline(t_token **current)
 		*current = (*current)->next;
 	}
 	if (*current != NULL && (*current)->type == AND)
-	{
 		pipes->type = AND;
-		printf("Pipes type: AND %d\n", pipes->type);
-	}
 	else if (*current != NULL && (*current)->type == PIPELINE)
-	{
 		pipes->type = PIPELINE;
-		printf("Pipes type: PIPELINE %d\n", pipes->type);
-	}
 	else
 		pipes->type = NONE;
 	return (pipes);

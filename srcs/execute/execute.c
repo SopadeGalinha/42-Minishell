@@ -6,7 +6,7 @@
 /*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:41:43 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/20 18:15:38 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:28:09 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,11 @@ const char **builtin)
 	process->pid = fork();
 	if (process->pid == 0)
 	{
-		if (process->type == PIPELINE)
+		if (process->type == PIPELINE || process->type == NONE)
 		{
-			printf("Process type: PIPELINE\nGet redirections\n");
 			get_redirections(index, shell->pipes_fd, process);
 			if (!(builtin_index != -1 && count_pipes(shell->tokens) == 0))
 			{
-				ft_printf_fd(2, "Process type: PIPELINE\nClosing redirections\n");
 				close_redirections(process, count_pipes(shell->tokens), \
 				shell->pipes_fd, index);
 			}
@@ -113,7 +111,6 @@ static void	waiting(int process_num, t_shell *shell, int wait_nbr)
 	close_pipes(shell->pipes_fd, process_num);
 	while (++i < process_num - wait_nbr)
 	{
-		printf("Waiting for process %d\n", i);
 		if (waitpid(-1, &g_exit_status, 0) == -1)
 			ft_error("Error waiting for process", 1);
 		if (WIFEXITED(g_exit_status))
@@ -145,7 +142,6 @@ int	execute(t_shell *shell)
 	i_pipes[0] = -1;
 	i_pipes[1] = count_pipes(shell->tokens);
 	process = shell->pipes;
-	printf("i_pipes[1]: %d\n", i_pipes[1]);
 	init_builtin(builtin);
 	if (!create_pipes(shell) && i_pipes[1] > 0)
 		return (ft_error("Error creating pipes", 1));
@@ -211,6 +207,5 @@ int	execute(t_shell *shell)
 		waiting(i_pipes[1], shell, (1));
 	else
 		waiting(i_pipes[1], shell, -1);
-	printf("Quitting execute with exit status: %d\n", g_exit_status);
 	return (0);
 }

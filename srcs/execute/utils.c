@@ -6,7 +6,7 @@
 /*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:41:43 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/20 18:07:12 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:31:05 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ bool	create_pipes(t_shell *shell)
 		i = -1;
 		while (++i < process_num)
 		{
-			printf ("Creating pipe %d\n", i);
 			shell->pipes_fd[i] = malloc(sizeof(int) * 2);
 			if (!shell->pipes_fd[i])
 				return (false);
@@ -63,7 +62,6 @@ void	close_pipes(int **pipes, int process_num)
 	pos = -1;
 	while (++pos < process_num)
 	{
-		printf("Closing pipe %d\n", pos);
 		close(pipes[pos][READ_END]);
 		close(pipes[pos][WRITE_END]);
 	}
