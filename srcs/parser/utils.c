@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:16:15 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/07 17:12:18 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 16:03:19 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 bool	is_special_char(char c)
 {
 	if (c == '>' || c == '<' || c == '|' || c == '$' || c == ';' || \
-	c == '(' || c == ')')
+	c == '(' || c == ')' || c == '&')
 		return (true);
 	return (false);
 }

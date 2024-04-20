@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:09:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/08 19:26:08 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/04/20 16:28:29 by rboia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static void	get_cmd_path(t_shell *shell)
 
 static int	validate_aux(char data, int quote)
 {
-	if (is_special_char(data) && data != '$' && quote == NONE)
+	if (is_special_char(data) && data != '$' && data != '(' && \
+	data != ')' && quote == NONE)
 	{
 		ft_printf_fd(2, MS_ERR RESET STX BOLD_WHITE \
 		"`%c'"RESET, data);
@@ -63,10 +64,12 @@ static bool	validate_tokens(t_shell *shell)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `>'"RESET, 2));
 		if (token->type == APPEND && token->next->type != WORD)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `>>'"RESET, 2));
-		if (token->type == PARENTHESIS_OPEN && token->next->type != WORD)
+		if (token->type == PARENTHESIS && (token->next->type != WORD && \
+			token->next->type != PIPELINE))
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `('"RESET, 2));
-		if (token->type == PARENTHESIS_CLOSE && token->next->type != WORD)
-			return (print_error(MS_ERR RESET STX BOLD_WHITE " `)'"RESET, 2));
+		//if (token->type == PARENTHESIS_CLOSE && (token->next->type != WORD && \
+		//	token->next->type != PARENTHESIS_CLOSE))
+		//	return (print_error(MS_ERR RESET STX BOLD_WHITE " `)'"RESET, 2));
 		if (token->type == HEREDOC && token->next->type != WORD
 			&& token->next->type != ENV)
 			return (print_error(MS_ERR RESET STX BOLD_WHITE " `<<'"RESET, 2));
@@ -85,8 +88,60 @@ static void	print_token(t_token *token)
 	}
 }
 
-bool	parser(t_shell *shell)
+void	process_parenthesis(t_shell *shell)
 {
+	char	*input;
+	char	*tmp;
+	int		count;
+	int		i;
+	int		j;
+
+	//printf("PROCESS PARENTHESIS\ntoken: %s\n\n", shell->input);
+	i = -1;
+	count = 0;
+	input = shell->input;
+	while (input[++i])
+	{
+		if (input[i] == '(')
+		{
+			j = i;
+			count++;
+		}
+		else if (input[i] == ')')
+		{
+			count--;
+			if (count == 0)
+			{
+				tmp = ft_substr(shell->input, j + 1, i - j - 1);
+				free(shell->input);
+				shell->input = tmp;
+				
+				break ;
+			}
+		}
+	}
+
+	/* if (input[0] == '(' && input[ft_strlen(input) - 1] == ')')
+	{
+		tmp = ft_substr(input, 1, ft_strlen(input) - 2);
+		free(input);
+		shell->input = tmp;
+	} */
+}
+
+bool	parser(t_shell *shell, bool is_parenthesis)
+{
+
+	/*
+	Se parenteses no inicio e no fim do input entao
+		retirar parentesis
+	senao
+		armazenar o valor todo das parentesis (inclusive as parentesis) num token
+
+	*/
+		//printf("input: %s\n", shell->input);
+	if (is_parenthesis)
+		process_parenthesis(shell);
 	if (!lexical(shell->input, &shell->tokens))
 		return (false);
 	if (!process_tokens(shell))
