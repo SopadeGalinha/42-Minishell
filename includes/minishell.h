@@ -161,11 +161,18 @@ typedef struct s_token
 	struct s_token	*prev;
 }					t_token;
 
+typedef struct s_process
+{
+	t_pipes				*process;
+	struct s_process	*next;
+}				t_process;
+
 typedef struct s_shell
 {
 	char			*input;
 	t_pipes			*pipes;
 	t_token			*tokens;
+	t_process		*process;
 	t_env			*env;
 	t_env			*exp;
 	char			*heredoc;
@@ -232,7 +239,8 @@ int		ft_error(char *str, int exit_code);
 void	close_pipes(int **pipes, int process_num);
 
 // REDIRECTIONS
-void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst);
+void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
+t_shell *shell);
 void	close_redirections(t_pipes *pipes_lst, int \
 process_num, int **pipes, int pos);
 

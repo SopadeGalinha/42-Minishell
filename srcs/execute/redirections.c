@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:31:09 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/20 18:29:46 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:22:22 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	close_redirections(t_pipes *pipes_lst, int \
 process_num, int **pipes, int pos)
 {
 	int	i;
-	
+
 	i = -1;
 	while (++i < process_num)
 	{
@@ -62,8 +62,10 @@ int **pipes)
 		ft_heredoc(pipes_lst);
 }
 
-void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst)
+void	get_redirections(int pos, int **pipes, t_pipes *pipes_lst, \
+t_shell *shell)
 {
+	(void)shell;
 	if (pos != 0)
 	{
 		dup2(pipes[pos - 1][READ_END], STDIN_FILENO);
