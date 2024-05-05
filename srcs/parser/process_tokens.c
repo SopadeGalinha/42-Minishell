@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_tokens.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:46:10 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/20 16:23:26 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/27 15:39:42 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,7 @@ bool	process_tokens(t_shell *shell)
 			current->type = define_token(current->data);
 		if (!process_aux(shell, current))
 			return (false);
-		if ((current->type == OR || current->type == SEMICOLON) && \
-				current->quote == NONE)
+		if ((current->type == SEMICOLON) && current->quote == NONE)
 			return (print_error(MS_ERR UNSUP_MCMDS, 1));
 		current = current->next;
 	}

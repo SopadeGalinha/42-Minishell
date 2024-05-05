@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:56:22 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/25 19:17:54 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/05/05 19:44:42 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	insert_redir(t_redir **head, char *data, int type)
 	}
 }
 
-void	redirects(t_token **data, t_redir **r_in, t_redir **r_out)
+static void	redirects(t_token **data, t_redir **r_in, t_redir **r_out)
 {
 	if ((*data)->type == REDIR_OUT || (*data)->type == APPEND)
 	{

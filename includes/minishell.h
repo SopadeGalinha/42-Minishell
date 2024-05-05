@@ -163,7 +163,8 @@ typedef struct s_token
 
 typedef struct s_process
 {
-	t_pipes				*process;
+	t_token				*tokens;
+	int					type;
 	struct s_process	*next;
 }				t_process;
 
@@ -184,6 +185,10 @@ typedef struct s_shell
 //------------------------------ END MACROS ----------------------------------//
 
 /*_______________________________ FUNCTIONS __________________________________*/
+
+
+t_process *create_process(t_shell *shell);
+
 
 // INITIALIZATION
 t_env	*init_env(char **envp);

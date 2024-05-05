@@ -6,7 +6,7 @@
 /*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 16:09:01 by jhogonca          #+#    #+#             */
-/*   Updated: 2024/04/25 19:11:23 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/05/05 20:23:02 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,15 +88,32 @@ static int	count_processes(t_token *tokens)
 	return (count);
 }
 
-/* bool	create_processes(t_shell *shell)
-{
-	t_token		*token;
-	int			process;
-
-	process = count_processes(shell->tokens);
-	print_tokens(shell->pipes);
+void print_processes(t_process *head) {
+    // Inicialize um contador para acompanhar os processos
+    int process_number = 1;
+    
+    // Itere pela lista de processos
+    t_process *current_process = head;
+    while (current_process != NULL) {
+        // Imprima o número do processo
+        printf("Process %d:\n", process_number);
+        
+        // Use a função print_tokens para imprimir os tokens do processo atual
+        print_tokens(current_process->tokens);
+        
+        // Avance para o próximo processo na lista
+        current_process = current_process->next;
+        
+        // Incrementa o contador de processo
+        process_number++;
+        
+        // Adicione uma linha vazia para separar a saída dos processos
+        printf("\n");
+    }
 }
- */
+
+t_process *create_process(t_shell *shell);
+
 bool	parser(t_shell *shell, bool is_parenthesis)
 {
 	if (!lexical(shell->input, &shell->tokens))
@@ -105,12 +122,15 @@ bool	parser(t_shell *shell, bool is_parenthesis)
 		return (false);
 	if (!validate_tokens(shell))
 		return (false);
-/* 	if (!create_processes(shell))
-		return (false); */
+	shell->process = create_process(shell);
+	print_processes(shell->process);
+	exit(0);
 	if (!create_pipeline_node(shell))
 		return (false);
 	if (!process_redirections(shell))
 		return (false);
 	get_cmd_path(shell);
+	print_pipes(shell->pipes);
+	exit(0);
 	return (true);
 }

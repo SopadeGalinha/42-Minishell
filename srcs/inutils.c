@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inutils.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rboia-pe <rboia-pe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 16:25:58 by rboia-pe          #+#    #+#             */
-/*   Updated: 2024/04/20 16:27:21 by rboia-pe         ###   ########.fr       */
+/*   Updated: 2024/05/05 20:23:34 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	print_tokens(t_token *head)
 
 
 	current = head;
+	printf(BOLD_GREEN"TOKENS\n"RESET);
 	while (current != NULL)
 	{
 		switch (current->type) {
