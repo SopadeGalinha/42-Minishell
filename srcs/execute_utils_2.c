@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jhogonca <jhogonca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jhogonca <jhogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 22:38:18 by heolivei          #+#    #+#             */
-/*   Updated: 2023/12/05 01:05:15 by jhogonca         ###   ########.fr       */
+/*   Updated: 2024/05/25 19:55:39 by jhogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,4 @@ void	waiting(int process_num, t_shell *shell)
 		g_exit_status = WEXITSTATUS(g_exit_status);
 	else if (WIFSIGNALED(g_exit_status))
 		g_exit_status = WTERMSIG(g_exit_status) + 128;
-	ft_printf_fd(0, "\n");
 }

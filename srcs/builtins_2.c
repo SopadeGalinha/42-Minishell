@@ -74,8 +74,6 @@ void	ft_pwd(t_shell *shell, t_pipes *pipes)
 
 void	ft_exit(t_shell *shell, t_pipes *pipes)
 {
-	if (count_pipes(shell->tokens) == 0)
-		ft_printf_fd(STDOUT_FILENO, BOLD_WHITE"Bye bye!\n"RESET);
 	if (ft_count_words(pipes->cmds) > 2)
 	{
 		print_error("minishell: exit: too many arguments", 1);
